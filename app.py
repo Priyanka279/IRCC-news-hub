@@ -1,17 +1,20 @@
 from flask import Flask, jsonify, render_template, request
 from dotenv import load_dotenv
 import sqlite3
-import re
 import os
 
 load_dotenv()
 
 DB_PATH = os.getenv("DB_PATH", "news.db")
 
-from scheduler import start_scheduler
 from database import init_db
+from scheduler import start_scheduler
 
 app = Flask(__name__)
+
+# ── Runs on every startup including Gunicorn on Render ──
+init_db()
+start_scheduler()
 
 def get_db():
     conn = sqlite3.connect(DB_PATH, timeout=10)
@@ -28,14 +31,11 @@ def get_news():
     category = request.args.get("category", "")
     search   = request.args.get("search", "")
     sort     = request.args.get("sort", "newest")
-
     conn = get_db()
     c    = conn.cursor()
-
     query      = "SELECT title, url, summary, source, category, published FROM articles"
     params     = []
     conditions = []
-
     if category:
         conditions.append("category = ?")
         params.append(category)
@@ -44,10 +44,8 @@ def get_news():
         params.extend([f"%{search}%", f"%{search}%", f"%{search}%"])
     if conditions:
         query += " WHERE " + " AND ".join(conditions)
-
     order = "DESC" if sort != "oldest" else "ASC"
     query += f" ORDER BY created_at {order} LIMIT 100"
-
     c.execute(query, params)
     rows = c.fetchall()
     conn.close()
@@ -105,9 +103,7 @@ def source_health():
     conn = get_db()
     c    = conn.cursor()
     c.execute("""
-        SELECT source,
-               COUNT(*) as total,
-               MAX(created_at) as last_seen
+        SELECT source, COUNT(*) as total, MAX(created_at) as last_seen
         FROM articles
         GROUP BY source
         ORDER BY last_seen DESC
@@ -133,6 +129,4 @@ def processing_times():
     return jsonify([dict(r) for r in rows])
 
 if __name__ == "__main__":
-    init_db()
-    start_scheduler()
     app.run(debug=True)
