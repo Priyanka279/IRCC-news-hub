@@ -9,6 +9,16 @@ from processing_times import scrape_processing_times
 
 _is_running = False
 
+import requests as req
+
+def ping_self():
+    try:
+        req.get("https://ircc-news-hub.onrender.com", timeout=10)
+        print("[ping] Self-ping sent.")
+    except:
+        pass
+
+
 def run_all():
     global _is_running
     if _is_running:
@@ -33,6 +43,9 @@ def start_scheduler():
 
     # Every day at 8am — Telegram daily digest
     scheduler.add_job(send_daily_digest, CronTrigger(hour=8, minute=0))
+
+    # Add inside start_scheduler():
+    scheduler.add_job(ping_self, "interval", minutes=10)
 
     scheduler.start()
     print("[scheduler] Started.")
