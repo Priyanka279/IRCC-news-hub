@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IRCC News Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg:      #0a0c0f;
+      --surface: #111318;
+      --card:    #161a22;
+      --border:  #232830;
+      --border2: #2e3540;
+      --accent:  #e8543a;
+      --accent2: #3a7bd5;
+      --green:   #2dcc8f;
+      --amber:   #f5a623;
+      --text:    #e8eaf0;
+      --muted:   #6b7280;
+      --mono:    'IBM Plex Mono', monospace;
+      --sans:    'IBM Plex Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* ── HEADER ── */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      position: sticky;
+      top: 0;
+      background: rgba(10,12,15,0.95);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--mono);
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .logo-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(232,84,58,0.4); }
+      50%      { opacity:0.7; box-shadow: 0 0 0 6px rgba(232,84,58,0); }
+    }
+
+    .header-right { display:flex; align-items:center; gap:12px; }
+
+    .last-updated {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .refresh-btn {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── NAV TABS (header) ── */
+    .nav-tabs {
+      display: flex;
+      gap: 4px;
+    }
+    .nav-tab {
+      background: none;
+      border: 1px solid transparent;
+      color: var(--muted);
+      padding: 5px 12px;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .nav-tab:hover { color: var(--text); border-color: var(--border2); }
+    .nav-tab.active { color: var(--accent2); border-color: var(--accent2); background: rgba(58,123,213,0.08); }
+
+    /* ── LAYOUT ── */
+    .wrapper {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: calc(100vh - 56px);
+    }
+
+    /* ── SIDEBAR ── */
+    aside {
+      border-right: 1px solid var(--border);
+      padding: 1.5rem 0;
+      position: sticky;
+      top: 56px;
+      height: calc(100vh - 56px);
+      overflow-y: auto;
+    }
+
+    .sidebar-section { margin-bottom: 2rem; }
+
+    .sidebar-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      padding: 0 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .cat-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 8px 1.25rem;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-family: var(--sans);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.12s;
+      text-align: left;
+    }
+    .cat-btn:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+    .cat-btn.active {
+      color: var(--accent);
+      background: rgba(232,84,58,0.06);
+      border-left: 2px solid var(--accent);
+      padding-left: calc(1.25rem - 2px);
+    }
+
+    .cat-count {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--surface);
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+    .cat-btn.active .cat-count { background: rgba(232,84,58,0.15); color: var(--accent); }
+
+    .alert-box {
+      margin: 0 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem;
+    }
+    .alert-box h4 {
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--green);
+      margin-bottom: 0.75rem;
+    }
+    .alert-box input {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      padding: 6px 8px;
+      border-radius: 4px;
+      font-family: var(--sans);
+      font-size: 12px;
+      margin-bottom: 0.5rem;
+    }
+    .alert-box input:focus { outline: none; border-color: var(--accent2); }
+    .alert-box button {
+      width: 100%;
+      background: var(--accent2);
+      border: none;
+      color: #fff;
+      padding: 7px;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 11px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .alert-box button:hover { opacity: 0.85; }
+    .alert-status { font-size: 11px; color: var(--green); margin-top: 0.4rem; display: none; }
+
+    /* ── MAIN ── */
+    main { padding: 1.5rem 2rem; }
+
+    /* pages */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .top-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+      align-items: center;
+    }
+
+    .search-wrap { flex: 1; position: relative; }
+    .search-wrap > svg {
+      position: absolute;
+      left: 10px; top: 50%;
+      transform: translateY(-50%);
+      opacity: 0.4; z-index: 1;
+      pointer-events: none;
+    }
+
+    #search {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      padding: 9px 36px 9px 34px;
+      border-radius: 5px;
+      font-family: var(--sans);
+      font-size: 13px;
+      transition: border-color 0.15s;
+    }
+    #search:focus { outline: none; border-color: var(--accent2); }
+    #search::placeholder { color: var(--muted); }
+
+    .clear-btn {
+      position: absolute;
+      right: 10px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 15px;
+      line-height: 1;
+      padding: 2px 4px;
+      display: none;
+    }
+    .clear-btn:hover { color: var(--text); }
+
+    .sort-select {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      padding: 9px 10px;
+      border-radius: 5px;
+      font-family: var(--mono);
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .sort-select:focus { outline: none; }
+
+    .stats-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .stat-chip {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .stat-chip span { color: var(--text); font-weight: 500; }
+
+    /* Draw banner */
+    .draw-banner {
+      background: linear-gradient(90deg, rgba(45,204,143,0.08) 0%, transparent 100%);
+      border: 1px solid rgba(45,204,143,0.25);
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 1.5rem;
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
+    .draw-banner.visible { display: flex; }
+    .draw-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      background: var(--green);
+      color: #000;
+      padding: 2px 7px;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+    .draw-text { font-size: 13px; color: var(--green); }
+
+    /* News grid */
+    #news-grid {
+      display: grid;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .news-card {
+      background: var(--card);
+      padding: 1rem 1.25rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.5rem;
+      transition: background 0.12s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .news-card:hover { background: var(--surface); }
+    .news-card.read { opacity: 0.5; }
+    .news-card.read .card-title { color: var(--muted); }
+
+    .card-left { min-width: 0; }
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 5px;
+      flex-wrap: wrap;
+    }
+
+    .source-tag {
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 2px 7px;
+      border-radius: 3px;
+    }
+    .tag-ircc    { background: rgba(232,84,58,0.15);  color: var(--accent); }
+    .tag-cic     { background: rgba(58,123,213,0.15); color: var(--accent2); }
+    .tag-cbc     { background: rgba(245,166,35,0.15); color: var(--amber); }
+    .tag-default { background: rgba(107,114,128,0.2); color: var(--muted); }
+
+    .keyword-badge {
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: rgba(245,166,35,0.15);
+      color: var(--amber);
+      border: 1px solid rgba(245,166,35,0.3);
+    }
+
+    .card-date { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.45;
+      margin-bottom: 5px;
+    }
+    .news-card:hover .card-title { color: #fff; }
+
+    .card-summary {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+    }
+
+    .card-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: space-between;
+      min-width: 80px;
+      gap: 4px;
+    }
+
+    .cat-pill {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      border: 1px solid var(--border2);
+      padding: 2px 7px;
+      border-radius: 10px;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .bookmark-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      opacity: 0.25;
+      transition: opacity 0.15s;
+      padding: 0;
+      line-height: 1;
+    }
+    .bookmark-btn:hover, .bookmark-btn.bookmarked { opacity: 1; }
+
+    .arrow-icon { opacity: 0.3; transition: opacity 0.12s; }
+    .news-card:hover .arrow-icon { opacity: 0.8; }
+
+    /* States */
+    .empty-state {
+      padding: 4rem 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+    .loading-state {
+      padding: 3rem 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+    .loading-dots span { animation: blink 1.2s infinite; font-size: 20px; }
+    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink { 0%,80%,100%{opacity:0} 40%{opacity:1} }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .pg-btn {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      color: var(--muted);
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .pg-btn:hover, .pg-btn.active { border-color: var(--accent2); color: var(--accent2); }
+
+    /* ── PANEL PAGES (CRS, Health, Processing) ── */
+    .panel-title {
+      font-family: var(--mono);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .chart-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      height: 280px;
+    }
+
+    /* Source health table */
+    .health-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .health-table th {
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-align: left;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .health-table td {
+      padding: 10px 12px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+    }
+    .health-table tr:last-child td { border-bottom: none; }
+    .status-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    .status-ok   { background: var(--green); }
+    .status-warn { background: var(--amber); }
+    .status-dead { background: var(--accent); }
+
+    /* Processing times */
+    .proc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .proc-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem;
+    }
+    .proc-permit {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .proc-time {
+      font-family: var(--mono);
+      font-size: 18px;
+      color: var(--accent2);
+      font-weight: 600;
+    }
+    .proc-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* Bookmarks page */
+    .bookmarks-empty {
+      text-align: center;
+      padding: 4rem;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      background: var(--surface);
+      border: 1px solid var(--green);
+      color: var(--green);
+      padding: 10px 16px;
+      border-radius: 5px;
+      font-family: var(--mono);
+      font-size: 12px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.2s;
+      pointer-events: none;
+      z-index: 999;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 768px) {
+      .wrapper { grid-template-columns: 1fr; }
+      aside { display: none; }
+      main { padding: 1rem; }
+      .nav-tabs { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    IRCC News Hub
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('news', this)">📰 News</button>
+    <button class="nav-tab" onclick="showPage('crs', this)">📊 CRS Chart</button>
+    <button class="nav-tab" onclick="showPage('processing', this)">⏱ Processing</button>
+    <button class="nav-tab" onclick="showPage('health', this)">🟢 Sources</button>
+    <button class="nav-tab" onclick="showPage('bookmarks', this)">🔖 Bookmarks</button>
+  </div>
+  <div class="header-right">
+    <span class="last-updated" id="last-updated">Checking feeds…</span>
+    <button class="refresh-btn" onclick="loadNews()">↻ Refresh</button>
+  </div>
+</header>
+
+<div class="wrapper">
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Categories</div>
+      <button class="cat-btn active" data-cat="" onclick="setCategory(this,'')">
+        All News <span class="cat-count" id="cnt-all">—</span>
+      </button>
+      <button class="cat-btn" data-cat="IRCC Updates" onclick="setCategory(this,'IRCC Updates')">
+        IRCC Updates <span class="cat-count" id="cnt-ircc">—</span>
+      </button>
+      <button class="cat-btn" data-cat="Express Entry" onclick="setCategory(this,'Express Entry')">
+        Express Entry <span class="cat-count" id="cnt-ee">—</span>
+      </button>
+      <button class="cat-btn" data-cat="PNP Programs" onclick="setCategory(this,'PNP Programs')">
+        PNP Programs <span class="cat-count" id="cnt-pnp">—</span>
+      </button>
+      <button class="cat-btn" data-cat="Intl Students" onclick="setCategory(this,'Intl Students')">
+        Int'l Students <span class="cat-count" id="cnt-intl">—</span>
+      </button>
+      <button class="cat-btn" data-cat="TRP / PR" onclick="setCategory(this,'TRP / PR')">
+        TRP / PR <span class="cat-count" id="cnt-trp">—</span>
+      </button>
+      <button class="cat-btn" data-cat="Work Permits" onclick="setCategory(this,'Work Permits')">
+        Work Permits <span class="cat-count" id="cnt-work">—</span>
+      </button>
+      <button class="cat-btn" data-cat="General" onclick="setCategory(this,'General')">
+        General <span class="cat-count" id="cnt-gen">—</span>
+      </button>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Keyword Alerts</div>
+      <div class="alert-box">
+        <h4>📬 Email Alerts</h4>
+        <input type="email" id="alert-email" placeholder="your@email.com"/>
+        <input type="text"  id="alert-keyword" placeholder="Keyword (e.g. CRS draw)"/>
+        <button onclick="subscribeAlert()">Subscribe</button>
+        <div class="alert-status" id="alert-status">✓ Subscribed!</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Filter by Keyword</div>
+      <button class="cat-btn" onclick="setKeyword('')">All</button>
+      <button class="cat-btn" onclick="setKeyword('CRS')">CRS Score</button>
+      <button class="cat-btn" onclick="setKeyword('Express Entry draw')">EE Draw</button>
+      <button class="cat-btn" onclick="setKeyword('study permit')">Study Permit</button>
+      <button class="cat-btn" onclick="setKeyword('PGWP')">PGWP</button>
+      <button class="cat-btn" onclick="setKeyword('LMIA')">LMIA</button>
+      <button class="cat-btn" onclick="setKeyword('Ontario PNP')">Ontario PNP</button>
+      <button class="cat-btn" onclick="setKeyword('TRP')">TRP</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- ── PAGE: NEWS ── -->
+    <div class="page active" id="page-news">
+      <div class="top-bar">
+        <div class="search-wrap">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <circle cx="6.5" cy="6.5" r="5.5" stroke="white" stroke-width="1.5"/>
+            <path d="M11 11L15 15" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <input id="search" type="text" placeholder="Search news, keywords, sources…" oninput="debounceSearch()"/>
+          <button class="clear-btn" id="clear-btn" onclick="clearSearch()">✕</button>
+        </div>
+        <select class="sort-select" id="sort" onchange="loadNews()">
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+        </select>
+      </div>
+
+      <div class="draw-banner" id="draw-banner">
+        <span class="draw-tag">🔥 Draw Detected</span>
+        <span class="draw-text" id="draw-text"></span>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-chip">Total: <span id="stat-total">—</span></div>
+        <div class="stat-chip">Sources: <span id="stat-sources">—</span></div>
+        <div class="stat-chip">Last draw: <span id="stat-draw">checking…</span></div>
+        <div class="stat-chip">Bookmarks: <span id="stat-bookmarks">0</span></div>
+      </div>
+
+      <div id="news-grid">
+        <div class="loading-state">
+          <div class="loading-dots"><span>.</span><span>.</span><span>.</span></div>
+          <div style="margin-top:8px">Fetching latest immigration news</div>
+        </div>
+      </div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+
+    <!-- ── PAGE: CRS CHART ── -->
+    <div class="page" id="page-crs">
+      <div class="panel-title">📊 CRS Score History — Express Entry Draws</div>
+      <div class="chart-wrap">
+        <canvas id="crs-chart"></canvas>
+      </div>
+      <div id="crs-table" class="panel-card">
+        <div style="color:var(--muted);font-family:var(--mono);font-size:12px;text-align:center;padding:2rem">
+          Loading CRS history…
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PAGE: PROCESSING TIMES ── -->
+    <div class="page" id="page-processing">
+      <div class="panel-title">⏱ IRCC Processing Times</div>
+      <div id="processing-grid" class="proc-grid">
+        <div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:2rem">
+          Loading processing times…
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PAGE: SOURCE HEALTH ── -->
+    <div class="page" id="page-health">
+      <div class="panel-title">🟢 Source Health Dashboard</div>
+      <div class="panel-card">
+        <table class="health-table" id="health-table">
+          <thead>
+            <tr>
+              <th>Source</th>
+              <th>Status</th>
+              <th>Articles</th>
+              <th>Last Seen</th>
+            </tr>
+          </thead>
+          <tbody id="health-body">
+            <tr><td colspan="4" style="color:var(--muted);text-align:center;padding:2rem">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── PAGE: BOOKMARKS ── -->
+    <div class="page" id="page-bookmarks">
+      <div class="panel-title">🔖 Saved Articles</div>
+      <div id="bookmarks-grid">
+        <div class="bookmarks-empty">No bookmarks yet.<br>Click 🔖 on any article to save it.</div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  // ── STATE ──
+  let currentCategory = '';
+  let currentKeyword  = '';
+  let currentPage     = 1;
+  const PER_PAGE      = 20;
+  let allArticles     = [];
+  let searchTimer     = null;
+  let crsChartInstance = null;
+
+  // Persistent storage
+  let bookmarks    = JSON.parse(localStorage.getItem('ircc_bookmarks') || '[]');
+  let readArticles = JSON.parse(localStorage.getItem('ircc_read') || '[]');
+
+  const SOURCE_CLASS = {
+    'IRCC Official':  'tag-ircc',
+    'CIC News':       'tag-cic',
+    'CBC':            'tag-cbc',
+    'Global News':    'tag-cbc',
+    'Moving2Canada':  'tag-cic',
+    'Immigration.ca': 'tag-cic',
+  };
+
+  const DRAW_KEYWORDS = [
+    'express entry draw','invitation to apply','ita issued',
+    'crs cut-off','draw #','rounds of invitations'
+  ];
+
+  const CRS_KEYWORDS = [
+    'crs','express entry','draw','ita','invitation to apply',
+    'pnp','study permit','pgwp','lmia','trp','permanent resident',
+    'work permit','oinp','international student','open work permit'
+  ];
+
+  // ── PAGE NAVIGATION ──
+  function showPage(name, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    if (btn) btn.classList.add('active');
+
+    // Lazy load data for each page
+    if (name === 'crs')        loadCRSChart();
+    if (name === 'health')     loadSourceHealth();
+    if (name === 'processing') loadProcessingTimes();
+    if (name === 'bookmarks')  renderBookmarksPage();
+  }
+
+  // ── SEARCH ──
+  document.getElementById('search').addEventListener('input', function () {
+    document.getElementById('clear-btn').style.display =
+      this.value.length > 0 ? 'block' : 'none';
+  });
+
+  function clearSearch() {
+    document.getElementById('search').value = '';
+    document.getElementById('clear-btn').style.display = 'none';
+    currentKeyword = '';
+    currentPage = 1;
+    renderPage(filterArticles(), currentPage);
+  }
+
+  // ── HELPERS ──
+  function getSourceClass(source) {
+    for (const [k, v] of Object.entries(SOURCE_CLASS)) {
+      if (source && source.toLowerCase().includes(k.toLowerCase())) return v;
+    }
+    return 'tag-default';
+  }
+
+  function detectKeywords(title) {
+    const lower = (title || '').toLowerCase();
+    return CRS_KEYWORDS.filter(k => lower.includes(k)).slice(0, 2);
+  }
+
+  function timeAgo(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (isNaN(d)) return dateStr;
+    const diff = Date.now() - d.getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 60)   return `${mins}m ago`;
+    if (mins < 1440) return `${Math.floor(mins/60)}h ago`;
+    return `${Math.floor(mins/1440)}d ago`;
+  }
+
+  function saveBookmarks() {
+    localStorage.setItem('ircc_bookmarks', JSON.stringify(bookmarks));
+    document.getElementById('stat-bookmarks').textContent = bookmarks.length;
+  }
+
+  function saveRead() {
+    localStorage.setItem('ircc_read', JSON.stringify(readArticles));
+  }
+
+  // ── BOOKMARK TOGGLE ──
+  function toggleBookmark(url, title, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const idx = bookmarks.findIndex(b => b.url === url);
+    if (idx === -1) {
+      bookmarks.push({ url, title });
+      showToast('🔖 Bookmarked!');
+    } else {
+      bookmarks.splice(idx, 1);
+      showToast('Bookmark removed');
+    }
+    saveBookmarks();
+    renderPage(filterArticles(), currentPage);
+  }
+
+  // ── MARK READ ──
+  function markRead(url) {
+    if (!readArticles.includes(url)) {
+      readArticles.push(url);
+      saveRead();
+    }
+  }
+
+  // ── RENDER CARD ──
+  function renderCard(a) {
+    const kws = detectKeywords(a.title);
+    const badges = kws.map(k =>
+      `<span class="keyword-badge">${k.toUpperCase()}</span>`
+    ).join('');
+    const isBookmarked = bookmarks.some(b => b.url === a.url);
+    const isRead       = readArticles.includes(a.url);
+    // Escape title for use in onclick attribute
+    const safeTitle = (a.title || '').replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+    const safeUrl   = (a.url || '').replace(/'/g, '%27');
+    return `
+      <a class="news-card ${isRead ? 'read' : ''}"
+         href="${a.url}" target="_blank" rel="noopener"
+         onclick="markRead('${safeUrl}')">
+        <div class="card-left">
+          <div class="card-meta">
+            <span class="source-tag ${getSourceClass(a.source)}">${a.source || 'Unknown'}</span>
+            ${badges}
+            <span class="card-date">${timeAgo(a.published)}</span>
+          </div>
+          <div class="card-title">${a.title || 'Untitled'}</div>
+          <div class="card-summary">${a.summary || ''}</div>
+        </div>
+        <div class="card-right">
+          <span class="cat-pill">${a.category || ''}</span>
+          <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}"
+            onclick="toggleBookmark('${safeUrl}','${safeTitle}',event)"
+            title="${isBookmarked ? 'Remove bookmark' : 'Save article'}">
+            🔖
+          </button>
+          <svg class="arrow-icon" width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </a>`;
+  }
+
+  // ── DRAW DETECTION ──
+  function checkDraws(articles) {
+    const draw = articles.find(a => {
+      const t = (a.title || '').toLowerCase();
+      return DRAW_KEYWORDS.some(k => t.includes(k));
+    });
+    const banner = document.getElementById('draw-banner');
+    if (draw) {
+      document.getElementById('draw-text').textContent = draw.title;
+      banner.classList.add('visible');
+      document.getElementById('stat-draw').textContent = timeAgo(draw.published);
+    } else {
+      banner.classList.remove('visible');
+      document.getElementById('stat-draw').textContent = 'none detected';
+    }
+  }
+
+  // ── COUNTS ──
+  function updateCounts(articles) {
+    const counts = {};
+    articles.forEach(a => { counts[a.category] = (counts[a.category] || 0) + 1; });
+    document.getElementById('cnt-all').textContent   = articles.length;
+    document.getElementById('cnt-ircc').textContent  = counts['IRCC Updates'] || 0;
+    document.getElementById('cnt-ee').textContent    = counts['Express Entry'] || 0;
+    document.getElementById('cnt-pnp').textContent   = counts['PNP Programs'] || 0;
+    document.getElementById('cnt-intl').textContent  = counts['Intl Students'] || 0;
+    document.getElementById('cnt-trp').textContent   = counts['TRP / PR'] || 0;
+    document.getElementById('cnt-work').textContent  = counts['Work Permits'] || 0;
+    document.getElementById('cnt-gen').textContent   = counts['General'] || 0;
+    document.getElementById('stat-sources').textContent =
+      [...new Set(articles.map(a => a.source))].length;
+    document.getElementById('stat-total').textContent   = articles.length;
+    document.getElementById('stat-bookmarks').textContent = bookmarks.length;
+  }
+
+  // ── FILTER ──
+  function filterArticles() {
+    let filtered = allArticles;
+    if (currentCategory) {
+      filtered = filtered.filter(a => a.category === currentCategory);
+    }
+    const searchVal = document.getElementById('search').value.trim().toLowerCase();
+    const kw = searchVal || currentKeyword.toLowerCase();
+    if (kw) {
+      filtered = filtered.filter(a =>
+        (a.title   || '').toLowerCase().includes(kw) ||
+        (a.summary || '').toLowerCase().includes(kw) ||
+        (a.source  || '').toLowerCase().includes(kw)
+      );
+    }
+    const sort = document.getElementById('sort').value;
+    filtered.sort((a, b) => {
+      const da = new Date(a.published || 0), db = new Date(b.published || 0);
+      return sort === 'newest' ? db - da : da - db;
+    });
+    return filtered;
+  }
+
+  // ── RENDER PAGE ──
+  function renderPage(articles, page) {
+    const grid  = document.getElementById('news-grid');
+    const start = (page - 1) * PER_PAGE;
+    const slice = articles.slice(start, start + PER_PAGE);
+
+    if (!slice.length) {
+      grid.innerHTML = '<div class="empty-state">No articles found</div>';
+      document.getElementById('pagination').innerHTML = '';
+      return;
+    }
+    grid.innerHTML = slice.map(renderCard).join('');
+
+    const total = Math.ceil(articles.length / PER_PAGE);
+    let pg = '';
+    for (let i = 1; i <= total; i++) {
+      pg += `<button class="pg-btn ${i === page ? 'active' : ''}"
+               onclick="goPage(${i})">${i}</button>`;
+    }
+    document.getElementById('pagination').innerHTML = pg;
+  }
+
+  // ── LOAD NEWS ──
+  async function loadNews() {
+    try {
+      const res = await fetch('/api/news');
+      if (!res.ok) throw new Error('Server error');
+      allArticles = await res.json();
+      document.getElementById('last-updated').textContent =
+        'Updated ' + new Date().toLocaleTimeString();
+      updateCounts(allArticles);
+      checkDraws(allArticles);
+      currentPage = 1;
+      renderPage(filterArticles(), currentPage);
+    } catch (e) {
+      document.getElementById('news-grid').innerHTML =
+        '<div class="empty-state">Could not load news. Make sure the Flask server is running.</div>';
+    }
+  }
+
+  // ── CRS CHART ──
+  async function loadCRSChart() {
+    try {
+      const res  = await fetch('/api/crs-history');
+      const data = await res.json();
+
+      const tableEl = document.getElementById('crs-table');
+
+      if (!data || !data.length) {
+        tableEl.innerHTML = '<div style="color:var(--muted);font-family:var(--mono);font-size:12px;text-align:center;padding:2rem">No CRS data yet — will populate as Express Entry draws are detected.</div>';
+        return;
+      }
+
+      // Chart
+      const labels = data.map(d => d.draw_date ? d.draw_date.slice(0,10) : '');
+      const scores = data.map(d => d.score);
+
+      if (crsChartInstance) crsChartInstance.destroy();
+      const ctx = document.getElementById('crs-chart').getContext('2d');
+      crsChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'CRS Cutoff Score',
+            data: scores,
+            borderColor: '#3a7bd5',
+            backgroundColor: 'rgba(58,123,213,0.1)',
+            pointBackgroundColor: '#3a7bd5',
+            pointRadius: 5,
+            tension: 0.3,
+            fill: true,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { labels: { color: '#e8eaf0', font: { family: 'IBM Plex Mono' } } },
+            tooltip: { callbacks: {
+              label: ctx => ` CRS: ${ctx.parsed.y}`
+            }}
+          },
+          scales: {
+            x: { ticks: { color: '#6b7280', maxRotation: 45 }, grid: { color: '#232830' } },
+            y: {
+              ticks: { color: '#6b7280' },
+              grid: { color: '#232830' },
+              min: Math.min(...scores) - 10,
+              max: Math.max(...scores) + 10,
+            }
+          }
+        }
+      });
+
+      // Table below chart
+      let rows = data.slice().reverse().map(d => `
+        <tr>
+          <td style="padding:8px 12px;border-bottom:1px solid var(--border);
+                     font-family:var(--mono);font-size:12px;color:var(--muted)">
+            ${d.draw_date ? d.draw_date.slice(0,10) : '—'}
+          </td>
+          <td style="padding:8px 12px;border-bottom:1px solid var(--border);
+                     font-family:var(--mono);font-size:16px;color:var(--accent2);font-weight:600">
+            ${d.score}
+          </td>
+          <td style="padding:8px 12px;border-bottom:1px solid var(--border);font-size:12px">
+            <a href="${d.draw_url}" target="_blank"
+               style="color:var(--text);text-decoration:none">${d.draw_title || '—'}</a>
+          </td>
+        </tr>`).join('');
+
+      tableEl.innerHTML = `
+        <table style="width:100%;border-collapse:collapse">
+          <thead>
+            <tr>
+              <th style="font-family:var(--mono);font-size:10px;text-transform:uppercase;
+                         letter-spacing:0.1em;color:var(--muted);text-align:left;
+                         padding:8px 12px;border-bottom:1px solid var(--border)">Date</th>
+              <th style="font-family:var(--mono);font-size:10px;text-transform:uppercase;
+                         letter-spacing:0.1em;color:var(--muted);text-align:left;
+                         padding:8px 12px;border-bottom:1px solid var(--border)">CRS Score</th>
+              <th style="font-family:var(--mono);font-size:10px;text-transform:uppercase;
+                         letter-spacing:0.1em;color:var(--muted);text-align:left;
+                         padding:8px 12px;border-bottom:1px solid var(--border)">Draw</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>`;
+    } catch(e) {
+      document.getElementById('crs-table').innerHTML =
+        '<div style="color:var(--muted);text-align:center;padding:2rem;font-family:var(--mono);font-size:12px">Failed to load CRS data.</div>';
+    }
+  }
+
+  // ── SOURCE HEALTH ──
+  async function loadSourceHealth() {
+    try {
+      const res  = await fetch('/api/source-health');
+      const data = await res.json();
+      const now  = Date.now();
+
+      const rows = data.map(s => {
+        const lastSeen = new Date(s.last_seen);
+        const hoursAgo = (now - lastSeen.getTime()) / 3600000;
+        let statusClass = 'status-ok';
+        let statusText  = 'Live';
+        if (hoursAgo > 48) { statusClass = 'status-dead'; statusText = 'Stale'; }
+        else if (hoursAgo > 12) { statusClass = 'status-warn'; statusText = 'Slow'; }
+        return `
+          <tr>
+            <td><strong>${s.source}</strong></td>
+            <td>
+              <span class="status-dot ${statusClass}"></span>
+              <span style="font-family:var(--mono);font-size:11px">${statusText}</span>
+            </td>
+            <td style="font-family:var(--mono);font-size:12px">${s.total}</td>
+            <td style="font-family:var(--mono);font-size:11px;color:var(--muted)">
+              ${timeAgo(s.last_seen)}
+            </td>
+          </tr>`;
+      }).join('');
+
+      document.getElementById('health-body').innerHTML = rows ||
+        '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem">No data</td></tr>';
+    } catch(e) {
+      document.getElementById('health-body').innerHTML =
+        '<tr><td colspan="4" style="text-align:center;color:var(--muted)">Failed to load</td></tr>';
+    }
+  }
+
+  // ── PROCESSING TIMES ──
+  async function loadProcessingTimes() {
+    try {
+      const res  = await fetch('/api/processing-times');
+      const data = await res.json();
+      const grid = document.getElementById('processing-grid');
+
+      if (!data || !data.length) {
+        grid.innerHTML = '<div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:2rem">No processing time data yet. Will populate after the daily scrape runs at 9am.</div>';
+        return;
+      }
+
+      grid.innerHTML = data.map(p => `
+        <div class="proc-card">
+          <div class="proc-permit">${p.permit_type}</div>
+          <div class="proc-time">${p.time_weeks}</div>
+          <div class="proc-label">Processing time · checked ${timeAgo(p.checked_at)}</div>
+        </div>`).join('');
+    } catch(e) {
+      document.getElementById('processing-grid').innerHTML =
+        '<div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:2rem">Failed to load.</div>';
+    }
+  }
+
+  // ── BOOKMARKS PAGE ──
+  function renderBookmarksPage() {
+    const grid = document.getElementById('bookmarks-grid');
+    if (!bookmarks.length) {
+      grid.innerHTML = '<div class="bookmarks-empty">No bookmarks yet.<br>Click 🔖 on any article to save it.</div>';
+      return;
+    }
+    const fakeArticles = bookmarks.map(b => ({
+      title: b.title, url: b.url,
+      source: '', category: 'Saved',
+      summary: '', published: ''
+    }));
+    grid.innerHTML = `
+      <div style="display:grid;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:6px;overflow:hidden">
+        ${fakeArticles.map(renderCard).join('')}
+      </div>`;
+  }
+
+  // ── NAVIGATION ──
+  function goPage(n) {
+    currentPage = n;
+    renderPage(filterArticles(), currentPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function setCategory(btn, cat) {
+    document.querySelectorAll('.cat-btn[data-cat]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCategory = cat;
+    currentPage = 1;
+    // Switch to news page if on another page
+    showPage('news', document.querySelector('.nav-tab'));
+    renderPage(filterArticles(), currentPage);
+  }
+
+  function setKeyword(kw) {
+    currentKeyword = kw;
+    const input = document.getElementById('search');
+    input.value  = kw;
+    document.getElementById('clear-btn').style.display = kw ? 'block' : 'none';
+    currentPage = 1;
+    showPage('news', document.querySelector('.nav-tab'));
+    renderPage(filterArticles(), currentPage);
+  }
+
+  function debounceSearch() {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+      currentPage = 1;
+      renderPage(filterArticles(), currentPage);
+    }, 280);
+  }
+
+  // ── TOAST ──
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // ── SUBSCRIBE ──
+  async function subscribeAlert() {
+    const email   = document.getElementById('alert-email').value.trim();
+    const keyword = document.getElementById('alert-keyword').value.trim();
+    if (!keyword) { showToast('Enter a keyword'); return; }
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, keyword })
+      });
+      if (!res.ok) throw new Error();
+      document.getElementById('alert-status').style.display = 'block';
+      showToast('✓ Alert subscribed for: ' + keyword);
+      document.getElementById('alert-email').value   = '';
+      document.getElementById('alert-keyword').value = '';
+    } catch(e) {
+      showToast('Error subscribing. Check server.');
+    }
+  }
+
+  // ── INIT ──
+  setInterval(loadNews, 10 * 60 * 1000);
+  loadNews();
+</script>
+</body>
+</html>
