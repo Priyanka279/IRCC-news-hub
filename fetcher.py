@@ -4,9 +4,9 @@ import sqlite3
 import re
 import threading
 from telegram_alerts import send_draw_alert
-
-_db_lock = threading.Lock()
 DB_PATH = os.getenv("DB_PATH", "news.db")
+_db_lock = threading.Lock()
+
 
 RSS_SOURCES = [
     {

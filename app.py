@@ -5,6 +5,8 @@ import os
 
 load_dotenv()
 
+# Set DB_PATH before any other imports that might use it
+os.environ.setdefault("DB_PATH", "news.db")
 DB_PATH = os.getenv("DB_PATH", "news.db")
 
 from database import init_db
@@ -12,7 +14,7 @@ from scheduler import start_scheduler
 
 app = Flask(__name__)
 
-# ── Runs on every startup including Gunicorn on Render ──
+# Initialize DB and scheduler at module level so Gunicorn picks it up
 init_db()
 start_scheduler()
 
@@ -91,8 +93,7 @@ def crs_history():
     c.execute("""
         SELECT score, draw_title, draw_url, draw_date
         FROM crs_history
-        ORDER BY draw_date ASC
-        LIMIT 50
+        ORDER BY draw_date ASC LIMIT 50
     """)
     rows = c.fetchall()
     conn.close()

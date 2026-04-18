@@ -1,7 +1,7 @@
 import sqlite3
 import os
-DB_PATH = os.getenv("DB_PATH", "news.db")  # uses /data/news.db on Render
 
+DB_PATH = os.getenv("DB_PATH", "news.db")
 
 def init_db():
     conn = sqlite3.connect(DB_PATH, timeout=30)
@@ -21,7 +21,6 @@ def init_db():
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
-
     c.execute("""
         CREATE TABLE IF NOT EXISTS subscribers (
             id         INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,7 +32,6 @@ def init_db():
             UNIQUE(email, keyword)
         )
     """)
-
     c.execute("""
         CREATE TABLE IF NOT EXISTS alert_log (
             id            INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -43,7 +41,6 @@ def init_db():
             UNIQUE(subscriber_id, article_id)
         )
     """)
-
     c.execute("""
         CREATE TABLE IF NOT EXISTS telegram_log (
             id         INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -53,7 +50,6 @@ def init_db():
             UNIQUE(keyword, article_id)
         )
     """)
-
     c.execute("""
         CREATE TABLE IF NOT EXISTS processing_times (
             id          INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -62,7 +58,6 @@ def init_db():
             checked_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
-
     c.execute("""
         CREATE TABLE IF NOT EXISTS crs_history (
             id         INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -73,7 +68,6 @@ def init_db():
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
-
     conn.commit()
     conn.close()
-    print("[db] Tables ready.")
+    print(f"[db] Tables ready at {DB_PATH}")
