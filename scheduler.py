@@ -6,6 +6,7 @@ from email_alerts import check_and_send_alerts
 from telegram_alerts import check_and_send_telegram_alerts
 from daily_digest import send_daily_digest
 from processing_times import scrape_processing_times
+from telegram_alerts import check_and_send_telegram_alerts, send_latest_news_digest
 
 _is_running = False
 
@@ -29,6 +30,7 @@ def run_all():
         fetch_rss()
         check_and_send_alerts()
         check_and_send_telegram_alerts()
+        send_latest_news_digest()
         scrape_processing_times()
     finally:
         _is_running = False

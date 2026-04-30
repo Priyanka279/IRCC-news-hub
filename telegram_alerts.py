@@ -84,5 +84,33 @@ def send_draw_alert(title: str, url: str, crs: str = None):
     msg += f"\n{url}"
     send_telegram(msg)
 
+def send_latest_news_digest():
+    """Send last 5 new articles directly to your Telegram — no subscriber needed."""
+    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
+        return
+    conn = sqlite3.connect(DB_PATH, timeout=10)
+    conn.execute("PRAGMA journal_mode=WAL")
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    # Get articles from last 30 min not yet sent
+    c.execute("""
+        SELECT * FROM articles
+        WHERE created_at >= datetime('now', '-30 minutes')
+        ORDER BY created_at DESC LIMIT 5
+    """)
+    articles = [dict(row) for row in c.fetchall()]
+    conn.close()
+
+    if not articles:
+        return
+
+    msg = f"🍁 *{len(articles)} new IRCC articles*\n\n"
+    for a in articles:
+        msg += f"📌 *{a['title']}*\n"
+        msg += f"_{a['source']} · {a['category']}_\n"
+        msg += f"{a['url']}\n\n"
+    send_telegram(msg)
+
 if __name__ == "__main__":
     send_telegram("✅ IRCC News Hub Telegram alerts are working!")
