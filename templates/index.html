@@ -22,738 +22,362 @@
       --mono:    'IBM Plex Mono', monospace;
       --sans:    'IBM Plex Sans', sans-serif;
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--sans);
-      min-height: 100vh;
-      font-size: 14px;
-      line-height: 1.6;
+      background: var(--bg); color: var(--text);
+      font-family: var(--sans); min-height: 100vh;
+      font-size: 14px; line-height: 1.6;
     }
 
     /* ── HEADER ── */
     header {
       border-bottom: 1px solid var(--border);
-      padding: 0 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 56px;
-      position: sticky;
-      top: 0;
-      background: rgba(10,12,15,0.95);
-      backdrop-filter: blur(8px);
-      z-index: 100;
+      padding: 0 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px; position: sticky; top: 0;
+      background: rgba(10,12,15,0.97);
+      backdrop-filter: blur(8px); z-index: 100;
     }
-
     .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--mono);
-      font-weight: 600;
-      font-size: 13px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--mono); font-weight: 600;
+      font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
     }
-
     .logo-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-      animation: pulse 2s ease-in-out infinite;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent); animation: pulse 2s ease-in-out infinite;
     }
-
     @keyframes pulse {
-      0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(232,84,58,0.4); }
-      50%      { opacity:0.7; box-shadow: 0 0 0 6px rgba(232,84,58,0); }
+      0%,100% { opacity:1; box-shadow:0 0 0 0 rgba(232,84,58,0.4); }
+      50%      { opacity:0.7; box-shadow:0 0 0 6px rgba(232,84,58,0); }
     }
-
-    .header-right { display:flex; align-items:center; gap:12px; }
-
-    .last-updated {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--muted);
-    }
-
+    .header-right { display:flex; align-items:center; gap:10px; }
+    .last-updated { font-family:var(--mono); font-size:11px; color:var(--muted); }
     .refresh-btn {
-      background: var(--surface);
-      border: 1px solid var(--border2);
-      color: var(--text);
-      padding: 6px 14px;
-      border-radius: 4px;
-      font-family: var(--mono);
-      font-size: 11px;
-      cursor: pointer;
-      transition: all 0.15s;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      background:var(--surface); border:1px solid var(--border2); color:var(--text);
+      padding:6px 14px; border-radius:4px; font-family:var(--mono); font-size:11px;
+      cursor:pointer; transition:all 0.15s; text-transform:uppercase; letter-spacing:0.05em;
     }
-    .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .refresh-btn:hover { border-color:var(--accent); color:var(--accent); }
 
-    /* ── NAV TABS (header) ── */
-    .nav-tabs {
-      display: flex;
-      gap: 4px;
-    }
+    /* NAV TABS */
+    .nav-tabs { display:flex; gap:3px; flex-wrap:wrap; }
     .nav-tab {
-      background: none;
-      border: 1px solid transparent;
-      color: var(--muted);
-      padding: 5px 12px;
-      border-radius: 4px;
-      font-family: var(--mono);
-      font-size: 11px;
-      cursor: pointer;
-      transition: all 0.15s;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      background:none; border:1px solid transparent; color:var(--muted);
+      padding:5px 10px; border-radius:4px; font-family:var(--mono); font-size:10px;
+      cursor:pointer; transition:all 0.15s; text-transform:uppercase; letter-spacing:0.05em;
+      white-space:nowrap;
     }
-    .nav-tab:hover { color: var(--text); border-color: var(--border2); }
-    .nav-tab.active { color: var(--accent2); border-color: var(--accent2); background: rgba(58,123,213,0.08); }
+    .nav-tab:hover { color:var(--text); border-color:var(--border2); }
+    .nav-tab.active { color:var(--accent2); border-color:var(--accent2); background:rgba(58,123,213,0.08); }
 
-    /* ── LAYOUT ── */
-    .wrapper {
-      display: grid;
-      grid-template-columns: 220px 1fr;
-      min-height: calc(100vh - 56px);
-    }
+    /* LAYOUT */
+    .wrapper { display:grid; grid-template-columns:220px 1fr; min-height:calc(100vh - 56px); }
 
-    /* ── SIDEBAR ── */
+    /* SIDEBAR */
     aside {
-      border-right: 1px solid var(--border);
-      padding: 1.5rem 0;
-      position: sticky;
-      top: 56px;
-      height: calc(100vh - 56px);
-      overflow-y: auto;
+      border-right:1px solid var(--border); padding:1.5rem 0;
+      position:sticky; top:56px; height:calc(100vh - 56px); overflow-y:auto;
     }
-
-    .sidebar-section { margin-bottom: 2rem; }
-
+    .sidebar-section { margin-bottom:2rem; }
     .sidebar-label {
-      font-family: var(--mono);
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--muted);
-      padding: 0 1.25rem;
-      margin-bottom: 0.5rem;
+      font-family:var(--mono); font-size:10px; text-transform:uppercase;
+      letter-spacing:0.12em; color:var(--muted); padding:0 1.25rem; margin-bottom:0.5rem;
     }
-
     .cat-btn {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      padding: 8px 1.25rem;
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-family: var(--sans);
-      font-size: 13px;
-      cursor: pointer;
-      transition: all 0.12s;
-      text-align: left;
+      display:flex; align-items:center; justify-content:space-between;
+      width:100%; padding:8px 1.25rem; background:none; border:none;
+      color:var(--muted); font-family:var(--sans); font-size:13px;
+      cursor:pointer; transition:all 0.12s; text-align:left;
     }
-    .cat-btn:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+    .cat-btn:hover { color:var(--text); background:rgba(255,255,255,0.03); }
     .cat-btn.active {
-      color: var(--accent);
-      background: rgba(232,84,58,0.06);
-      border-left: 2px solid var(--accent);
-      padding-left: calc(1.25rem - 2px);
+      color:var(--accent); background:rgba(232,84,58,0.06);
+      border-left:2px solid var(--accent); padding-left:calc(1.25rem - 2px);
     }
-
     .cat-count {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--muted);
-      background: var(--surface);
-      padding: 1px 6px;
-      border-radius: 3px;
+      font-family:var(--mono); font-size:11px; color:var(--muted);
+      background:var(--surface); padding:1px 6px; border-radius:3px;
     }
-    .cat-btn.active .cat-count { background: rgba(232,84,58,0.15); color: var(--accent); }
-
+    .cat-btn.active .cat-count { background:rgba(232,84,58,0.15); color:var(--accent); }
     .alert-box {
-      margin: 0 1rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 1rem;
+      margin:0 1rem; background:var(--surface); border:1px solid var(--border);
+      border-radius:6px; padding:1rem;
     }
     .alert-box h4 {
-      font-family: var(--mono);
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--green);
-      margin-bottom: 0.75rem;
+      font-family:var(--mono); font-size:11px; text-transform:uppercase;
+      letter-spacing:0.1em; color:var(--green); margin-bottom:0.75rem;
     }
     .alert-box input {
-      width: 100%;
-      background: var(--card);
-      border: 1px solid var(--border2);
-      color: var(--text);
-      padding: 6px 8px;
-      border-radius: 4px;
-      font-family: var(--sans);
-      font-size: 12px;
-      margin-bottom: 0.5rem;
+      width:100%; background:var(--card); border:1px solid var(--border2);
+      color:var(--text); padding:6px 8px; border-radius:4px;
+      font-family:var(--sans); font-size:12px; margin-bottom:0.5rem;
     }
-    .alert-box input:focus { outline: none; border-color: var(--accent2); }
+    .alert-box input:focus { outline:none; border-color:var(--accent2); }
     .alert-box button {
-      width: 100%;
-      background: var(--accent2);
-      border: none;
-      color: #fff;
-      padding: 7px;
-      border-radius: 4px;
-      font-family: var(--mono);
-      font-size: 11px;
-      cursor: pointer;
-      transition: opacity 0.15s;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      width:100%; background:var(--accent2); border:none; color:#fff;
+      padding:7px; border-radius:4px; font-family:var(--mono); font-size:11px;
+      cursor:pointer; transition:opacity 0.15s; text-transform:uppercase; letter-spacing:0.05em;
     }
-    .alert-box button:hover { opacity: 0.85; }
-    .alert-status { font-size: 11px; color: var(--green); margin-top: 0.4rem; display: none; }
+    .alert-box button:hover { opacity:0.85; }
+    .alert-status { font-size:11px; color:var(--green); margin-top:0.4rem; display:none; }
 
-    /* ── MAIN ── */
-    main { padding: 1.5rem 2rem; }
+    /* MAIN */
+    main { padding:1.5rem 2rem; }
+    .page { display:none; }
+    .page.active { display:block; }
 
-    /* pages */
-    .page { display: none; }
-    .page.active { display: block; }
-
-    .top-bar {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 1.5rem;
-      align-items: center;
-    }
-
-    .search-wrap { flex: 1; position: relative; }
+    /* Search bar */
+    .top-bar { display:flex; gap:12px; margin-bottom:1.5rem; align-items:center; }
+    .search-wrap { flex:1; position:relative; }
     .search-wrap > svg {
-      position: absolute;
-      left: 10px; top: 50%;
-      transform: translateY(-50%);
-      opacity: 0.4; z-index: 1;
-      pointer-events: none;
+      position:absolute; left:10px; top:50%; transform:translateY(-50%);
+      opacity:0.4; z-index:1; pointer-events:none;
     }
-
     #search {
-      width: 100%;
-      background: var(--surface);
-      border: 1px solid var(--border2);
-      color: var(--text);
-      padding: 9px 36px 9px 34px;
-      border-radius: 5px;
-      font-family: var(--sans);
-      font-size: 13px;
-      transition: border-color 0.15s;
+      width:100%; background:var(--surface); border:1px solid var(--border2);
+      color:var(--text); padding:9px 36px 9px 34px; border-radius:5px;
+      font-family:var(--sans); font-size:13px; transition:border-color 0.15s;
     }
-    #search:focus { outline: none; border-color: var(--accent2); }
-    #search::placeholder { color: var(--muted); }
-
+    #search:focus { outline:none; border-color:var(--accent2); }
+    #search::placeholder { color:var(--muted); }
     .clear-btn {
-      position: absolute;
-      right: 10px; top: 50%;
-      transform: translateY(-50%);
-      background: none; border: none;
-      color: var(--muted);
-      cursor: pointer;
-      font-size: 15px;
-      line-height: 1;
-      padding: 2px 4px;
-      display: none;
+      position:absolute; right:10px; top:50%; transform:translateY(-50%);
+      background:none; border:none; color:var(--muted); cursor:pointer;
+      font-size:15px; line-height:1; padding:2px 4px; display:none;
     }
-    .clear-btn:hover { color: var(--text); }
-
+    .clear-btn:hover { color:var(--text); }
     .sort-select {
-      background: var(--surface);
-      border: 1px solid var(--border2);
-      color: var(--text);
-      padding: 9px 10px;
-      border-radius: 5px;
-      font-family: var(--mono);
-      font-size: 11px;
-      cursor: pointer;
+      background:var(--surface); border:1px solid var(--border2); color:var(--text);
+      padding:9px 10px; border-radius:5px; font-family:var(--mono); font-size:11px; cursor:pointer;
     }
-    .sort-select:focus { outline: none; }
+    .sort-select:focus { outline:none; }
 
-    .stats-row {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-    }
-    .stat-chip {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .stat-chip span { color: var(--text); font-weight: 500; }
+    /* Stats row */
+    .stats-row { display:flex; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+    .stat-chip { font-family:var(--mono); font-size:11px; color:var(--muted); display:flex; align-items:center; gap:6px; }
+    .stat-chip span { color:var(--text); font-weight:500; }
 
     /* Draw banner */
     .draw-banner {
-      background: linear-gradient(90deg, rgba(45,204,143,0.08) 0%, transparent 100%);
-      border: 1px solid rgba(45,204,143,0.25);
-      border-radius: 6px;
-      padding: 10px 14px;
-      margin-bottom: 1.5rem;
-      display: none;
-      align-items: center;
-      gap: 10px;
+      background:linear-gradient(90deg,rgba(45,204,143,0.08) 0%,transparent 100%);
+      border:1px solid rgba(45,204,143,0.25); border-radius:6px;
+      padding:10px 14px; margin-bottom:1.5rem; display:none; align-items:center; gap:10px;
     }
-    .draw-banner.visible { display: flex; }
+    .draw-banner.visible { display:flex; }
     .draw-tag {
-      font-family: var(--mono);
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      background: var(--green);
-      color: #000;
-      padding: 2px 7px;
-      border-radius: 3px;
-      white-space: nowrap;
+      font-family:var(--mono); font-size:10px; text-transform:uppercase;
+      letter-spacing:0.1em; background:var(--green); color:#000;
+      padding:2px 7px; border-radius:3px; white-space:nowrap;
     }
-    .draw-text { font-size: 13px; color: var(--green); }
+    .draw-text { font-size:13px; color:var(--green); }
 
     /* News grid */
     #news-grid {
-      display: grid;
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      overflow: hidden;
+      display:grid; gap:1px; background:var(--border);
+      border:1px solid var(--border); border-radius:6px; overflow:hidden;
     }
-
     .news-card {
-      background: var(--card);
-      padding: 1rem 1.25rem;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 0.5rem;
-      transition: background 0.12s;
-      text-decoration: none;
-      color: inherit;
+      background:var(--card); padding:1rem 1.25rem;
+      display:grid; grid-template-columns:1fr auto;
+      gap:0.5rem; transition:background 0.12s; text-decoration:none; color:inherit;
     }
-    .news-card:hover { background: var(--surface); }
-    .news-card.read { opacity: 0.5; }
-    .news-card.read .card-title { color: var(--muted); }
-
-    .card-left { min-width: 0; }
-    .card-meta {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 5px;
-      flex-wrap: wrap;
-    }
-
+    .news-card:hover { background:var(--surface); }
+    .news-card.read { opacity:0.5; }
+    .news-card.read .card-title { color:var(--muted); }
+    .card-left { min-width:0; }
+    .card-meta { display:flex; align-items:center; gap:8px; margin-bottom:5px; flex-wrap:wrap; }
     .source-tag {
-      font-family: var(--mono);
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      padding: 2px 7px;
-      border-radius: 3px;
+      font-family:var(--mono); font-size:10px; text-transform:uppercase;
+      letter-spacing:0.08em; padding:2px 7px; border-radius:3px;
     }
-    .tag-ircc    { background: rgba(232,84,58,0.15);  color: var(--accent); }
-    .tag-cic     { background: rgba(58,123,213,0.15); color: var(--accent2); }
-    .tag-cbc     { background: rgba(245,166,35,0.15); color: var(--amber); }
-    .tag-default { background: rgba(107,114,128,0.2); color: var(--muted); }
-
+    .tag-ircc    { background:rgba(232,84,58,0.15);  color:var(--accent); }
+    .tag-cic     { background:rgba(58,123,213,0.15); color:var(--accent2); }
+    .tag-cbc     { background:rgba(245,166,35,0.15); color:var(--amber); }
+    .tag-default { background:rgba(107,114,128,0.2); color:var(--muted); }
     .keyword-badge {
-      font-family: var(--mono);
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      padding: 2px 6px;
-      border-radius: 3px;
-      background: rgba(245,166,35,0.15);
-      color: var(--amber);
-      border: 1px solid rgba(245,166,35,0.3);
+      font-family:var(--mono); font-size:10px; text-transform:uppercase;
+      letter-spacing:0.06em; padding:2px 6px; border-radius:3px;
+      background:rgba(245,166,35,0.15); color:var(--amber); border:1px solid rgba(245,166,35,0.3);
     }
-
-    .card-date { font-family: var(--mono); font-size: 11px; color: var(--muted); }
-
-    .card-title {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text);
-      line-height: 1.45;
-      margin-bottom: 5px;
-    }
-    .news-card:hover .card-title { color: #fff; }
-
+    .card-date { font-family:var(--mono); font-size:11px; color:var(--muted); }
+    .card-title { font-size:14px; font-weight:500; color:var(--text); line-height:1.45; margin-bottom:5px; }
+    .news-card:hover .card-title { color:#fff; }
     .card-summary {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.5;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-      line-clamp: 2;
+      font-size:12px; color:var(--muted); line-height:1.5; overflow:hidden;
+      display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; line-clamp:2;
     }
-
     .card-right {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      justify-content: space-between;
-      min-width: 80px;
-      gap: 4px;
+      display:flex; flex-direction:column; align-items:flex-end;
+      justify-content:space-between; min-width:80px; gap:4px;
     }
-
     .cat-pill {
-      font-family: var(--mono);
-      font-size: 10px;
-      color: var(--muted);
-      border: 1px solid var(--border2);
-      padding: 2px 7px;
-      border-radius: 10px;
-      white-space: nowrap;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+      font-family:var(--mono); font-size:10px; color:var(--muted);
+      border:1px solid var(--border2); padding:2px 7px; border-radius:10px;
+      white-space:nowrap; text-transform:uppercase; letter-spacing:0.06em;
     }
-
     .bookmark-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 13px;
-      opacity: 0.25;
-      transition: opacity 0.15s;
-      padding: 0;
-      line-height: 1;
+      background:none; border:none; cursor:pointer; font-size:13px;
+      opacity:0.25; transition:opacity 0.15s; padding:0; line-height:1;
     }
-    .bookmark-btn:hover, .bookmark-btn.bookmarked { opacity: 1; }
-
-    .arrow-icon { opacity: 0.3; transition: opacity 0.12s; }
-    .news-card:hover .arrow-icon { opacity: 0.8; }
+    .bookmark-btn:hover, .bookmark-btn.bookmarked { opacity:1; }
+    .arrow-icon { opacity:0.3; transition:opacity 0.12s; }
+    .news-card:hover .arrow-icon { opacity:0.8; }
 
     /* States */
-    .empty-state {
-      padding: 4rem 2rem;
-      text-align: center;
-      color: var(--muted);
-      font-family: var(--mono);
-      font-size: 13px;
-    }
-    .loading-state {
-      padding: 3rem 2rem;
-      text-align: center;
-      color: var(--muted);
-      font-family: var(--mono);
-      font-size: 12px;
-    }
-    .loading-dots span { animation: blink 1.2s infinite; font-size: 20px; }
-    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
-    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+    .empty-state { padding:4rem 2rem; text-align:center; color:var(--muted); font-family:var(--mono); font-size:13px; }
+    .loading-state { padding:3rem 2rem; text-align:center; color:var(--muted); font-family:var(--mono); font-size:12px; }
+    .loading-dots span { animation:blink 1.2s infinite; font-size:20px; }
+    .loading-dots span:nth-child(2) { animation-delay:0.2s; }
+    .loading-dots span:nth-child(3) { animation-delay:0.4s; }
     @keyframes blink { 0%,80%,100%{opacity:0} 40%{opacity:1} }
 
     /* Pagination */
-    .pagination {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-      margin-top: 1.5rem;
-      flex-wrap: wrap;
-    }
+    .pagination { display:flex; gap:8px; justify-content:center; margin-top:1.5rem; flex-wrap:wrap; }
     .pg-btn {
-      background: var(--surface);
-      border: 1px solid var(--border2);
-      color: var(--muted);
-      padding: 6px 14px;
-      border-radius: 4px;
-      font-family: var(--mono);
-      font-size: 11px;
-      cursor: pointer;
-      transition: all 0.12s;
+      background:var(--surface); border:1px solid var(--border2); color:var(--muted);
+      padding:6px 14px; border-radius:4px; font-family:var(--mono); font-size:11px; cursor:pointer; transition:all 0.12s;
     }
-    .pg-btn:hover, .pg-btn.active { border-color: var(--accent2); color: var(--accent2); }
+    .pg-btn:hover, .pg-btn.active { border-color:var(--accent2); color:var(--accent2); }
 
-    /* ── PANEL PAGES (CRS, Health, Processing) ── */
+    /* Panel pages */
     .panel-title {
-      font-family: var(--mono);
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--muted);
-      margin-bottom: 1.5rem;
-      padding-bottom: 0.75rem;
-      border-bottom: 1px solid var(--border);
+      font-family:var(--mono); font-size:13px; text-transform:uppercase;
+      letter-spacing:0.1em; color:var(--muted); margin-bottom:1.5rem;
+      padding-bottom:0.75rem; border-bottom:1px solid var(--border);
     }
-
     .panel-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 1.25rem;
-      margin-bottom: 1rem;
+      background:var(--card); border:1px solid var(--border);
+      border-radius:6px; padding:1.25rem; margin-bottom:1rem;
     }
-
     .chart-wrap {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 1.25rem;
-      margin-bottom: 1.5rem;
-      position: relative;
-      height: 280px;
+      background:var(--card); border:1px solid var(--border); border-radius:6px;
+      padding:1.25rem; margin-bottom:1.5rem; position:relative; height:280px;
     }
 
-    /* Source health table */
-    .health-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+    /* Health table */
+    .health-table { width:100%; border-collapse:collapse; }
     .health-table th {
-      font-family: var(--mono);
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--muted);
-      text-align: left;
-      padding: 8px 12px;
-      border-bottom: 1px solid var(--border);
+      font-family:var(--mono); font-size:10px; text-transform:uppercase;
+      letter-spacing:0.1em; color:var(--muted); text-align:left;
+      padding:8px 12px; border-bottom:1px solid var(--border);
     }
-    .health-table td {
-      padding: 10px 12px;
-      font-size: 13px;
-      border-bottom: 1px solid var(--border);
-    }
-    .health-table tr:last-child td { border-bottom: none; }
-    .status-dot {
-      display: inline-block;
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      margin-right: 6px;
-    }
-    .status-ok   { background: var(--green); }
-    .status-warn { background: var(--amber); }
-    .status-dead { background: var(--accent); }
+    .health-table td { padding:10px 12px; font-size:13px; border-bottom:1px solid var(--border); }
+    .health-table tr:last-child td { border-bottom:none; }
+    .status-dot { display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:6px; }
+    .status-ok   { background:var(--green); }
+    .status-warn { background:var(--amber); }
+    .status-dead { background:var(--accent); }
 
     /* Processing times */
-    .proc-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1rem;
-    }
-    .proc-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 1rem;
-    }
-    .proc-permit {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text);
-      margin-bottom: 4px;
-    }
-    .proc-time {
-      font-family: var(--mono);
-      font-size: 18px;
-      color: var(--accent2);
-      font-weight: 600;
-    }
-    .proc-label {
-      font-family: var(--mono);
-      font-size: 10px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
+    .proc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1rem; }
+    .proc-card { background:var(--card); border:1px solid var(--border); border-radius:6px; padding:1rem; }
+    .proc-permit { font-size:13px; font-weight:500; color:var(--text); margin-bottom:4px; }
+    .proc-time { font-family:var(--mono); font-size:18px; color:var(--accent2); font-weight:600; }
+    .proc-label { font-family:var(--mono); font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; }
 
-    /* Bookmarks page */
-    .bookmarks-empty {
-      text-align: center;
-      padding: 4rem;
-      color: var(--muted);
-      font-family: var(--mono);
-      font-size: 13px;
-    }
+    /* Bookmarks */
+    .bookmarks-empty { text-align:center; padding:4rem; color:var(--muted); font-family:var(--mono); font-size:13px; }
 
     /* Toast */
     #toast {
-      position: fixed;
-      bottom: 24px; right: 24px;
-      background: var(--surface);
-      border: 1px solid var(--green);
-      color: var(--green);
-      padding: 10px 16px;
-      border-radius: 5px;
-      font-family: var(--mono);
-      font-size: 12px;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.2s;
-      pointer-events: none;
-      z-index: 999;
+      position:fixed; bottom:24px; right:24px; background:var(--surface);
+      border:1px solid var(--green); color:var(--green); padding:10px 16px;
+      border-radius:5px; font-family:var(--mono); font-size:12px;
+      opacity:0; transform:translateY(10px); transition:all 0.2s; pointer-events:none; z-index:999;
     }
-    #toast.show { opacity: 1; transform: translateY(0); }
+    #toast.show { opacity:1; transform:translateY(0); }
 
-    @media (max-width: 768px) {
-      .wrapper { grid-template-columns: 1fr; }
-      aside { display: none; }
-      main { padding: 1rem; }
-      .nav-tabs { display: none; }
+    /* Profile page */
+    .profile-row {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:6px 0; border-bottom:1px solid var(--border); font-size:13px;
     }
-    /* ── PROFILE PAGE ── */
-.profile-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 13px;
-}
-.profile-row:last-child { border-bottom: none; }
-.profile-label {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-.profile-val { color: var(--text); font-weight: 500; }
+    .profile-row:last-child { border-bottom:none; }
+    .profile-label { font-family:var(--mono); font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; }
+    .profile-val { color:var(--text); font-weight:500; }
 
-/* Timeline */
-.timeline { display: flex; flex-direction: column; gap: 0; }
-.tl-item {
-  display: grid;
-  grid-template-columns: 16px 1fr auto;
-  gap: 0 1rem;
-  padding: 0.75rem 0;
-  border-left: 2px solid var(--border2);
-  margin-left: 7px;
-  padding-left: 1.5rem;
-  position: relative;
-}
-.tl-dot {
-  position: absolute;
-  left: -8px;
-  top: 1rem;
-  width: 14px; height: 14px;
-  border-radius: 50%;
-  border: 2px solid var(--border2);
-  background: var(--bg);
-}
-.tl-item.done .tl-dot   { background: var(--green);  border-color: var(--green); }
-.tl-item.upcoming .tl-dot { background: var(--accent2); border-color: var(--accent2); }
-.tl-item.future .tl-dot { background: var(--amber);  border-color: var(--amber); }
-.tl-item.done   { border-left-color: var(--green); }
-.tl-item.upcoming { border-left-color: var(--accent2); }
-.tl-item.future { border-left-color: var(--amber); }
-.tl-title { font-size: 13px; font-weight: 500; color: var(--text); }
-.tl-desc  { font-size: 12px; color: var(--muted); margin-top: 2px; }
-.tl-date  {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--muted);
-  white-space: nowrap;
-  padding-top: 2px;
-}
+    /* Timeline */
+    .timeline { display:flex; flex-direction:column; gap:0; }
+    .tl-item {
+      display:grid; grid-template-columns:16px 1fr auto; gap:0 1rem;
+      padding:0.75rem 0; border-left:2px solid var(--border2);
+      margin-left:7px; padding-left:1.5rem; position:relative;
+    }
+    .tl-dot {
+      position:absolute; left:-8px; top:1rem;
+      width:14px; height:14px; border-radius:50%;
+      border:2px solid var(--border2); background:var(--bg);
+    }
+    .tl-item.done .tl-dot     { background:var(--green);  border-color:var(--green); }
+    .tl-item.upcoming .tl-dot { background:var(--accent2); border-color:var(--accent2); }
+    .tl-item.future .tl-dot   { background:var(--amber);  border-color:var(--amber); }
+    .tl-item.done     { border-left-color:var(--green); }
+    .tl-item.upcoming { border-left-color:var(--accent2); }
+    .tl-item.future   { border-left-color:var(--amber); }
+    .tl-title { font-size:13px; font-weight:500; color:var(--text); }
+    .tl-desc  { font-size:12px; color:var(--muted); margin-top:2px; }
+    .tl-date  { font-family:var(--mono); font-size:11px; color:var(--muted); white-space:nowrap; padding-top:2px; }
 
-/* Recommendation cards */
-.rec-card {
-  display: flex;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  align-items: flex-start;
-}
-.rec-card.green { border-color: rgba(45,204,143,0.3); background: rgba(45,204,143,0.05); }
-.rec-card.amber { border-color: rgba(245,166,35,0.3); background: rgba(245,166,35,0.05); }
-.rec-card.blue  { border-color: rgba(58,123,213,0.3); background: rgba(58,123,213,0.05); }
-.rec-icon  { font-size: 16px; flex-shrink: 0; }
-.rec-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
-.rec-desc  { font-size: 12px; color: var(--muted); line-height: 1.4; }
+    /* Rec cards */
+    .rec-card { display:flex; gap:0.75rem; padding:0.75rem; border-radius:6px; border:1px solid var(--border); align-items:flex-start; }
+    .rec-card.green { border-color:rgba(45,204,143,0.3); background:rgba(45,204,143,0.05); }
+    .rec-card.amber { border-color:rgba(245,166,35,0.3); background:rgba(245,166,35,0.05); }
+    .rec-card.blue  { border-color:rgba(58,123,213,0.3); background:rgba(58,123,213,0.05); }
+    .rec-icon  { font-size:16px; flex-shrink:0; }
+    .rec-title { font-size:13px; font-weight:500; color:var(--text); margin-bottom:3px; }
+    .rec-desc  { font-size:12px; color:var(--muted); line-height:1.4; }
 
-/* Calculator */
-.calc-section-title {
-  font-family: var(--mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--muted);
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border);
-}
-.calc-group { margin-bottom: 0.875rem; }
-.calc-label {
-  display: block;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: 4px;
-}
-.calc-input {
-  width: 100%;
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  color: var(--text);
-  padding: 7px 10px;
-  border-radius: 4px;
-  font-family: var(--sans);
-  font-size: 13px;
-}
-.calc-input:focus { outline: none; border-color: var(--accent2); }
+    /* Calculator */
+    .calc-section-title {
+      font-family:var(--mono); font-size:10px; text-transform:uppercase;
+      letter-spacing:0.1em; color:var(--muted); margin-bottom:1rem;
+      padding-bottom:0.5rem; border-bottom:1px solid var(--border);
+    }
+    .calc-group { margin-bottom:0.875rem; }
+    .calc-label {
+      display:block; font-family:var(--mono); font-size:11px; color:var(--muted);
+      text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;
+    }
+    .calc-input {
+      width:100%; background:var(--surface); border:1px solid var(--border2);
+      color:var(--text); padding:7px 10px; border-radius:4px;
+      font-family:var(--sans); font-size:13px;
+    }
+    .calc-input:focus { outline:none; border-color:var(--accent2); }
+    .breakdown-row {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:5px 8px; border-radius:4px; font-size:12px; background:var(--surface);
+    }
+    .breakdown-pts { font-family:var(--mono); font-weight:600; }
+    .tip-row {
+      display:flex; gap:8px; padding:8px; border-radius:4px;
+      background:rgba(58,123,213,0.06); border:1px solid rgba(58,123,213,0.15);
+      font-size:12px; align-items:flex-start;
+    }
+    .deadline-row {
+      display:flex; justify-content:space-between; padding:8px 10px;
+      border-radius:5px; background:var(--surface); font-size:12px; align-items:center;
+    }
+    .deadline-label { color:var(--muted); font-family:var(--mono); font-size:11px; }
+    .deadline-val   { font-weight:500; color:var(--text); font-family:var(--mono); }
+    .deadline-urgent { border:1px solid rgba(232,84,58,0.3); background:rgba(232,84,58,0.06); }
+    .deadline-ok     { border:1px solid rgba(45,204,143,0.3); background:rgba(45,204,143,0.06); }
 
-.breakdown-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 5px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  background: var(--surface);
-}
-.breakdown-pts {
-  font-family: var(--mono);
-  font-weight: 600;
-  color: var(--accent2);
-}
+    /* Score bar */
+    .score-bar-bg { background:var(--border); border-radius:4px; height:14px; position:relative; overflow:visible; }
+    .score-bar-fill { height:100%; border-radius:4px; transition:width 0.5s ease; }
+    .score-bar-marker {
+      position:absolute; top:-5px; width:3px; height:24px;
+      background:var(--accent); border-radius:2px;
+    }
 
-.tip-row {
-  display: flex;
-  gap: 8px;
-  padding: 8px;
-  border-radius: 4px;
-  background: rgba(58,123,213,0.06);
-  border: 1px solid rgba(58,123,213,0.15);
-  font-size: 12px;
-  align-items: flex-start;
-}
-
-.deadline-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 10px;
-  border-radius: 5px;
-  background: var(--surface);
-  font-size: 12px;
-  align-items: center;
-}
-.deadline-label { color: var(--muted); font-family: var(--mono); font-size: 11px; }
-.deadline-val   { font-weight: 500; color: var(--text); font-family: var(--mono); }
-.deadline-urgent { border: 1px solid rgba(232,84,58,0.3); background: rgba(232,84,58,0.06); }
-.deadline-ok     { border: 1px solid rgba(45,204,143,0.3); background: rgba(45,204,143,0.06); }
+    @media (max-width:768px) {
+      .wrapper { grid-template-columns:1fr; }
+      aside { display:none; }
+      main { padding:1rem; }
+      .nav-tabs { display:none; }
+    }
   </style>
 </head>
 <body>
@@ -764,14 +388,14 @@
     IRCC News Hub
   </div>
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('news', this)">📰 News</button>
-    <button class="nav-tab" onclick="showPage('crs', this)">📊 CRS Chart</button>
-    <button class="nav-tab" onclick="showPage('processing', this)">⏱ Processing</button>
-    <button class="nav-tab" onclick="showPage('health', this)">🟢 Sources</button>
-    <button class="nav-tab" onclick="showPage('bookmarks', this)">🔖 Bookmarks</button>
-    <button class="nav-tab" onclick="showPage('profile', this)">👤 My Profile</button>
-    <button class="nav-tab" onclick="showPage('crscalc', this)">🧮 CRS Calc</button>
-    <button class="nav-tab" onclick="showPage('pgwp', this)">📅 PGWP</button>
+    <button class="nav-tab active" onclick="showPage('news',this)">📰 News</button>
+    <button class="nav-tab" onclick="showPage('crs',this)">📊 CRS Chart</button>
+    <button class="nav-tab" onclick="showPage('processing',this)">⏱ Processing</button>
+    <button class="nav-tab" onclick="showPage('health',this)">🟢 Sources</button>
+    <button class="nav-tab" onclick="showPage('bookmarks',this)">🔖 Bookmarks</button>
+    <button class="nav-tab" onclick="showPage('profile',this)">👤 My Profile</button>
+    <button class="nav-tab" onclick="showPage('crscalc',this)">🧮 CRS Calc</button>
+    <button class="nav-tab" onclick="showPage('pgwp',this)">📅 PGWP</button>
   </div>
   <div class="header-right">
     <span class="last-updated" id="last-updated">Checking feeds…</span>
@@ -780,47 +404,28 @@
 </header>
 
 <div class="wrapper">
-  <!-- SIDEBAR -->
   <aside>
     <div class="sidebar-section">
       <div class="sidebar-label">Categories</div>
-      <button class="cat-btn active" data-cat="" onclick="setCategory(this,'')">
-        All News <span class="cat-count" id="cnt-all">—</span>
-      </button>
-      <button class="cat-btn" data-cat="IRCC Updates" onclick="setCategory(this,'IRCC Updates')">
-        IRCC Updates <span class="cat-count" id="cnt-ircc">—</span>
-      </button>
-      <button class="cat-btn" data-cat="Express Entry" onclick="setCategory(this,'Express Entry')">
-        Express Entry <span class="cat-count" id="cnt-ee">—</span>
-      </button>
-      <button class="cat-btn" data-cat="PNP Programs" onclick="setCategory(this,'PNP Programs')">
-        PNP Programs <span class="cat-count" id="cnt-pnp">—</span>
-      </button>
-      <button class="cat-btn" data-cat="Intl Students" onclick="setCategory(this,'Intl Students')">
-        Int'l Students <span class="cat-count" id="cnt-intl">—</span>
-      </button>
-      <button class="cat-btn" data-cat="TRP / PR" onclick="setCategory(this,'TRP / PR')">
-        TRP / PR <span class="cat-count" id="cnt-trp">—</span>
-      </button>
-      <button class="cat-btn" data-cat="Work Permits" onclick="setCategory(this,'Work Permits')">
-        Work Permits <span class="cat-count" id="cnt-work">—</span>
-      </button>
-      <button class="cat-btn" data-cat="General" onclick="setCategory(this,'General')">
-        General <span class="cat-count" id="cnt-gen">—</span>
-      </button>
+      <button class="cat-btn active" data-cat="" onclick="setCategory(this,'')">All News <span class="cat-count" id="cnt-all">—</span></button>
+      <button class="cat-btn" data-cat="IRCC Updates" onclick="setCategory(this,'IRCC Updates')">IRCC Updates <span class="cat-count" id="cnt-ircc">—</span></button>
+      <button class="cat-btn" data-cat="Express Entry" onclick="setCategory(this,'Express Entry')">Express Entry <span class="cat-count" id="cnt-ee">—</span></button>
+      <button class="cat-btn" data-cat="PNP Programs" onclick="setCategory(this,'PNP Programs')">PNP Programs <span class="cat-count" id="cnt-pnp">—</span></button>
+      <button class="cat-btn" data-cat="Intl Students" onclick="setCategory(this,'Intl Students')">Int'l Students <span class="cat-count" id="cnt-intl">—</span></button>
+      <button class="cat-btn" data-cat="TRP / PR" onclick="setCategory(this,'TRP / PR')">TRP / PR <span class="cat-count" id="cnt-trp">—</span></button>
+      <button class="cat-btn" data-cat="Work Permits" onclick="setCategory(this,'Work Permits')">Work Permits <span class="cat-count" id="cnt-work">—</span></button>
+      <button class="cat-btn" data-cat="General" onclick="setCategory(this,'General')">General <span class="cat-count" id="cnt-gen">—</span></button>
     </div>
-
     <div class="sidebar-section">
       <div class="sidebar-label">Keyword Alerts</div>
       <div class="alert-box">
         <h4>📬 Email Alerts</h4>
         <input type="email" id="alert-email" placeholder="your@email.com"/>
-        <input type="text"  id="alert-keyword" placeholder="Keyword (e.g. CRS draw)"/>
+        <input type="text" id="alert-keyword" placeholder="Keyword (e.g. CRS draw)"/>
         <button onclick="subscribeAlert()">Subscribe</button>
         <div class="alert-status" id="alert-status">✓ Subscribed!</div>
       </div>
     </div>
-
     <div class="sidebar-section">
       <div class="sidebar-label">Filter by Keyword</div>
       <button class="cat-btn" onclick="setKeyword('')">All</button>
@@ -831,13 +436,13 @@
       <button class="cat-btn" onclick="setKeyword('LMIA')">LMIA</button>
       <button class="cat-btn" onclick="setKeyword('Ontario PNP')">Ontario PNP</button>
       <button class="cat-btn" onclick="setKeyword('TRP')">TRP</button>
+      <button class="cat-btn" onclick="setKeyword('TR to PR')">TR to PR</button>
     </div>
   </aside>
 
-  <!-- MAIN -->
   <main>
 
-    <!-- ── PAGE: NEWS ── -->
+    <!-- ── NEWS ── -->
     <div class="page active" id="page-news">
       <div class="top-bar">
         <div class="search-wrap">
@@ -853,19 +458,16 @@
           <option value="oldest">Oldest First</option>
         </select>
       </div>
-
       <div class="draw-banner" id="draw-banner">
         <span class="draw-tag">🔥 Draw Detected</span>
         <span class="draw-text" id="draw-text"></span>
       </div>
-
       <div class="stats-row">
         <div class="stat-chip">Total: <span id="stat-total">—</span></div>
         <div class="stat-chip">Sources: <span id="stat-sources">—</span></div>
         <div class="stat-chip">Last draw: <span id="stat-draw">checking…</span></div>
         <div class="stat-chip">Bookmarks: <span id="stat-bookmarks">0</span></div>
       </div>
-
       <div id="news-grid">
         <div class="loading-state">
           <div class="loading-dots"><span>.</span><span>.</span><span>.</span></div>
@@ -875,50 +477,35 @@
       <div class="pagination" id="pagination"></div>
     </div>
 
-    <!-- ── PAGE: CRS CHART ── -->
+    <!-- ── CRS CHART ── -->
     <div class="page" id="page-crs">
       <div class="panel-title">📊 CRS Score History — Express Entry Draws</div>
-      <div class="chart-wrap">
-        <canvas id="crs-chart"></canvas>
-      </div>
+      <div class="chart-wrap"><canvas id="crs-chart"></canvas></div>
       <div id="crs-table" class="panel-card">
-        <div style="color:var(--muted);font-family:var(--mono);font-size:12px;text-align:center;padding:2rem">
-          Loading CRS history…
-        </div>
+        <div style="color:var(--muted);font-family:var(--mono);font-size:12px;text-align:center;padding:2rem">Loading CRS history…</div>
       </div>
     </div>
 
-    <!-- ── PAGE: PROCESSING TIMES ── -->
+    <!-- ── PROCESSING ── -->
     <div class="page" id="page-processing">
       <div class="panel-title">⏱ IRCC Processing Times</div>
       <div id="processing-grid" class="proc-grid">
-        <div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:2rem">
-          Loading processing times…
-        </div>
+        <div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:2rem">Loading processing times…</div>
       </div>
     </div>
 
-    <!-- ── PAGE: SOURCE HEALTH ── -->
+    <!-- ── SOURCES ── -->
     <div class="page" id="page-health">
       <div class="panel-title">🟢 Source Health Dashboard</div>
       <div class="panel-card">
-        <table class="health-table" id="health-table">
-          <thead>
-            <tr>
-              <th>Source</th>
-              <th>Status</th>
-              <th>Articles</th>
-              <th>Last Seen</th>
-            </tr>
-          </thead>
-          <tbody id="health-body">
-            <tr><td colspan="4" style="color:var(--muted);text-align:center;padding:2rem">Loading…</td></tr>
-          </tbody>
+        <table class="health-table">
+          <thead><tr><th>Source</th><th>Status</th><th>Articles</th><th>Last Seen</th></tr></thead>
+          <tbody id="health-body"><tr><td colspan="4" style="color:var(--muted);text-align:center;padding:2rem">Loading…</td></tr></tbody>
         </table>
       </div>
     </div>
 
-    <!-- ── PAGE: BOOKMARKS ── -->
+    <!-- ── BOOKMARKS ── -->
     <div class="page" id="page-bookmarks">
       <div class="panel-title">🔖 Saved Articles</div>
       <div id="bookmarks-grid">
@@ -926,362 +513,382 @@
       </div>
     </div>
 
-    <!-- ── PAGE: MY PROFILE ── -->
-<div class="page" id="page-profile">
-  <div class="panel-title">👤 My Immigration Profile</div>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
-
-    <!-- Profile Card -->
-    <div class="panel-card">
-      <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;
-                  letter-spacing:0.1em;color:var(--muted);margin-bottom:1rem">Your Profile</div>
-      <div style="display:flex;flex-direction:column;gap:0.6rem">
-        <div class="profile-row"><span class="profile-label">Name</span><span class="profile-val">Priyanka</span></div>
-        <div class="profile-row"><span class="profile-label">Age</span><span class="profile-val">25</span></div>
-        <div class="profile-row"><span class="profile-label">Education</span><span class="profile-val">Masters — Software Engineering</span></div>
-        <div class="profile-row"><span class="profile-label">Status</span><span class="profile-val">In Progress → Graduating Apr 2027</span></div>
-        <div class="profile-row"><span class="profile-label">Language</span><span class="profile-val">CELPIP 7/7/7/7 (CLB 9)</span></div>
-        <div class="profile-row"><span class="profile-label">Work (CA)</span><span class="profile-val">Gas Station (in progress)</span></div>
-        <div class="profile-row"><span class="profile-label">Target</span><span class="profile-val">Ontario → PR</span></div>
-        <div class="profile-row"><span class="profile-label">Pathway</span><span class="profile-val">PGWP → CEC / Ontario Masters</span></div>
-      </div>
-    </div>
-
-    <!-- CRS Estimate Card -->
-    <div class="panel-card">
-      <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;
-                  letter-spacing:0.1em;color:var(--muted);margin-bottom:1rem">Estimated CRS Score</div>
-      <div style="text-align:center;padding:1rem 0">
-        <div style="font-family:var(--mono);font-size:56px;font-weight:600;
-                    color:var(--accent2);line-height:1">452</div>
-        <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:0.5rem">
-          estimated current score
-        </div>
-        <div style="margin-top:1rem;padding:0.75rem;background:rgba(245,166,35,0.08);
-                    border:1px solid rgba(245,166,35,0.2);border-radius:6px">
-          <div style="font-family:var(--mono);font-size:11px;color:var(--amber)">
-            ⚠ Latest draw cutoff: ~490–510
-          </div>
-          <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px">
-            Gap: ~40–60 points
-          </div>
-        </div>
-        <div style="margin-top:0.75rem;padding:0.75rem;background:rgba(45,204,143,0.08);
-                    border:1px solid rgba(45,204,143,0.2);border-radius:6px">
-          <div style="font-family:var(--mono);font-size:11px;color:var(--green)">
-            ✓ After PGWP + 1yr CEC: ~+60–80 pts
-          </div>
-          <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px">
-            Projected score 2028: ~510–530 ✅
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Pathway Timeline -->
-  <div class="panel-card" style="margin-bottom:1rem">
-    <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;
-                letter-spacing:0.1em;color:var(--muted);margin-bottom:1.25rem">Your PR Pathway Timeline</div>
-    <div class="timeline">
-      <div class="tl-item done">
-        <div class="tl-dot"></div>
-        <div class="tl-content">
-          <div class="tl-title">Study Permit Active</div>
-          <div class="tl-desc">Currently studying Masters in Software Engineering</div>
-        </div>
-        <div class="tl-date">Now</div>
-      </div>
-      <div class="tl-item done">
-        <div class="tl-dot"></div>
-        <div class="tl-content">
-          <div class="tl-title">Canadian Work Experience</div>
-          <div class="tl-desc">Gas station work accumulating — keep tracking hours</div>
-        </div>
-        <div class="tl-date">Now</div>
-      </div>
-      <div class="tl-item upcoming">
-        <div class="tl-dot"></div>
-        <div class="tl-content">
-          <div class="tl-title">Graduation</div>
-          <div class="tl-desc">Masters degree completed — apply for PGWP within 180 days</div>
-        </div>
-        <div class="tl-date">Apr 2027</div>
-      </div>
-      <div class="tl-item upcoming">
-        <div class="tl-dot"></div>
-        <div class="tl-content">
-          <div class="tl-title">PGWP Received</div>
-          <div class="tl-desc">3-year open work permit — work in any NOC TEER 0/1/2/3 job</div>
-        </div>
-        <div class="tl-date">~Jul 2027</div>
-      </div>
-      <div class="tl-item upcoming">
-        <div class="tl-dot"></div>
-        <div class="tl-content">
-          <div class="tl-title">1 Year Skilled Work Experience</div>
-          <div class="tl-desc">Complete 1 year in NOC TEER 0/1/2/3 → qualify for CEC</div>
-        </div>
-        <div class="tl-date">~Jul 2028</div>
-      </div>
-      <div class="tl-item upcoming">
-        <div class="tl-dot"></div>
-        <div class="tl-content">
-          <div class="tl-title">Enter Express Entry Pool</div>
-          <div class="tl-desc">CEC profile — estimated CRS ~510–530 with work experience</div>
-        </div>
-        <div class="tl-date">~Aug 2028</div>
-      </div>
-      <div class="tl-item future">
-        <div class="tl-dot"></div>
-        <div class="tl-content">
-          <div class="tl-title">🎯 Permanent Residence</div>
-          <div class="tl-desc">ITA received → PR application → landing in Canada</div>
-        </div>
-        <div class="tl-date">~2028–2029</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Recommendations -->
-  <div class="panel-card">
-    <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;
-                letter-spacing:0.1em;color:var(--muted);margin-bottom:1rem">What To Focus On Right Now</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
-      <div class="rec-card green">
-        <div class="rec-icon">✅</div>
-        <div>
-          <div class="rec-title">Improve CELPIP Score</div>
-          <div class="rec-desc">CELPIP 9+ gives you CLB 10 → +6 pts per skill = +24 pts total</div>
-        </div>
-      </div>
-      <div class="rec-card green">
-        <div class="rec-icon">✅</div>
-        <div>
-          <div class="rec-title">Track Your Work Hours</div>
-          <div class="rec-desc">Document all Canadian work experience — every hour counts for CEC</div>
-        </div>
-      </div>
-      <div class="rec-card amber">
-        <div class="rec-icon">⚡</div>
-        <div>
-          <div class="rec-title">Ontario Masters Stream</div>
-          <div class="rec-desc">OINP Masters Graduate stream — no job offer needed, apply after graduating</div>
-        </div>
-      </div>
-      <div class="rec-card amber">
-        <div class="rec-icon">⚡</div>
-        <div>
-          <div class="rec-title">Get a SE Job Offer</div>
-          <div class="rec-desc">Valid job offer in NOC 21231 adds +50–200 CRS points instantly</div>
-        </div>
-      </div>
-      <div class="rec-card blue">
-        <div class="rec-icon">📌</div>
-        <div>
-          <div class="rec-title">Watch NOC 21231 News</div>
-          <div class="rec-desc">Software Engineers — monitor for any TEER category changes</div>
-        </div>
-      </div>
-      <div class="rec-card blue">
-        <div class="rec-icon">📌</div>
-        <div>
-          <div class="rec-title">Ontario Tech Draw Alerts</div>
-          <div class="rec-desc">OINP runs targeted tech draws — subscribe to Ontario PNP keyword</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-  <!-- ── PAGE: CRS CALCULATOR ── -->
-  <div class="page" id="page-crscalc">
-    <div class="panel-title">🧮 CRS Score Calculator</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
-
-      <!-- Inputs -->
-      <div>
+    <!-- ── MY PROFILE ── -->
+    <div class="page" id="page-profile">
+      <div class="panel-title">👤 My Immigration Profile</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
         <div class="panel-card">
-          <div class="calc-section-title">Core / Human Capital Factors</div>
-
-          <div class="calc-group">
-            <label class="calc-label">Age</label>
-            <select class="calc-input" id="c-age" onchange="calcCRS()">
-              <option value="110">20-29 (max points)</option>
-              <option value="105" selected>25 years</option>
-              <option value="99">26 years</option>
-              <option value="94">27 years</option>
-              <option value="88">28 years</option>
-              <option value="83">29 years</option>
-              <option value="75">30 years</option>
-              <option value="69">31 years</option>
-              <option value="63">32 years</option>
-              <option value="57">33 years</option>
-              <option value="52">34 years</option>
-              <option value="45">35 years</option>
-            </select>
-          </div>
-
-          <div class="calc-group">
-            <label class="calc-label">Education Level</label>
-            <select class="calc-input" id="c-edu" onchange="calcCRS()">
-              <option value="135" selected>Masters degree</option>
-              <option value="150">PhD</option>
-              <option value="120">Bachelors (3yr+)</option>
-              <option value="98">Bachelors (2yr)</option>
-              <option value="64">1-year diploma</option>
-            </select>
-          </div>
-
-          <div class="calc-group">
-            <label class="calc-label">First Language (CELPIP/IELTS)</label>
-            <select class="calc-input" id="c-lang1" onchange="calcCRS()">
-              <option value="128">CLB 10+ all 4 skills</option>
-              <option value="124" selected>CLB 9 all 4 skills (CELPIP 7)</option>
-              <option value="110">CLB 8 all 4 skills</option>
-              <option value="96">CLB 7 all 4 skills</option>
-            </select>
-          </div>
-
-          <div class="calc-group">
-            <label class="calc-label">Canadian Work Experience</label>
-            <select class="calc-input" id="c-ca-work" onchange="calcCRS()">
-              <option value="0" selected>None / less than 1 year</option>
-              <option value="40">1 year</option>
-              <option value="53">2 years</option>
-              <option value="64">3 years</option>
-              <option value="72">4 years</option>
-              <option value="80">5+ years</option>
-            </select>
-          </div>
-
-          <div class="calc-group">
-            <label class="calc-label">Foreign Work Experience (India/abroad)</label>
-            <select class="calc-input" id="c-for-work" onchange="calcCRS()">
-              <option value="0">None</option>
-              <option value="13" selected>1-2 years (your India tech exp)</option>
-              <option value="25">3+ years</option>
-            </select>
+          <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:1rem">Your Profile</div>
+          <div style="display:flex;flex-direction:column;gap:0.6rem">
+            <div class="profile-row"><span class="profile-label">Name</span><span class="profile-val">Priyanka</span></div>
+            <div class="profile-row"><span class="profile-label">Age</span><span class="profile-val">25</span></div>
+            <div class="profile-row"><span class="profile-label">Education</span><span class="profile-val">Masters — Software Engineering</span></div>
+            <div class="profile-row"><span class="profile-label">Status</span><span class="profile-val">In Progress → Graduating Apr 2027</span></div>
+            <div class="profile-row"><span class="profile-label">Language</span><span class="profile-val">CELPIP 7/7/7/7 (CLB 9)</span></div>
+            <div class="profile-row"><span class="profile-label">Work (CA)</span><span class="profile-val">Gas Station (accumulating)</span></div>
+            <div class="profile-row"><span class="profile-label">Work (India)</span><span class="profile-val">Tech experience (+13 CRS pts)</span></div>
+            <div class="profile-row"><span class="profile-label">Target</span><span class="profile-val">Ontario → PR</span></div>
+            <div class="profile-row"><span class="profile-label">Pathway</span><span class="profile-val">PGWP → CEC / Ontario Masters</span></div>
           </div>
         </div>
-
         <div class="panel-card">
-          <div class="calc-section-title">Additional Points</div>
-
-          <div class="calc-group">
-            <label class="calc-label">Provincial Nomination (PNP)</label>
-            <select class="calc-input" id="c-pnp" onchange="calcCRS()">
-              <option value="0" selected>No</option>
-              <option value="600">Yes (+600 pts)</option>
-            </select>
-          </div>
-
-          <div class="calc-group">
-            <label class="calc-label">Job Offer</label>
-            <select class="calc-input" id="c-job" onchange="calcCRS()">
-              <option value="0" selected>No job offer</option>
-              <option value="50">NOC TEER 1/2/3 job offer</option>
-              <option value="200">NOC TEER 0 (senior manager)</option>
-            </select>
-          </div>
-
-          <div class="calc-group">
-            <label class="calc-label">Canadian Education (study in Canada)</label>
-            <select class="calc-input" id="c-ca-edu" onchange="calcCRS()">
-              <option value="0">No</option>
-              <option value="15">1-2 year program</option>
-              <option value="30" selected>Masters / 3yr+ program</option>
-            </select>
-          </div>
-
-          <div class="calc-group">
-            <label class="calc-label">Sibling in Canada (citizen/PR)</label>
-            <select class="calc-input" id="c-sibling" onchange="calcCRS()">
-              <option value="0" selected>No</option>
-              <option value="15">Yes (+15 pts)</option>
-            </select>
+          <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:1rem">Estimated CRS Score</div>
+          <div style="text-align:center;padding:1rem 0">
+            <div style="font-family:var(--mono);font-size:56px;font-weight:600;color:var(--accent2);line-height:1">465</div>
+            <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:0.5rem">estimated current score (incl. India exp)</div>
+            <div style="margin-top:1rem;padding:0.75rem;background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:6px">
+              <div style="font-family:var(--mono);font-size:11px;color:var(--amber)">⚠ Latest draw cutoff: ~490–510</div>
+              <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px">Gap: ~40–45 points</div>
+            </div>
+            <div style="margin-top:0.75rem;padding:0.75rem;background:rgba(45,204,143,0.08);border:1px solid rgba(45,204,143,0.2);border-radius:6px">
+              <div style="font-family:var(--mono);font-size:11px;color:var(--green)">✓ After PGWP + 1yr CEC: ~+60–80 pts</div>
+              <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px">Projected score 2028: ~520–540 ✅</div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Result -->
-      <div>
-        <div class="panel-card" style="text-align:center;padding:2rem">
-          <div style="font-family:var(--mono);font-size:11px;text-transform:uppercase;
-                      letter-spacing:0.1em;color:var(--muted);margin-bottom:1rem">Your CRS Score</div>
-          <div id="crs-result" style="font-family:var(--mono);font-size:80px;font-weight:600;
-                                      color:var(--accent2);line-height:1">452</div>
-          <div id="crs-verdict" style="margin-top:1rem;padding:0.75rem;border-radius:6px;
-                                        font-family:var(--mono);font-size:12px"></div>
-        </div>
-
-        <div class="panel-card">
-          <div class="calc-section-title">Score Breakdown</div>
-          <div id="crs-breakdown" style="display:flex;flex-direction:column;gap:0.5rem"></div>
-        </div>
-
-        <div class="panel-card">
-          <div class="calc-section-title">How to Increase Your Score</div>
-          <div id="crs-tips" style="display:flex;flex-direction:column;gap:0.5rem"></div>
-        </div>
+      <!-- TR to PR Alert -->
+      <div style="background:rgba(58,123,213,0.08);border:1px solid rgba(58,123,213,0.3);border-radius:6px;padding:1rem;margin-bottom:1rem">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--accent2);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem">🚨 New Opportunity — TR to PR Pathway 2026</div>
+        <div style="font-size:13px;color:var(--text);margin-bottom:0.5rem">Canada has launched a <strong>one-time TR to PR pathway</strong> for 33,000 workers. You may qualify if you have a valid study/work permit and Canadian work experience.</div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--muted)">Action: Prepare your WES (ECA), keep CELPIP valid, document all work hours. Full criteria expected April 2026.</div>
       </div>
-    </div>
-  </div>
 
-  <!-- ── PAGE: PGWP TIMELINE ── -->
-  <div class="page" id="page-pgwp">
-    <div class="panel-title">📅 PGWP & Immigration Timeline Calculator</div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem">
-      <div class="panel-card">
-        <div class="calc-section-title">Your Dates</div>
-        <div class="calc-group">
-          <label class="calc-label">Expected Graduation Date</label>
-          <input type="date" class="calc-input" id="grad-date" value="2027-04-30" onchange="calcPGWP()"/>
-        </div>
-        <div class="calc-group">
-          <label class="calc-label">Study Permit Expiry</label>
-          <input type="date" class="calc-input" id="sp-expiry" value="2027-08-31" onchange="calcPGWP()"/>
-        </div>
-        <div class="calc-group">
-          <label class="calc-label">Program Length</label>
-          <select class="calc-input" id="pgwp-length" onchange="calcPGWP()">
-            <option value="36" selected>2+ years → 3yr PGWP</option>
-            <option value="24">2 years exactly → 2yr PGWP</option>
-            <option value="12">1 year → 1yr PGWP</option>
-          </select>
-        </div>
-        <div class="calc-group">
-          <label class="calc-label">Target Province</label>
-          <select class="calc-input" id="target-province" onchange="calcPGWP()">
-            <option value="ontario" selected>Ontario</option>
-            <option value="bc">British Columbia</option>
-            <option value="alberta">Alberta</option>
-            <option value="any">Any / Not decided</option>
-          </select>
+      <div class="panel-card" style="margin-bottom:1rem">
+        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:1.25rem">Your PR Pathway Timeline</div>
+        <div class="timeline">
+          <div class="tl-item done"><div class="tl-dot"></div><div class="tl-content"><div class="tl-title">Study Permit Active</div><div class="tl-desc">Currently studying Masters in Software Engineering</div></div><div class="tl-date">Now</div></div>
+          <div class="tl-item done"><div class="tl-dot"></div><div class="tl-content"><div class="tl-title">Canadian Work Experience</div><div class="tl-desc">Gas station work accumulating — track every hour</div></div><div class="tl-date">Now</div></div>
+          <div class="tl-item upcoming"><div class="tl-dot"></div><div class="tl-content"><div class="tl-title">Graduation 🎓</div><div class="tl-desc">Masters degree — apply for PGWP within 180 days</div></div><div class="tl-date">Apr 2027</div></div>
+          <div class="tl-item upcoming"><div class="tl-dot"></div><div class="tl-content"><div class="tl-title">PGWP Received</div><div class="tl-desc">3-year open work permit — work any NOC TEER 0/1/2/3</div></div><div class="tl-date">~Jul 2027</div></div>
+          <div class="tl-item upcoming"><div class="tl-dot"></div><div class="tl-content"><div class="tl-title">1 Year Skilled Work ✅</div><div class="tl-desc">Complete 1yr in NOC TEER 0/1/2/3 → qualify for CEC</div></div><div class="tl-date">~Jul 2028</div></div>
+          <div class="tl-item upcoming"><div class="tl-dot"></div><div class="tl-content"><div class="tl-title">Enter Express Entry Pool</div><div class="tl-desc">CEC profile — estimated CRS ~520–540</div></div><div class="tl-date">~Aug 2028</div></div>
+          <div class="tl-item future"><div class="tl-dot"></div><div class="tl-content"><div class="tl-title">🎯 Permanent Residence</div><div class="tl-desc">ITA received → PR application → landing in Canada</div></div><div class="tl-date">~2028–2029</div></div>
         </div>
       </div>
 
       <div class="panel-card">
-        <div class="calc-section-title">Critical Deadlines</div>
-        <div id="pgwp-deadlines" style="display:flex;flex-direction:column;gap:0.75rem">
-          <!-- filled by JS -->
+        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:1rem">What To Focus On Right Now</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+          <div class="rec-card green"><div class="rec-icon">✅</div><div><div class="rec-title">Improve CELPIP to 9+</div><div class="rec-desc">Each skill at CLB 10 = +6 pts × 4 = +24 pts total</div></div></div>
+          <div class="rec-card green"><div class="rec-icon">✅</div><div><div class="rec-title">Get WES (ECA) Done Now</div><div class="rec-desc">Required for TR to PR + Express Entry. Takes 4–8 weeks</div></div></div>
+          <div class="rec-card amber"><div class="rec-icon">⚡</div><div><div class="rec-title">Ontario Masters Stream</div><div class="rec-desc">OINP Masters Graduate — no job offer needed after graduation</div></div></div>
+          <div class="rec-card amber"><div class="rec-icon">⚡</div><div><div class="rec-title">TR to PR Pathway 2026</div><div class="rec-desc">33,000 spots — prepare docs now, apply when criteria released</div></div></div>
+          <div class="rec-card blue"><div class="rec-icon">📌</div><div><div class="rec-title">Get SE Job Offer (NOC 21231)</div><div class="rec-desc">Valid job offer = +50–200 CRS pts instantly</div></div></div>
+          <div class="rec-card blue"><div class="rec-icon">📌</div><div><div class="rec-title">Ontario Tech Draw Alerts</div><div class="rec-desc">Subscribe to "Ontario PNP" keyword in sidebar for instant alerts</div></div></div>
         </div>
       </div>
     </div>
 
-    <div class="panel-card" style="margin-bottom:1rem">
-      <div class="calc-section-title">Full Timeline</div>
-      <div id="pgwp-timeline" class="timeline"></div>
+    <!-- ── CRS CALCULATOR (GENERIC — anyone can use) ── -->
+    <div class="page" id="page-crscalc">
+      <div class="panel-title">🧮 CRS Score Calculator — Express Entry</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+
+        <!-- LEFT: Inputs -->
+        <div style="display:flex;flex-direction:column;gap:1rem">
+
+          <div class="panel-card">
+            <div class="calc-section-title">Personal Information</div>
+            <div class="calc-group">
+              <label class="calc-label">Marital Status</label>
+              <select class="calc-input" id="c-marital" onchange="calcCRS()">
+                <option value="single">Single / No accompanying spouse</option>
+                <option value="married">Married / Common-law (spouse coming to Canada)</option>
+              </select>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label">Age</label>
+              <select class="calc-input" id="c-age" onchange="calcCRS()">
+                <option value="110">17–19 years old</option>
+                <option value="110">20–29 years old (maximum points)</option>
+                <option value="105" selected>25 years old</option>
+                <option value="99">26 years old</option>
+                <option value="94">27 years old</option>
+                <option value="88">28 years old</option>
+                <option value="83">29 years old</option>
+                <option value="75">30 years old</option>
+                <option value="69">31 years old</option>
+                <option value="63">32 years old</option>
+                <option value="57">33 years old</option>
+                <option value="52">34 years old</option>
+                <option value="45">35 years old</option>
+                <option value="36">36 years old</option>
+                <option value="27">37 years old</option>
+                <option value="18">38 years old</option>
+                <option value="9">39 years old</option>
+                <option value="0">40+ years old</option>
+              </select>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label">Highest Education Level</label>
+              <select class="calc-input" id="c-edu" onchange="calcCRS()">
+                <option value="0">Less than secondary (high school)</option>
+                <option value="30">Secondary diploma (high school)</option>
+                <option value="98">1-year post-secondary diploma</option>
+                <option value="98">2-year post-secondary diploma</option>
+                <option value="120">Bachelor's degree (3yr+)</option>
+                <option value="128">Two or more credentials (one 3yr+)</option>
+                <option value="135" selected>Master's degree / Professional degree</option>
+                <option value="150">PhD / Doctoral degree</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="calc-section-title">First Official Language — Enter Each Skill Separately</div>
+            <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:0.75rem;padding:6px 8px;background:var(--surface);border-radius:4px">
+              CELPIP → CLB: 4=4, 5=6, 6=7, 7=8, 8=9, 9=10, 10=12 &nbsp;|&nbsp; IELTS → CLB: 6=7, 7=8, 7.5=9, 8=10
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+              <div class="calc-group">
+                <label class="calc-label">Speaking</label>
+                <select class="calc-input" id="c-speak" onchange="calcCRS()">
+                  <option value="0">Below CLB 4</option>
+                  <option value="6">CLB 4–5</option>
+                  <option value="8">CLB 6</option>
+                  <option value="16">CLB 7</option>
+                  <option value="22">CLB 8</option>
+                  <option value="23" selected>CLB 9 (CELPIP 8 / IELTS 7.5)</option>
+                  <option value="23">CLB 10+ (CELPIP 9+ / IELTS 8+)</option>
+                </select>
+              </div>
+              <div class="calc-group">
+                <label class="calc-label">Listening</label>
+                <select class="calc-input" id="c-listen" onchange="calcCRS()">
+                  <option value="0">Below CLB 4</option>
+                  <option value="6">CLB 4–5</option>
+                  <option value="8">CLB 6</option>
+                  <option value="16">CLB 7</option>
+                  <option value="22">CLB 8</option>
+                  <option value="23" selected>CLB 9</option>
+                  <option value="23">CLB 10+</option>
+                </select>
+              </div>
+              <div class="calc-group">
+                <label class="calc-label">Reading</label>
+                <select class="calc-input" id="c-read" onchange="calcCRS()">
+                  <option value="0">Below CLB 4</option>
+                  <option value="6">CLB 4–5</option>
+                  <option value="8">CLB 6</option>
+                  <option value="16">CLB 7</option>
+                  <option value="22">CLB 8</option>
+                  <option value="23" selected>CLB 9</option>
+                  <option value="23">CLB 10+</option>
+                </select>
+              </div>
+              <div class="calc-group">
+                <label class="calc-label">Writing</label>
+                <select class="calc-input" id="c-write" onchange="calcCRS()">
+                  <option value="0">Below CLB 4</option>
+                  <option value="6">CLB 4–5</option>
+                  <option value="8">CLB 6</option>
+                  <option value="16">CLB 7</option>
+                  <option value="22">CLB 8</option>
+                  <option value="23" selected>CLB 9</option>
+                  <option value="23">CLB 10+</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="calc-section-title">Second Official Language (Optional — French or English)</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+              <div class="calc-group">
+                <label class="calc-label">Speaking</label>
+                <select class="calc-input" id="c-speak2" onchange="calcCRS()">
+                  <option value="0" selected>None / Below CLB 5</option>
+                  <option value="1">CLB 5–6</option>
+                  <option value="3">CLB 7–8</option>
+                  <option value="6">CLB 9+</option>
+                </select>
+              </div>
+              <div class="calc-group">
+                <label class="calc-label">Listening</label>
+                <select class="calc-input" id="c-listen2" onchange="calcCRS()">
+                  <option value="0" selected>None / Below CLB 5</option>
+                  <option value="1">CLB 5–6</option>
+                  <option value="3">CLB 7–8</option>
+                  <option value="6">CLB 9+</option>
+                </select>
+              </div>
+              <div class="calc-group">
+                <label class="calc-label">Reading</label>
+                <select class="calc-input" id="c-read2" onchange="calcCRS()">
+                  <option value="0" selected>None / Below CLB 5</option>
+                  <option value="1">CLB 5–6</option>
+                  <option value="3">CLB 7–8</option>
+                  <option value="6">CLB 9+</option>
+                </select>
+              </div>
+              <div class="calc-group">
+                <label class="calc-label">Writing</label>
+                <select class="calc-input" id="c-write2" onchange="calcCRS()">
+                  <option value="0" selected>None / Below CLB 5</option>
+                  <option value="1">CLB 5–6</option>
+                  <option value="3">CLB 7–8</option>
+                  <option value="6">CLB 9+</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="calc-section-title">Work Experience</div>
+            <div class="calc-group">
+              <label class="calc-label">Canadian Work Experience (NOC TEER 0/1/2/3)</label>
+              <select class="calc-input" id="c-ca-work" onchange="calcCRS()">
+                <option value="0" selected>None / Less than 1 year</option>
+                <option value="40">1 year</option>
+                <option value="53">2 years</option>
+                <option value="64">3 years</option>
+                <option value="72">4 years</option>
+                <option value="80">5+ years</option>
+              </select>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label">Foreign Work Experience (India / abroad)</label>
+              <select class="calc-input" id="c-for-work" onchange="calcCRS()">
+                <option value="0">None</option>
+                <option value="13" selected>1–2 years</option>
+                <option value="25">3+ years</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="calc-section-title">Additional Points</div>
+            <div class="calc-group">
+              <label class="calc-label">Canadian Education (studied in Canada)</label>
+              <select class="calc-input" id="c-ca-edu" onchange="calcCRS()">
+                <option value="0">No Canadian education</option>
+                <option value="15">1–2 year Canadian program</option>
+                <option value="30" selected>Masters / PhD / 3yr+ in Canada</option>
+              </select>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label">Valid Job Offer in Canada</label>
+              <select class="calc-input" id="c-job" onchange="calcCRS()">
+                <option value="0" selected>No job offer</option>
+                <option value="50">NOC TEER 1/2/3 job offer (+50 pts)</option>
+                <option value="200">NOC TEER 0 — senior manager (+200 pts)</option>
+              </select>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label">Provincial Nomination (PNP)</label>
+              <select class="calc-input" id="c-pnp" onchange="calcCRS()">
+                <option value="0" selected>No nomination</option>
+                <option value="600">Yes — provincial nomination (+600 pts)</option>
+              </select>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label">Sibling in Canada (citizen or PR)</label>
+              <select class="calc-input" id="c-sibling" onchange="calcCRS()">
+                <option value="0" selected>No</option>
+                <option value="15">Yes (+15 pts)</option>
+              </select>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label">French Language Bonus</label>
+              <select class="calc-input" id="c-french" onchange="calcCRS()">
+                <option value="0" selected>No French / Below CLB 7</option>
+                <option value="25">French CLB 7+ only</option>
+                <option value="50">French CLB 7+ AND English CLB 5+ (+50 pts)</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT: Results (sticky) -->
+        <div style="display:flex;flex-direction:column;gap:1rem;position:sticky;top:70px;align-self:start">
+
+          <div class="panel-card" style="text-align:center;padding:2rem">
+            <div style="font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:0.5rem">Your CRS Score</div>
+            <div id="crs-result" style="font-family:var(--mono);font-size:84px;font-weight:600;line-height:1;transition:color 0.3s">452</div>
+            <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px">out of 1200</div>
+            <div id="crs-verdict" style="margin-top:1rem;padding:0.75rem;border-radius:6px;font-family:var(--mono);font-size:12px;text-align:left"></div>
+          </div>
+
+          <div class="panel-card">
+            <div class="calc-section-title">Your Score vs Recent Cutoffs</div>
+            <div style="margin-bottom:0.5rem">
+              <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:5px">
+                <span>0</span><span>300</span><span>600</span><span>900</span><span>1200</span>
+              </div>
+              <div class="score-bar-bg">
+                <div id="score-bar-fill" class="score-bar-fill" style="background:var(--accent2);width:0%"></div>
+                <div id="score-bar-marker" class="score-bar-marker" style="left:42%"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:6px;font-family:var(--mono);font-size:11px">
+                <span style="color:var(--accent2)">Your score: <strong id="bar-score">0</strong></span>
+                <span style="color:var(--accent)">↑ Cutoff ~505</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="calc-section-title">Score Breakdown</div>
+            <div id="crs-breakdown" style="display:flex;flex-direction:column;gap:0.4rem"></div>
+          </div>
+
+          <div class="panel-card">
+            <div class="calc-section-title">💡 How to Improve Your Score</div>
+            <div id="crs-tips" style="display:flex;flex-direction:column;gap:0.5rem"></div>
+          </div>
+
+        </div>
+      </div>
     </div>
 
-    <div class="panel-card">
-      <div class="calc-section-title">PNP Streams You May Qualify For</div>
-      <div id="pnp-streams" style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem"></div>
+    <!-- ── PGWP TIMELINE ── -->
+    <div class="page" id="page-pgwp">
+      <div class="panel-title">📅 PGWP & Immigration Timeline Calculator</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1rem">
+        <div class="panel-card">
+          <div class="calc-section-title">Your Details</div>
+          <div class="calc-group">
+            <label class="calc-label">Expected Graduation Date</label>
+            <input type="date" class="calc-input" id="grad-date" value="2027-04-30" onchange="calcPGWP()"/>
+          </div>
+          <div class="calc-group">
+            <label class="calc-label">Study Permit Expiry</label>
+            <input type="date" class="calc-input" id="sp-expiry" value="2027-08-31" onchange="calcPGWP()"/>
+          </div>
+          <div class="calc-group">
+            <label class="calc-label">Program Length</label>
+            <select class="calc-input" id="pgwp-length" onchange="calcPGWP()">
+              <option value="36" selected>2+ years → 3yr PGWP</option>
+              <option value="24">2 years exactly → 2yr PGWP</option>
+              <option value="12">1 year → 1yr PGWP</option>
+            </select>
+          </div>
+          <div class="calc-group">
+            <label class="calc-label">Target Province</label>
+            <select class="calc-input" id="target-province" onchange="calcPGWP()">
+              <option value="ontario" selected>Ontario</option>
+              <option value="bc">British Columbia</option>
+              <option value="alberta">Alberta</option>
+              <option value="any">Any / Not decided</option>
+            </select>
+          </div>
+        </div>
+        <div class="panel-card">
+          <div class="calc-section-title">Critical Deadlines</div>
+          <div id="pgwp-deadlines" style="display:flex;flex-direction:column;gap:0.75rem"></div>
+        </div>
+      </div>
+      <div class="panel-card" style="margin-bottom:1rem">
+        <div class="calc-section-title">Full Timeline</div>
+        <div id="pgwp-timeline" class="timeline"></div>
+      </div>
+      <div class="panel-card">
+        <div class="calc-section-title">PNP Streams You May Qualify For</div>
+        <div id="pnp-streams" style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem"></div>
+      </div>
     </div>
-  </div>
-
 
   </main>
 </div>
@@ -1290,157 +897,108 @@
 
 <script>
   // ── STATE ──
-  let currentCategory = '';
-  let currentKeyword  = '';
-  let currentPage     = 1;
-  const PER_PAGE      = 20;
-  let allArticles     = [];
-  let searchTimer     = null;
-  let crsChartInstance = null;
-
-  // Persistent storage
+  let currentCategory = '', currentKeyword = '', currentPage = 1;
+  const PER_PAGE = 20;
+  let allArticles = [], searchTimer = null, crsChartInstance = null;
   let bookmarks    = JSON.parse(localStorage.getItem('ircc_bookmarks') || '[]');
   let readArticles = JSON.parse(localStorage.getItem('ircc_read') || '[]');
 
   const SOURCE_CLASS = {
-    'IRCC Official':  'tag-ircc',
-    'CIC News':       'tag-cic',
-    'CBC':            'tag-cbc',
-    'Global News':    'tag-cbc',
-    'Moving2Canada':  'tag-cic',
-    'Immigration.ca': 'tag-cic',
+    'IRCC Official':'tag-ircc','CIC News':'tag-cic','CBC':'tag-cbc',
+    'Global News':'tag-cbc','Moving2Canada':'tag-cic','Immigration.ca':'tag-cic',
   };
+  const DRAW_KEYWORDS = ['express entry draw','invitation to apply','ita issued','crs cut-off','draw #','rounds of invitations'];
+  const CRS_KEYWORDS  = ['crs','express entry','draw','ita','invitation to apply','pnp','study permit','pgwp','lmia','trp','permanent resident','work permit','oinp','international student','open work permit'];
 
-  const DRAW_KEYWORDS = [
-    'express entry draw','invitation to apply','ita issued',
-    'crs cut-off','draw #','rounds of invitations'
-  ];
-
-  const CRS_KEYWORDS = [
-    'crs','express entry','draw','ita','invitation to apply',
-    'pnp','study permit','pgwp','lmia','trp','permanent resident',
-    'work permit','oinp','international student','open work permit'
-  ];
-
-  // ── PAGE NAVIGATION ──
+  // ── PAGE NAV ──
   function showPage(name, btn) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
     document.getElementById('page-' + name).classList.add('active');
     if (btn) btn.classList.add('active');
-
-    // Lazy load data for each page
     if (name === 'crs')        loadCRSChart();
     if (name === 'health')     loadSourceHealth();
     if (name === 'processing') loadProcessingTimes();
     if (name === 'bookmarks')  renderBookmarksPage();
+    if (name === 'crscalc')    calcCRS();
+    if (name === 'pgwp')       calcPGWP();
   }
 
   // ── SEARCH ──
   document.getElementById('search').addEventListener('input', function () {
-    document.getElementById('clear-btn').style.display =
-      this.value.length > 0 ? 'block' : 'none';
+    document.getElementById('clear-btn').style.display = this.value.length > 0 ? 'block' : 'none';
   });
-
   function clearSearch() {
     document.getElementById('search').value = '';
     document.getElementById('clear-btn').style.display = 'none';
-    currentKeyword = '';
-    currentPage = 1;
+    currentKeyword = ''; currentPage = 1;
     renderPage(filterArticles(), currentPage);
   }
 
   // ── HELPERS ──
-  function getSourceClass(source) {
-    for (const [k, v] of Object.entries(SOURCE_CLASS)) {
-      if (source && source.toLowerCase().includes(k.toLowerCase())) return v;
+  function getSourceClass(src) {
+    for (const [k,v] of Object.entries(SOURCE_CLASS)) {
+      if (src && src.toLowerCase().includes(k.toLowerCase())) return v;
     }
     return 'tag-default';
   }
-
   function detectKeywords(title) {
-    const lower = (title || '').toLowerCase();
-    return CRS_KEYWORDS.filter(k => lower.includes(k)).slice(0, 2);
+    const l = (title||'').toLowerCase();
+    return CRS_KEYWORDS.filter(k => l.includes(k)).slice(0,2);
   }
-
-  function timeAgo(dateStr) {
-    if (!dateStr) return '';
-    const d = new Date(dateStr);
-    if (isNaN(d)) return dateStr;
-    const diff = Date.now() - d.getTime();
-    const mins = Math.floor(diff / 60000);
-    if (mins < 60)   return `${mins}m ago`;
-    if (mins < 1440) return `${Math.floor(mins/60)}h ago`;
-    return `${Math.floor(mins/1440)}d ago`;
+  function timeAgo(s) {
+    if (!s) return '';
+    const d = new Date(s); if (isNaN(d)) return s;
+    const m = Math.floor((Date.now()-d)/60000);
+    if (m<60) return m+'m ago';
+    if (m<1440) return Math.floor(m/60)+'h ago';
+    return Math.floor(m/1440)+'d ago';
   }
-
   function saveBookmarks() {
     localStorage.setItem('ircc_bookmarks', JSON.stringify(bookmarks));
     document.getElementById('stat-bookmarks').textContent = bookmarks.length;
   }
+  function saveRead() { localStorage.setItem('ircc_read', JSON.stringify(readArticles)); }
 
-  function saveRead() {
-    localStorage.setItem('ircc_read', JSON.stringify(readArticles));
-  }
-
-  // ── BOOKMARK TOGGLE ──
-  function toggleBookmark(url, title, event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const idx = bookmarks.findIndex(b => b.url === url);
-    if (idx === -1) {
-      bookmarks.push({ url, title });
-      showToast('🔖 Bookmarked!');
-    } else {
-      bookmarks.splice(idx, 1);
-      showToast('Bookmark removed');
-    }
+  // ── BOOKMARKS ──
+  function toggleBookmark(url, title, e) {
+    e.preventDefault(); e.stopPropagation();
+    const i = bookmarks.findIndex(b => b.url===url);
+    if (i===-1) { bookmarks.push({url,title}); showToast('🔖 Bookmarked!'); }
+    else        { bookmarks.splice(i,1);        showToast('Bookmark removed'); }
     saveBookmarks();
     renderPage(filterArticles(), currentPage);
   }
-
-  // ── MARK READ ──
   function markRead(url) {
-    if (!readArticles.includes(url)) {
-      readArticles.push(url);
-      saveRead();
-    }
+    if (!readArticles.includes(url)) { readArticles.push(url); saveRead(); }
   }
 
   // ── RENDER CARD ──
   function renderCard(a) {
     const kws = detectKeywords(a.title);
-    const badges = kws.map(k =>
-      `<span class="keyword-badge">${k.toUpperCase()}</span>`
-    ).join('');
-    const isBookmarked = bookmarks.some(b => b.url === a.url);
+    const badges = kws.map(k=>`<span class="keyword-badge">${k.toUpperCase()}</span>`).join('');
+    const isBookmarked = bookmarks.some(b=>b.url===a.url);
     const isRead       = readArticles.includes(a.url);
-    // Escape title for use in onclick attribute
-    const safeTitle = (a.title || '').replace(/'/g, '&#39;').replace(/"/g, '&quot;');
-    const safeUrl   = (a.url || '').replace(/'/g, '%27');
+    const safeTitle = (a.title||'').replace(/'/g,"&#39;").replace(/"/g,"&quot;");
+    const safeUrl   = (a.url||'').replace(/'/g,'%27');
     return `
-      <a class="news-card ${isRead ? 'read' : ''}"
-         href="${a.url}" target="_blank" rel="noopener"
-         onclick="markRead('${safeUrl}')">
+      <a class="news-card ${isRead?'read':''}" href="${a.url}" target="_blank" rel="noopener" onclick="markRead('${safeUrl}')">
         <div class="card-left">
           <div class="card-meta">
-            <span class="source-tag ${getSourceClass(a.source)}">${a.source || 'Unknown'}</span>
+            <span class="source-tag ${getSourceClass(a.source)}">${a.source||'Unknown'}</span>
             ${badges}
             <span class="card-date">${timeAgo(a.published)}</span>
           </div>
-          <div class="card-title">${a.title || 'Untitled'}</div>
-          <div class="card-summary">${a.summary || ''}</div>
+          <div class="card-title">${a.title||'Untitled'}</div>
+          <div class="card-summary">${a.summary||''}</div>
         </div>
         <div class="card-right">
-          <span class="cat-pill">${a.category || ''}</span>
-          <button class="bookmark-btn ${isBookmarked ? 'bookmarked' : ''}"
+          <span class="cat-pill">${a.category||''}</span>
+          <button class="bookmark-btn ${isBookmarked?'bookmarked':''}"
             onclick="toggleBookmark('${safeUrl}','${safeTitle}',event)"
-            title="${isBookmarked ? 'Remove bookmark' : 'Save article'}">
-            🔖
-          </button>
+            title="${isBookmarked?'Remove bookmark':'Save'}">🔖</button>
           <svg class="arrow-icon" width="14" height="14" viewBox="0 0 16 16" fill="none">
-            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5"
-              stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
       </a>`;
@@ -1448,10 +1006,7 @@
 
   // ── DRAW DETECTION ──
   function checkDraws(articles) {
-    const draw = articles.find(a => {
-      const t = (a.title || '').toLowerCase();
-      return DRAW_KEYWORDS.some(k => t.includes(k));
-    });
+    const draw = articles.find(a => DRAW_KEYWORDS.some(k=>(a.title||'').toLowerCase().includes(k)));
     const banner = document.getElementById('draw-banner');
     if (draw) {
       document.getElementById('draw-text').textContent = draw.title;
@@ -1465,80 +1020,67 @@
 
   // ── COUNTS ──
   function updateCounts(articles) {
-    const counts = {};
-    articles.forEach(a => { counts[a.category] = (counts[a.category] || 0) + 1; });
+    const c = {};
+    articles.forEach(a => { c[a.category] = (c[a.category]||0)+1; });
     document.getElementById('cnt-all').textContent   = articles.length;
-    document.getElementById('cnt-ircc').textContent  = counts['IRCC Updates'] || 0;
-    document.getElementById('cnt-ee').textContent    = counts['Express Entry'] || 0;
-    document.getElementById('cnt-pnp').textContent   = counts['PNP Programs'] || 0;
-    document.getElementById('cnt-intl').textContent  = counts['Intl Students'] || 0;
-    document.getElementById('cnt-trp').textContent   = counts['TRP / PR'] || 0;
-    document.getElementById('cnt-work').textContent  = counts['Work Permits'] || 0;
-    document.getElementById('cnt-gen').textContent   = counts['General'] || 0;
-    document.getElementById('stat-sources').textContent =
-      [...new Set(articles.map(a => a.source))].length;
+    document.getElementById('cnt-ircc').textContent  = c['IRCC Updates']||0;
+    document.getElementById('cnt-ee').textContent    = c['Express Entry']||0;
+    document.getElementById('cnt-pnp').textContent   = c['PNP Programs']||0;
+    document.getElementById('cnt-intl').textContent  = c['Intl Students']||0;
+    document.getElementById('cnt-trp').textContent   = c['TRP / PR']||0;
+    document.getElementById('cnt-work').textContent  = c['Work Permits']||0;
+    document.getElementById('cnt-gen').textContent   = c['General']||0;
+    document.getElementById('stat-sources').textContent = [...new Set(articles.map(a=>a.source))].length;
     document.getElementById('stat-total').textContent   = articles.length;
     document.getElementById('stat-bookmarks').textContent = bookmarks.length;
   }
 
   // ── FILTER ──
   function filterArticles() {
-    let filtered = allArticles;
-    if (currentCategory) {
-      filtered = filtered.filter(a => a.category === currentCategory);
-    }
-    const searchVal = document.getElementById('search').value.trim().toLowerCase();
-    const kw = searchVal || currentKeyword.toLowerCase();
-    if (kw) {
-      filtered = filtered.filter(a =>
-        (a.title   || '').toLowerCase().includes(kw) ||
-        (a.summary || '').toLowerCase().includes(kw) ||
-        (a.source  || '').toLowerCase().includes(kw)
-      );
-    }
+    let f = allArticles;
+    if (currentCategory) f = f.filter(a=>a.category===currentCategory);
+    const sv = document.getElementById('search').value.trim().toLowerCase();
+    const kw = sv || currentKeyword.toLowerCase();
+    if (kw) f = f.filter(a =>
+      (a.title||'').toLowerCase().includes(kw)||
+      (a.summary||'').toLowerCase().includes(kw)||
+      (a.source||'').toLowerCase().includes(kw)
+    );
     const sort = document.getElementById('sort').value;
-    filtered.sort((a, b) => {
-      const da = new Date(a.published || 0), db = new Date(b.published || 0);
-      return sort === 'newest' ? db - da : da - db;
+    f.sort((a,b) => {
+      const da=new Date(a.published||0), db=new Date(b.published||0);
+      return sort==='newest' ? db-da : da-db;
     });
-    return filtered;
+    return f;
   }
 
   // ── RENDER PAGE ──
   function renderPage(articles, page) {
-    const grid  = document.getElementById('news-grid');
-    const start = (page - 1) * PER_PAGE;
-    const slice = articles.slice(start, start + PER_PAGE);
-
+    const grid = document.getElementById('news-grid');
+    const slice = articles.slice((page-1)*PER_PAGE, page*PER_PAGE);
     if (!slice.length) {
       grid.innerHTML = '<div class="empty-state">No articles found</div>';
       document.getElementById('pagination').innerHTML = '';
       return;
     }
     grid.innerHTML = slice.map(renderCard).join('');
-
-    const total = Math.ceil(articles.length / PER_PAGE);
-    let pg = '';
-    for (let i = 1; i <= total; i++) {
-      pg += `<button class="pg-btn ${i === page ? 'active' : ''}"
-               onclick="goPage(${i})">${i}</button>`;
-    }
-    document.getElementById('pagination').innerHTML = pg;
+    const total = Math.ceil(articles.length/PER_PAGE);
+    document.getElementById('pagination').innerHTML =
+      Array.from({length:total},(_,i)=>
+        `<button class="pg-btn ${i+1===page?'active':''}" onclick="goPage(${i+1})">${i+1}</button>`
+      ).join('');
   }
 
   // ── LOAD NEWS ──
   async function loadNews() {
     try {
       const res = await fetch('/api/news');
-      if (!res.ok) throw new Error('Server error');
+      if (!res.ok) throw new Error();
       allArticles = await res.json();
-      document.getElementById('last-updated').textContent =
-        'Updated ' + new Date().toLocaleTimeString();
-      updateCounts(allArticles);
-      checkDraws(allArticles);
-      currentPage = 1;
-      renderPage(filterArticles(), currentPage);
-    } catch (e) {
+      document.getElementById('last-updated').textContent = 'Updated '+new Date().toLocaleTimeString();
+      updateCounts(allArticles); checkDraws(allArticles);
+      currentPage = 1; renderPage(filterArticles(), currentPage);
+    } catch(e) {
       document.getElementById('news-grid').innerHTML =
         '<div class="empty-state">Could not load news. Make sure the Flask server is running.</div>';
     }
@@ -1547,155 +1089,80 @@
   // ── CRS CHART ──
   async function loadCRSChart() {
     try {
-      const res  = await fetch('/api/crs-history');
-      const data = await res.json();
-
-      const tableEl = document.getElementById('crs-table');
-
-      if (!data || !data.length) {
-        tableEl.innerHTML = '<div style="color:var(--muted);font-family:var(--mono);font-size:12px;text-align:center;padding:2rem">No CRS data yet — will populate as Express Entry draws are detected.</div>';
+      const data = await fetch('/api/crs-history').then(r=>r.json());
+      const el = document.getElementById('crs-table');
+      if (!data||!data.length) {
+        el.innerHTML='<div style="color:var(--muted);font-family:var(--mono);font-size:12px;text-align:center;padding:2rem">No CRS data yet — populates as draws are detected.</div>';
         return;
       }
-
-      // Chart
-      const labels = data.map(d => d.draw_date ? d.draw_date.slice(0,10) : '');
-      const scores = data.map(d => d.score);
-
       if (crsChartInstance) crsChartInstance.destroy();
-      const ctx = document.getElementById('crs-chart').getContext('2d');
-      crsChartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels,
-          datasets: [{
-            label: 'CRS Cutoff Score',
-            data: scores,
-            borderColor: '#3a7bd5',
-            backgroundColor: 'rgba(58,123,213,0.1)',
-            pointBackgroundColor: '#3a7bd5',
-            pointRadius: 5,
-            tension: 0.3,
-            fill: true,
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { labels: { color: '#e8eaf0', font: { family: 'IBM Plex Mono' } } },
-            tooltip: { callbacks: {
-              label: ctx => ` CRS: ${ctx.parsed.y}`
-            }}
-          },
-          scales: {
-            x: { ticks: { color: '#6b7280', maxRotation: 45 }, grid: { color: '#232830' } },
-            y: {
-              ticks: { color: '#6b7280' },
-              grid: { color: '#232830' },
-              min: Math.min(...scores) - 10,
-              max: Math.max(...scores) + 10,
-            }
-          }
-        }
+      crsChartInstance = new Chart(document.getElementById('crs-chart').getContext('2d'), {
+        type:'line',
+        data:{ labels:data.map(d=>(d.draw_date||'').slice(0,10)),
+               datasets:[{label:'CRS Cutoff',data:data.map(d=>d.score),
+                 borderColor:'#3a7bd5',backgroundColor:'rgba(58,123,213,0.1)',
+                 pointBackgroundColor:'#3a7bd5',pointRadius:5,tension:0.3,fill:true}] },
+        options:{ responsive:true,maintainAspectRatio:false,
+          plugins:{ legend:{labels:{color:'#e8eaf0',font:{family:'IBM Plex Mono'}}},
+                    tooltip:{callbacks:{label:c=>` CRS: ${c.parsed.y}`}} },
+          scales:{ x:{ticks:{color:'#6b7280',maxRotation:45},grid:{color:'#232830'}},
+                   y:{ticks:{color:'#6b7280'},grid:{color:'#232830'},
+                      min:Math.min(...data.map(d=>d.score))-10,
+                      max:Math.max(...data.map(d=>d.score))+10} } }
       });
-
-      // Table below chart
-      let rows = data.slice().reverse().map(d => `
-        <tr>
-          <td style="padding:8px 12px;border-bottom:1px solid var(--border);
-                     font-family:var(--mono);font-size:12px;color:var(--muted)">
-            ${d.draw_date ? d.draw_date.slice(0,10) : '—'}
-          </td>
-          <td style="padding:8px 12px;border-bottom:1px solid var(--border);
-                     font-family:var(--mono);font-size:16px;color:var(--accent2);font-weight:600">
-            ${d.score}
-          </td>
-          <td style="padding:8px 12px;border-bottom:1px solid var(--border);font-size:12px">
-            <a href="${d.draw_url}" target="_blank"
-               style="color:var(--text);text-decoration:none">${d.draw_title || '—'}</a>
-          </td>
-        </tr>`).join('');
-
-      tableEl.innerHTML = `
-        <table style="width:100%;border-collapse:collapse">
-          <thead>
-            <tr>
-              <th style="font-family:var(--mono);font-size:10px;text-transform:uppercase;
-                         letter-spacing:0.1em;color:var(--muted);text-align:left;
-                         padding:8px 12px;border-bottom:1px solid var(--border)">Date</th>
-              <th style="font-family:var(--mono);font-size:10px;text-transform:uppercase;
-                         letter-spacing:0.1em;color:var(--muted);text-align:left;
-                         padding:8px 12px;border-bottom:1px solid var(--border)">CRS Score</th>
-              <th style="font-family:var(--mono);font-size:10px;text-transform:uppercase;
-                         letter-spacing:0.1em;color:var(--muted);text-align:left;
-                         padding:8px 12px;border-bottom:1px solid var(--border)">Draw</th>
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>`;
+      el.innerHTML=`<table style="width:100%;border-collapse:collapse">
+        <thead><tr>
+          <th style="font-family:var(--mono);font-size:10px;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 12px;border-bottom:1px solid var(--border)">Date</th>
+          <th style="font-family:var(--mono);font-size:10px;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 12px;border-bottom:1px solid var(--border)">CRS</th>
+          <th style="font-family:var(--mono);font-size:10px;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 12px;border-bottom:1px solid var(--border)">Draw</th>
+        </tr></thead>
+        <tbody>${data.slice().reverse().map(d=>`<tr>
+          <td style="padding:8px 12px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:12px;color:var(--muted)">${(d.draw_date||'').slice(0,10)||'—'}</td>
+          <td style="padding:8px 12px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:16px;color:var(--accent2);font-weight:600">${d.score}</td>
+          <td style="padding:8px 12px;border-bottom:1px solid var(--border);font-size:12px"><a href="${d.draw_url}" target="_blank" style="color:var(--text);text-decoration:none">${d.draw_title||'—'}</a></td>
+        </tr>`).join('')}</tbody></table>`;
     } catch(e) {
-      document.getElementById('crs-table').innerHTML =
-        '<div style="color:var(--muted);text-align:center;padding:2rem;font-family:var(--mono);font-size:12px">Failed to load CRS data.</div>';
+      document.getElementById('crs-table').innerHTML='<div style="color:var(--muted);text-align:center;padding:2rem;font-family:var(--mono);font-size:12px">Failed to load.</div>';
     }
   }
 
   // ── SOURCE HEALTH ──
   async function loadSourceHealth() {
     try {
-      const res  = await fetch('/api/source-health');
-      const data = await res.json();
-      const now  = Date.now();
-
-      const rows = data.map(s => {
-        const lastSeen = new Date(s.last_seen);
-        const hoursAgo = (now - lastSeen.getTime()) / 3600000;
-        let statusClass = 'status-ok';
-        let statusText  = 'Live';
-        if (hoursAgo > 48) { statusClass = 'status-dead'; statusText = 'Stale'; }
-        else if (hoursAgo > 12) { statusClass = 'status-warn'; statusText = 'Slow'; }
-        return `
-          <tr>
-            <td><strong>${s.source}</strong></td>
-            <td>
-              <span class="status-dot ${statusClass}"></span>
-              <span style="font-family:var(--mono);font-size:11px">${statusText}</span>
-            </td>
-            <td style="font-family:var(--mono);font-size:12px">${s.total}</td>
-            <td style="font-family:var(--mono);font-size:11px;color:var(--muted)">
-              ${timeAgo(s.last_seen)}
-            </td>
-          </tr>`;
-      }).join('');
-
-      document.getElementById('health-body').innerHTML = rows ||
-        '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem">No data</td></tr>';
+      const data = await fetch('/api/source-health').then(r=>r.json());
+      const now = Date.now();
+      document.getElementById('health-body').innerHTML = data.map(s => {
+        const h = (now-new Date(s.last_seen).getTime())/3600000;
+        const cls = h>48?'status-dead':h>12?'status-warn':'status-ok';
+        const lbl = h>48?'Stale':h>12?'Slow':'Live';
+        return `<tr>
+          <td><strong>${s.source}</strong></td>
+          <td><span class="status-dot ${cls}"></span><span style="font-family:var(--mono);font-size:11px">${lbl}</span></td>
+          <td style="font-family:var(--mono);font-size:12px">${s.total}</td>
+          <td style="font-family:var(--mono);font-size:11px;color:var(--muted)">${timeAgo(s.last_seen)}</td>
+        </tr>`;
+      }).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem">No data</td></tr>';
     } catch(e) {
-      document.getElementById('health-body').innerHTML =
-        '<tr><td colspan="4" style="text-align:center;color:var(--muted)">Failed to load</td></tr>';
+      document.getElementById('health-body').innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--muted)">Failed</td></tr>';
     }
   }
 
   // ── PROCESSING TIMES ──
   async function loadProcessingTimes() {
     try {
-      const res  = await fetch('/api/processing-times');
-      const data = await res.json();
+      const data = await fetch('/api/processing-times').then(r=>r.json());
       const grid = document.getElementById('processing-grid');
-
-      if (!data || !data.length) {
-        grid.innerHTML = '<div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:2rem">No processing time data yet. Will populate after the daily scrape runs at 9am.</div>';
+      if (!data||!data.length) {
+        grid.innerHTML='<div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:2rem">No data yet. Will populate after 9am daily scrape.</div>';
         return;
       }
-
-      grid.innerHTML = data.map(p => `
-        <div class="proc-card">
-          <div class="proc-permit">${p.permit_type}</div>
-          <div class="proc-time">${p.time_weeks}</div>
-          <div class="proc-label">Processing time · checked ${timeAgo(p.checked_at)}</div>
-        </div>`).join('');
+      grid.innerHTML = data.map(p=>`<div class="proc-card">
+        <div class="proc-permit">${p.permit_type}</div>
+        <div class="proc-time">${p.time_weeks}</div>
+        <div class="proc-label">checked ${timeAgo(p.checked_at)}</div>
+      </div>`).join('');
     } catch(e) {
-      document.getElementById('processing-grid').innerHTML =
-        '<div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:2rem">Failed to load.</div>';
+      document.getElementById('processing-grid').innerHTML='<div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:2rem">Failed to load.</div>';
     }
   }
 
@@ -1703,61 +1170,42 @@
   function renderBookmarksPage() {
     const grid = document.getElementById('bookmarks-grid');
     if (!bookmarks.length) {
-      grid.innerHTML = '<div class="bookmarks-empty">No bookmarks yet.<br>Click 🔖 on any article to save it.</div>';
+      grid.innerHTML='<div class="bookmarks-empty">No bookmarks yet.<br>Click 🔖 on any article to save it.</div>';
       return;
     }
-    const fakeArticles = bookmarks.map(b => ({
-      title: b.title, url: b.url,
-      source: '', category: 'Saved',
-      summary: '', published: ''
-    }));
-    grid.innerHTML = `
-      <div style="display:grid;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:6px;overflow:hidden">
-        ${fakeArticles.map(renderCard).join('')}
-      </div>`;
+    grid.innerHTML=`<div style="display:grid;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:6px;overflow:hidden">
+      ${bookmarks.map(b=>renderCard({title:b.title,url:b.url,source:'',category:'Saved',summary:'',published:''})).join('')}
+    </div>`;
   }
 
-  // ── NAVIGATION ──
+  // ── NAV ──
   function goPage(n) {
-    currentPage = n;
-    renderPage(filterArticles(), currentPage);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    currentPage=n; renderPage(filterArticles(),currentPage);
+    window.scrollTo({top:0,behavior:'smooth'});
   }
-
-  function setCategory(btn, cat) {
-    document.querySelectorAll('.cat-btn[data-cat]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentCategory = cat;
-    currentPage = 1;
-    // Switch to news page if on another page
-    showPage('news', document.querySelector('.nav-tab'));
-    renderPage(filterArticles(), currentPage);
+  function setCategory(btn,cat) {
+    document.querySelectorAll('.cat-btn[data-cat]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active'); currentCategory=cat; currentPage=1;
+    showPage('news',document.querySelector('.nav-tab'));
+    renderPage(filterArticles(),currentPage);
   }
-
   function setKeyword(kw) {
-    currentKeyword = kw;
-    const input = document.getElementById('search');
-    input.value  = kw;
-    document.getElementById('clear-btn').style.display = kw ? 'block' : 'none';
-    currentPage = 1;
-    showPage('news', document.querySelector('.nav-tab'));
-    renderPage(filterArticles(), currentPage);
+    currentKeyword=kw;
+    const inp=document.getElementById('search'); inp.value=kw;
+    document.getElementById('clear-btn').style.display=kw?'block':'none';
+    currentPage=1;
+    showPage('news',document.querySelector('.nav-tab'));
+    renderPage(filterArticles(),currentPage);
   }
-
   function debounceSearch() {
     clearTimeout(searchTimer);
-    searchTimer = setTimeout(() => {
-      currentPage = 1;
-      renderPage(filterArticles(), currentPage);
-    }, 280);
+    searchTimer=setTimeout(()=>{ currentPage=1; renderPage(filterArticles(),currentPage); },280);
   }
 
   // ── TOAST ──
   function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3000);
+    const t=document.getElementById('toast'); t.textContent=msg;
+    t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000);
   }
 
   // ── SUBSCRIBE ──
@@ -1766,190 +1214,206 @@
     const keyword = document.getElementById('alert-keyword').value.trim();
     if (!keyword) { showToast('Enter a keyword'); return; }
     try {
-      const res = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, keyword })
+      const res = await fetch('/api/subscribe',{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({email,keyword})
       });
       if (!res.ok) throw new Error();
-      document.getElementById('alert-status').style.display = 'block';
-      showToast('✓ Alert subscribed for: ' + keyword);
-      document.getElementById('alert-email').value   = '';
-      document.getElementById('alert-keyword').value = '';
-    } catch(e) {
-      showToast('Error subscribing. Check server.');
+      document.getElementById('alert-status').style.display='block';
+      showToast('✓ Alert subscribed for: '+keyword);
+      document.getElementById('alert-email').value='';
+      document.getElementById('alert-keyword').value='';
+    } catch(e) { showToast('Error subscribing. Check server.'); }
+  }
+
+  // ── CRS CALCULATOR (fully generic — works for anyone) ──
+  function calcCRS() {
+    const age     = parseInt(document.getElementById('c-age').value);
+    const edu     = parseInt(document.getElementById('c-edu').value);
+    const speak   = parseInt(document.getElementById('c-speak').value);
+    const listen  = parseInt(document.getElementById('c-listen').value);
+    const read    = parseInt(document.getElementById('c-read').value);
+    const write   = parseInt(document.getElementById('c-write').value);
+    const lang1   = speak+listen+read+write;
+    const speak2  = parseInt(document.getElementById('c-speak2').value);
+    const listen2 = parseInt(document.getElementById('c-listen2').value);
+    const read2   = parseInt(document.getElementById('c-read2').value);
+    const write2  = parseInt(document.getElementById('c-write2').value);
+    const lang2   = speak2+listen2+read2+write2;
+    const caWork  = parseInt(document.getElementById('c-ca-work').value);
+    const forWork = parseInt(document.getElementById('c-for-work').value);
+    const caEdu   = parseInt(document.getElementById('c-ca-edu').value);
+    const job     = parseInt(document.getElementById('c-job').value);
+    const pnp     = parseInt(document.getElementById('c-pnp').value);
+    const sibling = parseInt(document.getElementById('c-sibling').value);
+    const french  = parseInt(document.getElementById('c-french').value);
+
+    // Skill Transferability (max 100)
+    const avgLang = (speak+listen+read+write)/4;
+    let transfer = 0;
+    if (avgLang>=23 && edu>=135)  transfer+=25; else if (avgLang>=22 && edu>=120) transfer+=13;
+    if (avgLang>=23 && caWork>=40) transfer+=25; else if (avgLang>=22 && caWork>=40) transfer+=13;
+    if (edu>=135 && caWork>=40)    transfer+=25; else if (edu>=120 && caWork>=40)  transfer+=13;
+    if (forWork>=13 && avgLang>=23) transfer+=13; else if (forWork>=13 && avgLang>=22) transfer+=6;
+    if (forWork>=25 && caEdu>=30)  transfer+=25; else if (forWork>=13 && caEdu>=15) transfer+=13;
+    transfer = Math.min(transfer, 100);
+
+    const total = age+edu+lang1+lang2+caWork+forWork+caEdu+job+pnp+sibling+french+transfer;
+    const CUTOFF = 505;
+    const gap = CUTOFF - total;
+
+    // Score display
+    const resultEl = document.getElementById('crs-result');
+    resultEl.textContent = total;
+    resultEl.style.color = total>=CUTOFF ? 'var(--green)' : total>=460 ? 'var(--amber)' : 'var(--accent)';
+
+    // Score bar
+    document.getElementById('score-bar-fill').style.width = Math.min(total/1200*100,100)+'%';
+    document.getElementById('score-bar-fill').style.background = total>=CUTOFF ? 'var(--green)' : total>=460 ? 'var(--amber)' : 'var(--accent)';
+    document.getElementById('score-bar-marker').style.left = (CUTOFF/1200*100)+'%';
+    document.getElementById('bar-score').textContent = total;
+
+    // Verdict
+    const vEl = document.getElementById('crs-verdict');
+    if (total>=600) {
+      vEl.style.cssText='background:rgba(45,204,143,0.1);border:1px solid rgba(45,204,143,0.3);color:var(--green)';
+      vEl.innerHTML='🏆 Excellent! Very likely to receive ITA soon.';
+    } else if (total>=CUTOFF) {
+      vEl.style.cssText='background:rgba(45,204,143,0.1);border:1px solid rgba(45,204,143,0.3);color:var(--green)';
+      vEl.innerHTML=`✅ Above latest cutoff (~${CUTOFF}) — you may qualify now!`;
+    } else if (gap<=30) {
+      vEl.style.cssText='background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:var(--amber)';
+      vEl.innerHTML=`⚡ Only ${gap} pts below cutoff — small improvements will get you there!`;
+    } else if (gap<=80) {
+      vEl.style.cssText='background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:var(--amber)';
+      vEl.innerHTML=`📈 ${gap} pts below cutoff (~${CUTOFF}) — achievable with focused improvements.`;
+    } else {
+      vEl.style.cssText='background:rgba(232,84,58,0.1);border:1px solid rgba(232,84,58,0.3);color:var(--accent)';
+      vEl.innerHTML=`🎯 ${gap} pts below cutoff — see tips below to boost your score significantly.`;
     }
+
+    // Breakdown
+    const bk = [
+      ['🎂 Age',                          age],
+      ['🎓 Education',                     edu],
+      ['🗣 First Language (4 skills)',     lang1],
+      ['🌐 Second Language',               lang2],
+      ['🍁 Canadian Work Experience',      caWork],
+      ['🌍 Foreign Work Experience',       forWork],
+      ['🏫 Canadian Education',            caEdu],
+      ['🔄 Skill Transferability',         transfer],
+      ['💼 Job Offer',                     job],
+      ['🏔 Provincial Nomination (PNP)',   pnp],
+      ['👨‍👩‍👧 Sibling in Canada',            sibling],
+      ['🇫🇷 French Language Bonus',        french],
+    ];
+    document.getElementById('crs-breakdown').innerHTML = bk.map(b=>`
+      <div class="breakdown-row" style="${b[1]===0?'opacity:0.35':''}">
+        <span>${b[0]}</span>
+        <span class="breakdown-pts" style="color:${b[1]>0?'var(--accent2)':'var(--muted)'}">${b[1]>0?'+'+b[1]:'0'}</span>
+      </div>`).join('');
+
+    // Smart tips
+    const tips = [];
+    if (avgLang<23)    tips.push(['🎯','Improve language to CLB 9+',`Each skill at CLB 9 = 23 pts. Currently avg CLB ~${Math.round(avgLang)}. Try CELPIP 9 or IELTS 7.5.`]);
+    if (caWork===0)    tips.push(['💼','Get 1 year Canadian work experience','+40 pts immediately + unlocks CEC stream. Most impactful single change.']);
+    else if (caWork<80) tips.push(['💼','More Canadian work adds more points',`Each additional year adds 13–27 pts. Currently at ${caWork} pts.`]);
+    if (job===0)       tips.push(['📋','Get a valid Canadian job offer','NOC TEER 1/2/3 = +50 pts. Senior/manager role = +200 pts.']);
+    if (pnp===0)       tips.push(['🏔','Apply for Provincial Nomination (PNP)','+600 pts — virtually guarantees ITA. Check Ontario, BC, Alberta streams.']);
+    if (forWork===0)   tips.push(['🌍','Foreign work experience counts','1–2 years abroad = +13 pts. 3+ years = +25 pts.']);
+    if (lang2===0)     tips.push(['🇫🇷','Learn basic French','CLB 7+ French + English = +50 pts AND priority in French-only draws.']);
+    if (sibling===0)   tips.push(['👨‍👩‍👧','Sibling in Canada?','If you have a sibling who is a Canadian citizen or PR, claim +15 pts.']);
+    if (caEdu<30)      tips.push(['🏫','Canadian education adds points','Masters/PhD in Canada = +30 pts. Studying here already? Claim it!']);
+
+    document.getElementById('crs-tips').innerHTML = tips.slice(0,5).map(t=>`
+      <div class="tip-row">
+        <span style="font-size:18px;flex-shrink:0">${t[0]}</span>
+        <div>
+          <div style="font-weight:500;color:var(--text);margin-bottom:2px">${t[1]}</div>
+          <div style="color:var(--muted);font-size:11px;line-height:1.4">${t[2]}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  // ── PGWP CALCULATOR ──
+  function calcPGWP() {
+    const gradDate   = new Date(document.getElementById('grad-date').value);
+    const pgwpMonths = parseInt(document.getElementById('pgwp-length').value);
+    const province   = document.getElementById('target-province').value;
+    const addD = (d,days) => new Date(d.getTime()+days*86400000);
+    const addM = (d,m) => { const r=new Date(d); r.setMonth(r.getMonth()+m); return r; };
+    const fmt  = d => d.toLocaleDateString('en-CA',{year:'numeric',month:'short',day:'numeric'});
+    const daysFrom = d => Math.ceil((d-new Date())/86400000);
+
+    const pgwpDeadline  = addD(gradDate,180);
+    const pgwpExpiry    = addM(gradDate, pgwpMonths+3);
+    const cecEligible   = addM(gradDate, 15);
+    const eeProfile     = addM(cecEligible, 1);
+    const prApplication = addM(eeProfile, 3);
+    const prLanding     = addM(prApplication, 8);
+
+    const deadlines = [
+      {label:'PGWP Application Deadline', date:pgwpDeadline, urgent:daysFrom(pgwpDeadline)<60},
+      {label:'PGWP Expiry (est.)',         date:pgwpExpiry,   urgent:false},
+      {label:'CEC Eligible (1yr work)',    date:cecEligible,  urgent:false},
+      {label:'Enter EE Pool',              date:eeProfile,    urgent:false},
+      {label:'Estimated PR Landing',       date:prLanding,    urgent:false},
+    ];
+    document.getElementById('pgwp-deadlines').innerHTML = deadlines.map(d=>`
+      <div class="deadline-row ${d.urgent?'deadline-urgent':'deadline-ok'}">
+        <span class="deadline-label">${d.label}</span>
+        <span class="deadline-val">${fmt(d.date)}</span>
+      </div>`).join('');
+
+    const tl = [
+      {date:fmt(gradDate),          title:'Graduation 🎓',           desc:'Masters degree completed — apply PGWP within 180 days', status:'upcoming'},
+      {date:fmt(pgwpDeadline),      title:'PGWP Application Deadline ⚠', desc:'Last day to apply for PGWP after graduation', status:'upcoming'},
+      {date:fmt(addM(gradDate,3)),  title:'PGWP Received (est.)',    desc:`${pgwpMonths}-month open work permit — work any employer`, status:'upcoming'},
+      {date:fmt(cecEligible),       title:'1 Year Skilled Work ✅',  desc:'Eligible for Canadian Experience Class (CEC)', status:'upcoming'},
+      {date:fmt(eeProfile),         title:'Create EE Profile',       desc:'Enter Express Entry pool with full CRS score', status:'future'},
+      {date:fmt(prApplication),     title:'ITA & PR Application 🍁', desc:'Submit permanent residence application', status:'future'},
+      {date:fmt(prLanding),         title:'PR Landing 🎉',           desc:'Welcome as a Permanent Resident of Canada!', status:'future'},
+    ];
+    document.getElementById('pgwp-timeline').innerHTML = tl.map(t=>`
+      <div class="tl-item ${t.status}">
+        <div class="tl-dot"></div>
+        <div class="tl-content"><div class="tl-title">${t.title}</div><div class="tl-desc">${t.desc}</div></div>
+        <div class="tl-date">${t.date}</div>
+      </div>`).join('');
+
+    const streams = {
+      ontario:[
+        {name:'OINP Masters Graduate Stream', req:'Masters from Ontario university — no job offer required', status:'green', when:'After graduation'},
+        {name:'OINP Tech Draw (Human Capital)', req:'EE profile + tech NOC (21231 qualifies)', status:'green', when:'After 1yr work'},
+      ],
+      bc:[
+        {name:'BC Tech Pilot', req:'Job offer in BC tech sector, NOC 21231 qualifies', status:'amber', when:'Need BC job offer'},
+        {name:'BC International Graduate', req:'Graduated from BC institution', status:'blue', when:'Requires BC school'},
+      ],
+      alberta:[
+        {name:'Alberta Advantage Tech', req:'Tech NOC + Alberta job offer', status:'amber', when:'Need AB job offer'},
+      ],
+      any:[
+        {name:'Federal Skilled Worker (FSW)', req:'No Canadian experience needed', status:'green', when:'Available now'},
+        {name:'Canadian Experience Class (CEC)', req:'1yr Canadian skilled work', status:'green', when:'After 1yr PGWP work'},
+      ]
+    };
+    const myStreams = streams[province]||streams['any'];
+    document.getElementById('pnp-streams').innerHTML = myStreams.map(s=>`
+      <div class="rec-card ${s.status==='green'?'green':s.status==='amber'?'amber':'blue'}">
+        <div>
+          <div class="rec-title">${s.name}</div>
+          <div class="rec-desc">${s.req}</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--accent2);margin-top:4px">When: ${s.when}</div>
+        </div>
+      </div>`).join('');
   }
 
   // ── INIT ──
-  setInterval(loadNews, 10 * 60 * 1000);
+  setInterval(loadNews, 10*60*1000);
   loadNews();
-  // ── CRS CALCULATOR ──
-function calcCRS() {
-  const age     = parseInt(document.getElementById('c-age').value);
-  const edu     = parseInt(document.getElementById('c-edu').value);
-  const lang1   = parseInt(document.getElementById('c-lang1').value);
-  const caWork  = parseInt(document.getElementById('c-ca-work').value);
-  const forWork = parseInt(document.getElementById('c-for-work').value);
-  const pnp     = parseInt(document.getElementById('c-pnp').value);
-  const job     = parseInt(document.getElementById('c-job').value);
-  const caEdu   = parseInt(document.getElementById('c-ca-edu').value);
-  const sibling = parseInt(document.getElementById('c-sibling').value);
-
-  // Skill transferability bonus (simplified)
-  let transfer = 0;
-  if (lang1 >= 124 && edu >= 135) transfer += 25; // strong lang + masters
-  if (lang1 >= 124 && caWork >= 40) transfer += 25; // strong lang + CA work
-  if (edu >= 135 && forWork >= 13) transfer += 25;  // masters + foreign work
-
-  const total = age + edu + lang1 + caWork + forWork + pnp + job + caEdu + sibling + transfer;
-
-  document.getElementById('crs-result').textContent = total;
-
-  // Verdict
-  const verdictEl = document.getElementById('crs-verdict');
-  const latestCutoff = 505; // approximate recent cutoff
-  const gap = latestCutoff - total;
-  if (total >= latestCutoff) {
-    verdictEl.style.cssText = 'background:rgba(45,204,143,0.1);border:1px solid rgba(45,204,143,0.3);color:var(--green)';
-    verdictEl.textContent = `✅ Above latest cutoff (~${latestCutoff}) — you may qualify now!`;
-  } else if (gap <= 50) {
-    verdictEl.style.cssText = 'background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:var(--amber)';
-    verdictEl.textContent = `⚡ ${gap} points below cutoff — achievable with improvements`;
-  } else {
-    verdictEl.style.cssText = 'background:rgba(232,84,58,0.1);border:1px solid rgba(232,84,58,0.3);color:var(--accent)';
-    verdictEl.textContent = `📈 ${gap} points below cutoff — focus on the tips below`;
-  }
-
-  // Breakdown
-  const breakdown = [
-    ['Age (25)',             age],
-    ['Education (Masters)',  edu],
-    ['Language (CELPIP 7)', lang1],
-    ['Canadian Work Exp',   caWork],
-    ['Foreign Work Exp',    forWork],
-    ['Study in Canada',     caEdu],
-    ['Skill Transferability', transfer],
-    ['PNP Nomination',      pnp],
-    ['Job Offer',           job],
-    ['Sibling in Canada',   sibling],
-  ];
-  document.getElementById('crs-breakdown').innerHTML = breakdown
-    .filter(b => b[1] > 0)
-    .map(b => `
-      <div class="breakdown-row">
-        <span>${b[0]}</span>
-        <span class="breakdown-pts">+${b[1]}</span>
-      </div>`).join('');
-
-  // Tips
-  const tips = [];
-  if (lang1 < 128)  tips.push(['🎯', 'Improve CELPIP to 9+', 'CLB 10 gives +4 pts per skill = up to +32 pts']);
-  if (caWork === 0) tips.push(['💼', 'Get 1yr skilled Canadian work', '+40 pts for CEC eligibility']);
-  if (job === 0)    tips.push(['📋', 'Get a job offer (NOC 21231)', '+50 pts immediately']);
-  if (pnp === 0)    tips.push(['🏔', 'Apply for Ontario Masters Stream', '+600 pts — almost guaranteed PR']);
-  if (forWork === 0) tips.push(['🌍', 'Foreign work exp helps', '+13–25 pts for 1–3 years']);
-
-  document.getElementById('crs-tips').innerHTML = tips.map(t => `
-    <div class="tip-row">
-      <span style="font-size:16px">${t[0]}</span>
-      <div>
-        <div style="font-weight:500;color:var(--text)">${t[1]}</div>
-        <div style="color:var(--muted)">${t[2]}</div>
-      </div>
-    </div>`).join('');
-}
-
-// ── PGWP CALCULATOR ──
-function calcPGWP() {
-  const gradDate     = new Date(document.getElementById('grad-date').value);
-  const pgwpMonths   = parseInt(document.getElementById('pgwp-length').value);
-  const province     = document.getElementById('target-province').value;
-
-  const addDays    = (d, days)   => new Date(d.getTime() + days * 86400000);
-  const addMonths  = (d, months) => { const r = new Date(d); r.setMonth(r.getMonth() + months); return r; };
-  const fmt        = d => d.toLocaleDateString('en-CA', {year:'numeric',month:'short',day:'numeric'});
-  const daysFrom   = d => Math.ceil((d - new Date()) / 86400000);
-
-  const pgwpDeadline    = addDays(gradDate, 180);
-  const pgwpExpiry      = addMonths(gradDate, pgwpMonths + 3); // approx
-  const cecEligible     = addMonths(gradDate, pgwpMonths > 12 ? 15 : 15);
-  const eeProfile       = addMonths(cecEligible, 1);
-  const prApplication   = addMonths(eeProfile, 3);
-  const prLanding       = addMonths(prApplication, 8);
-
-  // Deadlines
-  const deadlines = [
-    { label: 'PGWP Application Deadline', date: pgwpDeadline, urgent: daysFrom(pgwpDeadline) < 60 },
-    { label: 'PGWP Expiry (est.)',         date: pgwpExpiry,   urgent: false },
-    { label: 'CEC Eligible (1yr work)',    date: cecEligible,  urgent: false },
-    { label: 'Enter EE Pool',              date: eeProfile,    urgent: false },
-    { label: 'Estimated PR Landing',       date: prLanding,    urgent: false },
-  ];
-
-  document.getElementById('pgwp-deadlines').innerHTML = deadlines.map(d => `
-    <div class="deadline-row ${d.urgent ? 'deadline-urgent' : 'deadline-ok'}">
-      <span class="deadline-label">${d.label}</span>
-      <span class="deadline-val">${fmt(d.date)}</span>
-    </div>`).join('');
-
-  // Timeline
-  const tlItems = [
-    { date: fmt(gradDate),          title: 'Graduation 🎓',              desc: 'Masters degree completed', status: 'upcoming' },
-    { date: fmt(pgwpDeadline),      title: 'PGWP Deadline ⚠',           desc: 'Must apply within 180 days of graduation', status: 'upcoming' },
-    { date: fmt(addMonths(gradDate,3)), title: 'PGWP Received (est.)',   desc: `${pgwpMonths}-month open work permit starts`, status: 'upcoming' },
-    { date: fmt(cecEligible),       title: '1 Year Skilled Work ✅',     desc: 'Now eligible for Canadian Experience Class', status: 'upcoming' },
-    { date: fmt(eeProfile),         title: 'Create EE Profile',          desc: 'Enter Express Entry pool with boosted CRS', status: 'future' },
-    { date: fmt(prApplication),     title: 'ITA & PR Application 🍁',   desc: 'Submit permanent residence application', status: 'future' },
-    { date: fmt(prLanding),         title: 'PR Landing (est.) 🎉',       desc: 'Welcome as a Permanent Resident of Canada!', status: 'future' },
-  ];
-
-  document.getElementById('pgwp-timeline').innerHTML = tlItems.map(t => `
-    <div class="tl-item ${t.status}">
-      <div class="tl-dot"></div>
-      <div class="tl-content">
-        <div class="tl-title">${t.title}</div>
-        <div class="tl-desc">${t.desc}</div>
-      </div>
-      <div class="tl-date">${t.date}</div>
-    </div>`).join('');
-
-  // PNP Streams
-  const streams = {
-    ontario: [
-      { name: 'OINP Masters Graduate Stream', req: 'Masters from Ontario university, job offer NOT required', status: 'green', when: 'After graduation Apr 2027' },
-      { name: 'OINP Tech Draw (Human Capital)', req: 'EE profile + tech NOC (21231 qualifies)', status: 'green', when: 'After 1yr work experience' },
-      { name: 'OINP French Speaking', req: 'French language skills', status: 'grey', when: 'N/A' },
-    ],
-    bc: [
-      { name: 'BC Tech Pilot', req: 'Job offer in BC tech sector, NOC 21231 qualifies', status: 'amber', when: 'Need BC job offer' },
-      { name: 'BC International Graduate', req: 'Graduated from BC institution', status: 'grey', when: 'Requires BC school' },
-    ],
-    alberta: [
-      { name: 'Alberta Advantage Tech', req: 'Tech NOC, Alberta job offer', status: 'amber', when: 'Need AB job offer' },
-    ],
-    any: [
-      { name: 'Federal Skilled Worker (FSW)', req: 'No Canadian experience needed', status: 'green', when: 'Available now' },
-      { name: 'Canadian Experience Class (CEC)', req: '1yr Canadian skilled work', status: 'green', when: 'After 1yr PGWP work' },
-    ]
-  };
-
-  const myStreams = streams[province] || streams['any'];
-  document.getElementById('pnp-streams').innerHTML = myStreams.map(s => `
-    <div class="rec-card ${s.status === 'green' ? 'green' : s.status === 'amber' ? 'amber' : 'blue'}">
-      <div>
-        <div class="rec-title">${s.name}</div>
-        <div class="rec-desc">${s.req}</div>
-        <div style="font-family:var(--mono);font-size:10px;color:var(--accent2);margin-top:4px">
-          When: ${s.when}
-        </div>
-      </div>
-    </div>`).join('');
-}
-
-// Init calculators on load
-calcCRS();
-calcPGWP();
+  calcCRS();
+  calcPGWP();
 </script>
 </body>
 </html>
