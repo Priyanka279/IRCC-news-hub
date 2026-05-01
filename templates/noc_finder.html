@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NOC Code Finder — IRCC News Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:      #0a0c0f;
+      --surface: #111318;
+      --card:    #161a22;
+      --border:  #232830;
+      --border2: #2e3540;
+      --accent:  #e8543a;
+      --accent2: #3a7bd5;
+      --green:   #2dcc8f;
+      --amber:   #f5a623;
+      --text:    #e8eaf0;
+      --muted:   #6b7280;
+      --mono:    'IBM Plex Mono', monospace;
+      --sans:    'IBM Plex Sans', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: var(--sans); font-size: 14px; line-height: 1.6;
+    }
+
+    /* ── HEADER ── */
+    header {
+      border-bottom: 1px solid var(--border); padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px; position: sticky; top: 0;
+      background: rgba(10,12,15,0.97); backdrop-filter: blur(8px); z-index: 100;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--mono); font-weight: 600;
+      font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent2); animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(58,123,213,0.4)} 50%{opacity:.7;box-shadow:0 0 0 6px rgba(58,123,213,0)} }
+    .back-btn {
+      background: var(--surface); border: 1px solid var(--border2); color: var(--muted);
+      padding: 6px 14px; border-radius: 4px; font-family: var(--mono); font-size: 11px;
+      cursor: pointer; text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em;
+      transition: all 0.15s;
+    }
+    .back-btn:hover { color: var(--text); border-color: var(--accent2); }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 2.5rem 2rem 0;
+      max-width: 900px; margin: 0 auto;
+    }
+    .hero-label {
+      font-family: var(--mono); font-size: 10px; text-transform: uppercase;
+      letter-spacing: 0.15em; color: var(--accent2); margin-bottom: 0.5rem;
+    }
+    .hero h1 {
+      font-size: 26px; font-weight: 600; color: var(--text);
+      margin-bottom: 0.5rem; line-height: 1.3;
+    }
+    .hero p { color: var(--muted); font-size: 13px; max-width: 560px; margin-bottom: 1.5rem; }
+
+    /* ── TEER LEGEND ── */
+    .teer-legend {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 2rem;
+    }
+    .teer-badge {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 5px; padding: 5px 10px;
+      font-family: var(--mono); font-size: 11px; cursor: pointer;
+      transition: all 0.12s; user-select: none;
+    }
+    .teer-badge:hover, .teer-badge.active { border-color: var(--accent2); }
+    .teer-badge.active { background: rgba(58,123,213,0.1); color: var(--accent2); }
+    .teer-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .t0 { background: #2dcc8f; }
+    .t1 { background: #3a7bd5; }
+    .t2 { background: #9b6fd4; }
+    .t3 { background: #f5a623; }
+    .t4 { background: #e8543a; }
+    .t5 { background: #6b7280; }
+
+    /* ── SEARCH BAR ── */
+    .search-section { max-width: 900px; margin: 0 auto; padding: 0 2rem 1.5rem; }
+    .search-wrap { position: relative; margin-bottom: 1rem; }
+    .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); opacity: 0.4; pointer-events: none; }
+    #noc-search {
+      width: 100%; background: var(--surface); border: 1px solid var(--border2);
+      color: var(--text); padding: 12px 40px 12px 42px;
+      border-radius: 6px; font-family: var(--sans); font-size: 14px;
+      transition: border-color 0.15s;
+    }
+    #noc-search:focus { outline: none; border-color: var(--accent2); }
+    #noc-search::placeholder { color: var(--muted); }
+    .clear-search {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: var(--muted); cursor: pointer;
+      font-size: 16px; line-height: 1; display: none; padding: 4px;
+    }
+    .clear-search:hover { color: var(--text); }
+
+    /* ── RESULTS META ── */
+    .results-meta {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 0.75rem; flex-wrap: wrap; gap: 8px;
+    }
+    .results-count { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+    .results-count span { color: var(--accent2); }
+    .sort-wrap { display: flex; gap: 6px; }
+    .sort-btn {
+      background: var(--surface); border: 1px solid var(--border); color: var(--muted);
+      padding: 4px 10px; border-radius: 4px; font-family: var(--mono); font-size: 10px;
+      cursor: pointer; text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.12s;
+    }
+    .sort-btn.active { border-color: var(--accent2); color: var(--accent2); }
+
+    /* ── RESULTS GRID ── */
+    .results-grid { max-width: 900px; margin: 0 auto; padding: 0 2rem 4rem; }
+    #noc-results { display: grid; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+
+    /* ── NOC CARD ── */
+    .noc-card {
+      background: var(--card); padding: 1rem 1.25rem;
+      display: grid; grid-template-columns: 1fr auto;
+      gap: 0.75rem; cursor: pointer; transition: background 0.12s;
+      border: none; width: 100%; text-align: left; color: inherit;
+    }
+    .noc-card:hover { background: var(--surface); }
+    .noc-card.expanded { background: var(--surface); }
+
+    .card-main { min-width: 0; }
+    .card-top { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; flex-wrap: wrap; }
+
+    .noc-code {
+      font-family: var(--mono); font-size: 13px; font-weight: 600;
+      color: var(--accent2); letter-spacing: 0.05em;
+    }
+    .teer-chip {
+      font-family: var(--mono); font-size: 10px; text-transform: uppercase;
+      letter-spacing: 0.08em; padding: 2px 7px; border-radius: 3px;
+    }
+    .teer-chip.t0 { background: rgba(45,204,143,0.15); color: #2dcc8f; }
+    .teer-chip.t1 { background: rgba(58,123,213,0.15); color: #3a7bd5; }
+    .teer-chip.t2 { background: rgba(155,111,212,0.15); color: #9b6fd4; }
+    .teer-chip.t3 { background: rgba(245,166,35,0.15); color: #f5a623; }
+    .teer-chip.t4 { background: rgba(232,84,58,0.15); color: #e8543a; }
+    .teer-chip.t5 { background: rgba(107,114,128,0.2); color: #6b7280; }
+
+    .ee-badge {
+      font-family: var(--mono); font-size: 10px; padding: 2px 7px; border-radius: 3px;
+      background: rgba(45,204,143,0.12); color: var(--green);
+      border: 1px solid rgba(45,204,143,0.25);
+    }
+    .no-ee-badge {
+      font-family: var(--mono); font-size: 10px; padding: 2px 7px; border-radius: 3px;
+      background: rgba(107,114,128,0.12); color: var(--muted);
+    }
+
+    .cat-tag {
+      font-family: var(--mono); font-size: 10px; color: var(--muted);
+      border: 1px solid var(--border); padding: 2px 7px; border-radius: 3px;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+
+    .noc-title { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+    .noc-card:hover .noc-title { color: #fff; }
+    .noc-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+    .card-right {
+      display: flex; flex-direction: column; align-items: flex-end;
+      justify-content: space-between; min-width: 90px; gap: 8px;
+    }
+    .crs-impact {
+      text-align: right;
+      font-family: var(--mono); font-size: 11px; color: var(--muted);
+    }
+    .crs-impact .crs-val { font-size: 14px; font-weight: 600; color: var(--green); display: block; }
+    .expand-icon { opacity: 0.3; font-size: 12px; transition: all 0.15s; font-family: var(--mono); }
+    .noc-card:hover .expand-icon, .noc-card.expanded .expand-icon { opacity: 1; }
+    .noc-card.expanded .expand-icon { transform: rotate(90deg); color: var(--accent2); }
+
+    /* ── EXPANDED DETAIL ── */
+    .noc-detail {
+      display: none; background: var(--bg);
+      border-top: 1px solid var(--border); padding: 1.25rem;
+      animation: slideDown 0.15s ease;
+    }
+    .noc-detail.open { display: block; }
+    @keyframes slideDown { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:translateY(0); } }
+
+    .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+    .detail-box {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 5px; padding: 0.85rem;
+    }
+    .detail-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 4px; }
+    .detail-val { font-size: 13px; color: var(--text); font-weight: 500; }
+    .detail-val.highlight { color: var(--accent2); font-family: var(--mono); font-size: 16px; }
+    .detail-val.green { color: var(--green); }
+
+    .duties-list { margin: 0; padding: 0 0 0 1rem; }
+    .duties-list li { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+    .action-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 0.75rem; }
+    .action-btn {
+      background: none; border: 1px solid var(--border2); color: var(--muted);
+      padding: 6px 14px; border-radius: 4px; font-family: var(--mono); font-size: 11px;
+      cursor: pointer; transition: all 0.15s; text-decoration: none;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .action-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+    .action-btn.primary { background: var(--accent2); border-color: var(--accent2); color: #fff; }
+    .action-btn.primary:hover { opacity: 0.85; }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      padding: 4rem 2rem; text-align: center;
+      color: var(--muted); font-family: var(--mono); font-size: 13px;
+    }
+    .empty-state .big { font-size: 32px; margin-bottom: 0.5rem; }
+
+    /* ── BOTTOM INFO STRIP ── */
+    .info-strip {
+      max-width: 900px; margin: 0 auto; padding: 0 2rem 2rem;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;
+    }
+    .info-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 1rem; }
+    .info-card h4 { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent2); margin-bottom: 0.5rem; }
+    .info-card p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed; bottom: 24px; right: 24px; background: var(--surface);
+      border: 1px solid var(--green); color: var(--green); padding: 10px 16px;
+      border-radius: 5px; font-family: var(--mono); font-size: 12px;
+      opacity: 0; transform: translateY(10px); transition: all 0.2s;
+      pointer-events: none; z-index: 999;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 600px) {
+      header { padding: 0 1rem; }
+      .hero, .search-section, .results-grid, .info-strip { padding-left: 1rem; padding-right: 1rem; }
+      .noc-card { grid-template-columns: 1fr; }
+      .card-right { flex-direction: row; align-items: center; justify-content: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    NOC Code Finder
+  </div>
+  <a href="/" class="back-btn">← Back to News</a>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">Express Entry — National Occupational Classification</div>
+  <h1>Find Your NOC Code & TEER Level</h1>
+  <p>Search by job title or NOC code. Know your TEER level, Express Entry eligibility, and exact CRS point impact before you apply.</p>
+
+  <!-- TEER Legend / Filter -->
+  <div class="teer-legend">
+    <div class="teer-badge active" data-teer="all" onclick="filterTEER(this, 'all')">
+      <span class="teer-dot" style="background:var(--muted)"></span> All TEER Levels
+    </div>
+    <div class="teer-badge" data-teer="0" onclick="filterTEER(this, '0')">
+      <span class="teer-dot t0"></span> TEER 0 — Management
+    </div>
+    <div class="teer-badge" data-teer="1" onclick="filterTEER(this, '1')">
+      <span class="teer-dot t1"></span> TEER 1 — University
+    </div>
+    <div class="teer-badge" data-teer="2" onclick="filterTEER(this, '2')">
+      <span class="teer-dot t2"></span> TEER 2 — College/Apprenticeship
+    </div>
+    <div class="teer-badge" data-teer="3" onclick="filterTEER(this, '3')">
+      <span class="teer-dot t3"></span> TEER 3 — Training (6mo+)
+    </div>
+    <div class="teer-badge" data-teer="4" onclick="filterTEER(this, '4')">
+      <span class="teer-dot t4"></span> TEER 4 — Some HS
+    </div>
+    <div class="teer-badge" data-teer="5" onclick="filterTEER(this, '5')">
+      <span class="teer-dot t5"></span> TEER 5 — No formal
+    </div>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-section">
+  <div class="search-wrap">
+    <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M11 11L15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <input type="text" id="noc-search" placeholder="Search by job title (e.g. software engineer, nurse, plumber)…" oninput="handleSearch(this.value)"/>
+    <button class="clear-search" id="clear-btn" onclick="clearSearch()">✕</button>
+  </div>
+
+  <div class="results-meta">
+    <div class="results-count">Showing <span id="result-count">—</span> occupations</div>
+    <div class="sort-wrap">
+      <button class="sort-btn active" onclick="sortBy(this, 'teer')">By TEER</button>
+      <button class="sort-btn" onclick="sortBy(this, 'code')">By Code</button>
+      <button class="sort-btn" onclick="sortBy(this, 'alpha')">A–Z</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="results-grid">
+  <div id="noc-results">
+    <div class="empty-state"><div class="big">🔍</div>Loading NOC database…</div>
+  </div>
+</div>
+
+<!-- INFO STRIP -->
+<div class="info-strip">
+  <div class="info-card">
+    <h4>What is TEER?</h4>
+    <p>Training, Education, Experience and Responsibilities. TEER 0–3 qualifies for Express Entry. TEER 4–5 does not qualify for FSW/CEC streams.</p>
+  </div>
+  <div class="info-card">
+    <h4>CRS Points from Work</h4>
+    <p>Canadian work in TEER 0–3: up to 80 pts (3+ yrs). Foreign work in TEER 0–3: up to 40 pts. Work outside TEER 0–3 = 0 pts in Express Entry.</p>
+  </div>
+  <div class="info-card">
+    <h4>Job Offer Bonus</h4>
+    <p>Valid LMIA-backed job offer in TEER 1/2/3 = +50 CRS pts. Senior manager or C-suite (NOC 00) = +200 CRS pts.</p>
+  </div>
+  <div class="info-card">
+    <h4>Skilled Trades (TEER 2)</h4>
+    <p>Electricians, plumbers, welders qualify under Federal Skilled Trades (FST) stream. Different eligibility rules than FSW — no post-secondary needed.</p>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── NOC DATABASE ─────────────────────────────────────────────────────────────
+// Comprehensive list — you can extend this or load from /api/noc-search
+const NOC_DB = [
+  // TECH — TEER 1
+  { code:"21231", title:"Software Engineers and Designers",         teer:1, category:"Technology",    ee:true,  duties:["Design software systems","Write code and review pull requests","Lead technical teams","Architect cloud solutions"], exampleJobs:["Software Engineer","Backend Developer","Full Stack Developer","Cloud Architect"] },
+  { code:"21232", title:"Software Developers and Programmers",      teer:1, category:"Technology",    ee:true,  duties:["Develop applications","Debug and test software","Write documentation","Collaborate in agile teams"], exampleJobs:["Junior Developer","Python Developer","Mobile App Developer",".NET Developer"] },
+  { code:"21233", title:"Web Designers",                            teer:1, category:"Technology",    ee:true,  duties:["Design UI/UX interfaces","Build responsive websites","Create design systems","Conduct user research"], exampleJobs:["UX Designer","Web Designer","Frontend Designer","UI Developer"] },
+  { code:"21220", title:"Cybersecurity Specialists",                teer:1, category:"Technology",    ee:true,  duties:["Monitor security systems","Conduct penetration testing","Respond to incidents","Develop security policies"], exampleJobs:["Security Analyst","Penetration Tester","CISO","InfoSec Engineer"] },
+  { code:"21211", title:"Data Scientists",                          teer:1, category:"Technology",    ee:true,  duties:["Build ML models","Analyze large datasets","Create visualizations","Present findings to stakeholders"], exampleJobs:["Data Scientist","ML Engineer","AI Researcher","Analytics Lead"] },
+  { code:"21222", title:"Database Analysts and Data Administrators",teer:1, category:"Technology",    ee:true,  duties:["Design and maintain databases","Write complex queries","Optimize performance","Manage backups"], exampleJobs:["DBA","Data Engineer","SQL Developer","Data Architect"] },
+  { code:"21221", title:"Business Systems Specialists",             teer:1, category:"Technology",    ee:true,  duties:["Analyze business processes","Implement ERP systems","Bridge IT and business","Document requirements"], exampleJobs:["Business Analyst","Systems Analyst","ERP Consultant","IT Business Partner"] },
+  { code:"21230", title:"Computer and Information Systems Managers",teer:0, category:"Technology",    ee:true,  duties:["Lead IT departments","Manage technology budgets","Set technical strategy","Hire and mentor teams"], exampleJobs:["CTO","IT Director","VP Engineering","Head of IT"] },
+  { code:"21223", title:"Web Developers and Programmers",           teer:1, category:"Technology",    ee:true,  duties:["Build and maintain websites","Frontend and backend development","API integration","Performance optimization"], exampleJobs:["Web Developer","React Developer","WordPress Developer","Django Developer"] },
+  { code:"22221", title:"Computer Network Technicians",             teer:2, category:"Technology",    ee:true,  duties:["Install network equipment","Troubleshoot connectivity","Manage VPNs","Monitor network performance"], exampleJobs:["Network Technician","IT Support","Sysadmin","Network Admin"] },
+
+  // ENGINEERING — TEER 1
+  { code:"21300", title:"Civil Engineers",                          teer:1, category:"Engineering",   ee:true,  duties:["Design infrastructure","Manage construction projects","Review structural drawings","Ensure code compliance"], exampleJobs:["Civil Engineer","Structural Engineer","Project Engineer","Site Engineer"] },
+  { code:"21310", title:"Mechanical Engineers",                     teer:1, category:"Engineering",   ee:true,  duties:["Design mechanical systems","Run simulations and FEA","Manage product development","Oversee manufacturing"], exampleJobs:["Mechanical Engineer","Design Engineer","Product Engineer","HVAC Engineer"] },
+  { code:"21320", title:"Electrical and Electronics Engineers",     teer:1, category:"Engineering",   ee:true,  duties:["Design electrical systems","Develop circuit boards","Test and validate systems","Manage electrical projects"], exampleJobs:["Electrical Engineer","Electronics Engineer","Embedded Systems Engineer"] },
+  { code:"21330", title:"Chemical Engineers",                       teer:1, category:"Engineering",   ee:true,  duties:["Design chemical processes","Scale up production","Ensure safety compliance","Optimize process efficiency"], exampleJobs:["Chemical Engineer","Process Engineer","Refinery Engineer"] },
+
+  // HEALTHCARE — TEER 1/2
+  { code:"31100", title:"Specialists in Clinical Nursing",          teer:1, category:"Healthcare",    ee:true,  duties:["Provide specialized nursing care","Lead clinical teams","Educate patients","Conduct research"], exampleJobs:["Nurse Practitioner","Clinical Nurse Specialist","ICU Nurse Lead"] },
+  { code:"31102", title:"General Practitioners and Family Physicians",teer:1,category:"Healthcare",   ee:true,  duties:["Diagnose and treat patients","Prescribe medications","Refer to specialists","Conduct preventive care"], exampleJobs:["Family Doctor","GP","Primary Care Physician"] },
+  { code:"31301", title:"Registered Nurses",                        teer:1, category:"Healthcare",    ee:true,  duties:["Assess patient conditions","Administer medications","Collaborate with physicians","Document care plans"], exampleJobs:["RN","Staff Nurse","ER Nurse","OR Nurse"] },
+  { code:"32101", title:"Licensed Practical Nurses",                teer:2, category:"Healthcare",    ee:true,  duties:["Assist with patient care","Monitor vital signs","Administer treatments","Support registered nurses"], exampleJobs:["LPN","Practical Nurse"] },
+  { code:"31112", title:"Pharmacists",                              teer:1, category:"Healthcare",    ee:true,  duties:["Dispense medications","Counsel patients on drug use","Review prescriptions","Manage drug inventory"], exampleJobs:["Pharmacist","Clinical Pharmacist","Hospital Pharmacist"] },
+
+  // BUSINESS / FINANCE — TEER 1
+  { code:"11100", title:"Financial Auditors and Accountants",       teer:1, category:"Business",      ee:true,  duties:["Prepare financial statements","Conduct audits","Ensure tax compliance","Advise on financial matters"], exampleJobs:["CPA","Auditor","Tax Accountant","Controller"] },
+  { code:"11101", title:"Financial Analysts and Advisors",          teer:1, category:"Business",      ee:true,  duties:["Analyze investment opportunities","Build financial models","Advise clients","Prepare research reports"], exampleJobs:["Financial Analyst","Investment Advisor","Equity Research Analyst"] },
+  { code:"10010", title:"Financial Managers",                       teer:0, category:"Business",      ee:true,  duties:["Oversee financial operations","Develop budgets","Lead finance teams","Report to board"], exampleJobs:["CFO","Finance Director","VP Finance","Controller"] },
+  { code:"13100", title:"Administrative Officers",                  teer:1, category:"Business",      ee:true,  duties:["Coordinate office activities","Manage administrative staff","Develop office procedures","Prepare reports"], exampleJobs:["Office Manager","Executive Assistant","Admin Coordinator"] },
+
+  // TRADES — TEER 2
+  { code:"72010", title:"Electricians (Except Industrial and Power System)",teer:2, category:"Trades",ee:true,  duties:["Install electrical systems","Read blueprints","Troubleshoot electrical faults","Ensure safety compliance"], exampleJobs:["Electrician","Journeyman Electrician","Master Electrician"] },
+  { code:"72020", title:"Plumbers",                                 teer:2, category:"Trades",        ee:true,  duties:["Install plumbing systems","Repair pipes and fixtures","Read blueprints","Inspect plumbing work"], exampleJobs:["Plumber","Journeyman Plumber","Master Plumber"] },
+  { code:"72410", title:"Automotive Service Technicians",           teer:2, category:"Trades",        ee:true,  duties:["Diagnose vehicle issues","Perform repairs and maintenance","Use diagnostic equipment","Advise customers"], exampleJobs:["Auto Mechanic","Service Technician","Car Technician"] },
+  { code:"72200", title:"Welders and Related Machine Operators",    teer:2, category:"Trades",        ee:true,  duties:["Weld metal components","Read technical drawings","Inspect weld quality","Operate welding equipment"], exampleJobs:["Welder","CWB Certified Welder","TIG/MIG Welder"] },
+  { code:"73200", title:"Residential and Commercial Installers",    teer:3, category:"Trades",        ee:true,  duties:["Install HVAC units","Set up appliances","Run ductwork","Commission installed systems"], exampleJobs:["HVAC Installer","Appliance Installer"] },
+
+  // EDUCATION — TEER 1
+  { code:"41220", title:"Secondary School Teachers",                teer:1, category:"Education",     ee:true,  duties:["Teach curriculum subjects","Assess student progress","Develop lesson plans","Mentor students"], exampleJobs:["High School Teacher","Secondary Teacher","Subject Teacher"] },
+  { code:"41221", title:"Elementary School Teachers",               teer:1, category:"Education",     ee:true,  duties:["Teach foundational subjects","Manage classrooms","Communicate with parents","Create inclusive environments"], exampleJobs:["Elementary Teacher","Primary Teacher","Grade School Teacher"] },
+  { code:"41200", title:"University Professors and Lecturers",      teer:1, category:"Education",     ee:true,  duties:["Teach undergraduate/graduate courses","Conduct research","Publish papers","Supervise graduate students"], exampleJobs:["Professor","Lecturer","Research Faculty","Postdoc"] },
+
+  // SOCIAL SERVICES — TEER 1
+  { code:"41301", title:"Social Workers",                           teer:1, category:"Social Services",ee:true, duties:["Assess client needs","Provide counseling","Connect clients to resources","Advocate for vulnerable populations"], exampleJobs:["Social Worker","MSW","Child Protection Worker","Case Manager"] },
+
+  // HOSPITALITY / RETAIL — TEER 3/4
+  { code:"62010", title:"Retail Sales Supervisors",                 teer:3, category:"Retail",        ee:true,  duties:["Supervise sales staff","Train new employees","Handle customer complaints","Manage inventory"], exampleJobs:["Retail Supervisor","Store Supervisor","Department Lead"] },
+  { code:"62020", title:"Retail Salespersons",                      teer:4, category:"Retail",        ee:false, duties:["Assist customers","Process transactions","Restock shelves","Maintain store appearance"], exampleJobs:["Retail Associate","Sales Associate","Store Clerk"] },
+  { code:"63100", title:"Food Service Supervisors",                 teer:3, category:"Hospitality",   ee:true,  duties:["Supervise kitchen and front-of-house staff","Schedule workers","Ensure food safety","Train employees"], exampleJobs:["Restaurant Supervisor","Shift Supervisor","Food Service Lead"] },
+  { code:"65200", title:"Food Counter Attendants and Kitchen Helpers",teer:5,category:"Hospitality",  ee:false, duties:["Prepare simple food items","Serve customers","Clean workstations","Restock supplies"], exampleJobs:["Cashier","Kitchen Helper","Fast Food Worker","Food Counter Attendant"] },
+  { code:"64100", title:"Home Support Workers and Caregivers",      teer:4, category:"Healthcare",    ee:false, duties:["Assist with daily living activities","Provide personal care","Prepare meals","Accompany clients to appointments"], exampleJobs:["PSW","Caregiver","Home Support Worker","Nanny"] },
+
+  // TRANSPORT
+  { code:"73300", title:"Transport Truck Drivers",                  teer:3, category:"Transport",     ee:true,  duties:["Drive long-haul trucks","Maintain driving logs","Inspect vehicles pre/post trip","Deliver goods on schedule"], exampleJobs:["Truck Driver","Long-Haul Driver","AZ Driver"] },
+  { code:"74100", title:"Delivery Service Drivers and Couriers",    teer:4, category:"Transport",     ee:false, duties:["Deliver packages","Plan delivery routes","Handle customer interaction","Maintain vehicle"], exampleJobs:["Courier","Delivery Driver","Mail Carrier"] },
+];
+
+// CRS work experience points by TEER
+const CRS_POINTS = {
+  0: { canadian: { 1:40, 2:53, 3:64 }, foreign: { 1:13, 2:25 } },
+  1: { canadian: { 1:40, 2:53, 3:64 }, foreign: { 1:13, 2:25 } },
+  2: { canadian: { 1:40, 2:53, 3:64 }, foreign: { 1:13, 2:25 } },
+  3: { canadian: { 1:40, 2:53, 3:64 }, foreign: { 1:13, 2:25 } },
+  4: { canadian: null, foreign: null },
+  5: { canadian: null, foreign: null },
+};
+
+const TEER_LABELS = {
+  0: "Senior Management",
+  1: "University degree required",
+  2: "College diploma / apprenticeship",
+  3: "Training over 6 months",
+  4: "Some high school",
+  5: "No formal credential"
+};
+
+const TEER_EE = {
+  0: true, 1: true, 2: true, 3: true, 4: false, 5: false
+};
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let query     = "";
+let teerFilter = "all";
+let sortMode   = "teer";
+let expanded   = null;
+
+// ── RENDER ───────────────────────────────────────────────────────────────────
+function getFiltered() {
+  let data = [...NOC_DB];
+  if (teerFilter !== "all") {
+    data = data.filter(n => n.teer === parseInt(teerFilter));
+  }
+  if (query.trim()) {
+    const q = query.toLowerCase();
+    data = data.filter(n =>
+      n.title.toLowerCase().includes(q)   ||
+      n.code.includes(q)                   ||
+      n.category.toLowerCase().includes(q) ||
+      (n.exampleJobs && n.exampleJobs.some(j => j.toLowerCase().includes(q)))
+    );
+  }
+  if (sortMode === "code")  data.sort((a,b) => a.code.localeCompare(b.code));
+  if (sortMode === "alpha") data.sort((a,b) => a.title.localeCompare(b.title));
+  if (sortMode === "teer")  data.sort((a,b) => a.teer - b.teer || a.title.localeCompare(b.title));
+  return data;
+}
+
+function crsLabel(teer) {
+  if (teer >= 4) return { val: "0 pts", note: "Not EE eligible" };
+  const pts = CRS_POINTS[teer];
+  return { val: `+40–64`, note: "Canadian work (1–3yrs)" };
+}
+
+function renderResults() {
+  const data = getFiltered();
+  document.getElementById('result-count').textContent = data.length;
+  const container = document.getElementById('noc-results');
+
+  if (!data.length) {
+    container.innerHTML = `<div class="empty-state"><div class="big">🤔</div>No occupations found for "<strong>${query}</strong>".<br><span style="font-size:12px;margin-top:4px;display:block">Try a broader term like "engineer", "nurse", or "developer".</span></div>`;
+    return;
+  }
+
+  container.innerHTML = data.map(n => {
+    const crs    = crsLabel(n.teer);
+    const isOpen = expanded === n.code;
+    const jobs   = (n.exampleJobs || []).slice(0, 3).join(', ');
+
+    return `
+    <div>
+      <button class="noc-card ${isOpen ? 'expanded' : ''}" onclick="toggle('${n.code}')">
+        <div class="card-main">
+          <div class="card-top">
+            <span class="noc-code">${n.code}</span>
+            <span class="teer-chip t${n.teer}">TEER ${n.teer}</span>
+            ${n.ee ? '<span class="ee-badge">✓ EE Eligible</span>' : '<span class="no-ee-badge">No EE</span>'}
+            <span class="cat-tag">${n.category}</span>
+          </div>
+          <div class="noc-title">${highlight(n.title)}</div>
+          <div class="noc-desc">${jobs ? 'e.g. ' + highlight(jobs) : TEER_LABELS[n.teer]}</div>
+        </div>
+        <div class="card-right">
+          <div class="crs-impact">
+            <span class="crs-val" style="color:${n.ee ? 'var(--green)' : 'var(--muted)'}">${crs.val}</span>
+            ${crs.note}
+          </div>
+          <span class="expand-icon">▶</span>
+        </div>
+      </button>
+
+      <div class="noc-detail ${isOpen ? 'open' : ''}" id="detail-${n.code}">
+        <div class="detail-grid">
+          <div class="detail-box">
+            <div class="detail-label">NOC Code</div>
+            <div class="detail-val highlight">${n.code}</div>
+          </div>
+          <div class="detail-box">
+            <div class="detail-label">TEER Level</div>
+            <div class="detail-val">${n.teer} — ${TEER_LABELS[n.teer]}</div>
+          </div>
+          <div class="detail-box">
+            <div class="detail-label">Express Entry</div>
+            <div class="detail-val ${n.ee ? 'green' : ''}">${n.ee ? '✓ Qualifies for FSW, CEC' : '✗ Does not qualify'}</div>
+          </div>
+          <div class="detail-box">
+            <div class="detail-label">Canadian Work CRS</div>
+            <div class="detail-val ${n.ee ? 'green' : ''}">
+              ${n.ee ? '1yr: +40 pts &nbsp;|&nbsp; 2yr: +53 pts &nbsp;|&nbsp; 3yr+: +64 pts' : 'Not counted in EE pool'}
+            </div>
+          </div>
+          <div class="detail-box">
+            <div class="detail-label">Foreign Work CRS</div>
+            <div class="detail-val ${n.ee ? 'green' : ''}">
+              ${n.ee ? '1–2yr: +13 pts &nbsp;|&nbsp; 3yr+: +25 pts' : 'Not counted in EE pool'}
+            </div>
+          </div>
+          <div class="detail-box">
+            <div class="detail-label">Job Offer Bonus</div>
+            <div class="detail-val">${n.teer === 0 ? '+200 CRS pts (senior management)' : n.ee ? '+50 CRS pts (LMIA or exempt)' : 'N/A for Express Entry'}</div>
+          </div>
+        </div>
+
+        ${n.duties && n.duties.length ? `
+        <div style="margin-bottom:0.75rem">
+          <div class="detail-label" style="margin-bottom:0.4rem">Key Duties</div>
+          <ul class="duties-list">${n.duties.map(d => `<li>${d}</li>`).join('')}</ul>
+        </div>` : ''}
+
+        ${n.exampleJobs && n.exampleJobs.length ? `
+        <div style="margin-bottom:0.75rem">
+          <div class="detail-label" style="margin-bottom:0.4rem">Example Job Titles</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            ${n.exampleJobs.map(j => `<span style="background:var(--surface);border:1px solid var(--border);padding:3px 9px;border-radius:3px;font-size:12px;color:var(--muted)">${j}</span>`).join('')}
+          </div>
+        </div>` : ''}
+
+        <div class="action-row">
+          <a class="action-btn primary" href="https://noc.esdc.gc.ca/Structure/NocProfile?objectid=${n.code}" target="_blank" rel="noopener">
+            View on ESDC →
+          </a>
+          <button class="action-btn" onclick="copyCode('${n.code}')">Copy NOC Code</button>
+          <a class="action-btn" href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/eligibility/federal-skilled-workers.html" target="_blank" rel="noopener">
+            FSW Requirements
+          </a>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function highlight(text) {
+  if (!query.trim()) return text;
+  const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+  return text.replace(re, '<mark style="background:rgba(58,123,213,0.3);color:var(--accent2);border-radius:2px;padding:0 1px">$1</mark>');
+}
+
+// ── INTERACTIONS ─────────────────────────────────────────────────────────────
+function toggle(code) {
+  expanded = expanded === code ? null : code;
+  renderResults();
+  if (expanded) {
+    setTimeout(() => {
+      const el = document.getElementById(`detail-${code}`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 50);
+  }
+}
+
+function handleSearch(val) {
+  query = val;
+  document.getElementById('clear-btn').style.display = val ? 'block' : 'none';
+  expanded = null;
+  renderResults();
+}
+
+function clearSearch() {
+  document.getElementById('noc-search').value = '';
+  query = '';
+  document.getElementById('clear-btn').style.display = 'none';
+  expanded = null;
+  renderResults();
+}
+
+function filterTEER(btn, val) {
+  document.querySelectorAll('.teer-badge').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  teerFilter = val;
+  expanded   = null;
+  renderResults();
+}
+
+function sortBy(btn, mode) {
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  sortMode = mode;
+  renderResults();
+}
+
+function copyCode(code) {
+  navigator.clipboard.writeText(code).then(() => showToast(`NOC ${code} copied!`));
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+renderResults();
+</script>
+</body>
+</html>

@@ -14,6 +14,9 @@ app = Flask(__name__)
 init_db()
 start_scheduler()
 
+@app.route("/noc")
+def noc():
+    return render_template("noc_finder.html")
 
 def get_db():
     conn = sqlite3.connect(DB_PATH, timeout=10)
