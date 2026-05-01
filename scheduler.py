@@ -1,23 +1,10 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.triggers.cron import CronTrigger
-from fetcher import fetch_rss
-from email_alerts import check_and_send_alerts
-from telegram_alerts import check_and_send_telegram_alerts
-from daily_digest import send_daily_digest
-from processing_times import scrape_processing_times
-from telegram_alerts import check_and_send_telegram_alerts, send_latest_news_digest
+import requests as req
+import os
 
 _is_running = False
-
-import requests as req
-
-def ping_self():
-    try:
-        req.get("https://ircc-news-hub.onrender.com", timeout=10)
-        print("[ping] Self-ping sent.")
-    except:
-        pass
 
 
 def run_all():
@@ -27,7 +14,14 @@ def run_all():
         return
     _is_running = True
     try:
+        from fetcher import fetch_rss
+        from draw_scraper import fetch_and_save_draws
+        from email_alerts import check_and_send_alerts
+        from telegram_alerts import check_and_send_telegram_alerts, send_latest_news_digest
+        from processing_times import scrape_processing_times
+
         fetch_rss()
+        fetch_and_save_draws()      # ← NEW: scrape draws every cycle
         check_and_send_alerts()
         check_and_send_telegram_alerts()
         send_latest_news_digest()
@@ -35,20 +29,30 @@ def run_all():
     finally:
         _is_running = False
 
+
+def ping_self():
+    url = os.getenv("RENDER_URL", "")
+    if not url:
+        return
+    try:
+        req.get(url, timeout=10)
+        print("[ping] Self-ping sent.")
+    except Exception:
+        pass
+
+
 def start_scheduler():
     executors    = {"default": ThreadPoolExecutor(1)}
     job_defaults = {"max_instances": 1, "coalesce": True}
-    scheduler = BackgroundScheduler(executors=executors, job_defaults=job_defaults)
+    scheduler    = BackgroundScheduler(executors=executors, job_defaults=job_defaults)
 
-    # Every 30 min — fetch + alerts
-    scheduler.add_job(run_all, "interval", minutes=30)
+    scheduler.add_job(run_all,     "interval",    minutes=30)
+    scheduler.add_job(ping_self,   "interval",    minutes=10)
 
-    # Every day at 8am — Telegram daily digest
+    # Daily digest at 8am
+    from daily_digest import send_daily_digest
     scheduler.add_job(send_daily_digest, CronTrigger(hour=8, minute=0))
-
-    # Add inside start_scheduler():
-    scheduler.add_job(ping_self, "interval", minutes=10)
 
     scheduler.start()
     print("[scheduler] Started.")
-    run_all()
+    run_all()  # run immediately on startup

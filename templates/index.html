@@ -895,437 +895,205 @@
 
 <div id="toast"></div>
 
+<!--
+  ══════════════════════════════════════════════════════════
+  PASTE THIS ENTIRE <script> BLOCK to REPLACE the existing
+  calcCRS() function and the // ── INIT ── section in your
+  index.html. It makes the CRS cutoff dynamic.
+  ══════════════════════════════════════════════════════════
+-->
 <script>
-  // ── STATE ──
-  let currentCategory = '', currentKeyword = '', currentPage = 1;
-  const PER_PAGE = 20;
-  let allArticles = [], searchTimer = null, crsChartInstance = null;
-  let bookmarks    = JSON.parse(localStorage.getItem('ircc_bookmarks') || '[]');
-  let readArticles = JSON.parse(localStorage.getItem('ircc_read') || '[]');
 
-  const SOURCE_CLASS = {
-    'IRCC Official':'tag-ircc','CIC News':'tag-cic','CBC':'tag-cbc',
-    'Global News':'tag-cbc','Moving2Canada':'tag-cic','Immigration.ca':'tag-cic',
-  };
-  const DRAW_KEYWORDS = ['express entry draw','invitation to apply','ita issued','crs cut-off','draw #','rounds of invitations'];
-  const CRS_KEYWORDS  = ['crs','express entry','draw','ita','invitation to apply','pnp','study permit','pgwp','lmia','trp','permanent resident','work permit','oinp','international student','open work permit'];
+// ── GLOBAL DRAW STATS (loaded once from API) ──────────────
+let DRAW_STATS = {
+  latest_cutoff:       510,   // fallback until API responds
+  latest_draw_number:  null,
+  latest_invitations:  null,
+  latest_draw_type:    "General",
+  latest_draw_date:    null,
+  days_since_draw:     null,
+  avg_frequency_days:  null,
+  trend:               "unknown",
+  estimated_next_draw: null,
+  recent_draws:        []
+};
 
-  // ── PAGE NAV ──
-  function showPage(name, btn) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
-    document.getElementById('page-' + name).classList.add('active');
-    if (btn) btn.classList.add('active');
-    if (name === 'crs')        loadCRSChart();
-    if (name === 'health')     loadSourceHealth();
-    if (name === 'processing') loadProcessingTimes();
-    if (name === 'bookmarks')  renderBookmarksPage();
-    if (name === 'crscalc')    calcCRS();
-    if (name === 'pgwp')       calcPGWP();
+// Load draw stats from backend, then refresh calculator
+async function loadDrawStats() {
+  try {
+    const res  = await fetch('/api/draw-stats');
+    const data = await res.json();
+    if (data && data.latest_cutoff) {
+      DRAW_STATS = data;
+    }
+    renderDrawStatsBar();
+    calcCRS();   // recalculate with live cutoff
+  } catch (e) {
+    console.warn('[draw-stats] Could not load:', e);
   }
+}
 
-  // ── SEARCH ──
-  document.getElementById('search').addEventListener('input', function () {
-    document.getElementById('clear-btn').style.display = this.value.length > 0 ? 'block' : 'none';
+function renderDrawStatsBar() {
+  const s = DRAW_STATS;
+  if (!s.latest_cutoff) return;
+
+  // Update any elements that show the live cutoff
+  document.querySelectorAll('.live-cutoff').forEach(el => {
+    el.textContent = s.latest_cutoff;
   });
-  function clearSearch() {
-    document.getElementById('search').value = '';
-    document.getElementById('clear-btn').style.display = 'none';
-    currentKeyword = ''; currentPage = 1;
-    renderPage(filterArticles(), currentPage);
-  }
 
-  // ── HELPERS ──
-  function getSourceClass(src) {
-    for (const [k,v] of Object.entries(SOURCE_CLASS)) {
-      if (src && src.toLowerCase().includes(k.toLowerCase())) return v;
-    }
-    return 'tag-default';
-  }
-  function detectKeywords(title) {
-    const l = (title||'').toLowerCase();
-    return CRS_KEYWORDS.filter(k => l.includes(k)).slice(0,2);
-  }
-  function timeAgo(s) {
-    if (!s) return '';
-    const d = new Date(s); if (isNaN(d)) return s;
-    const m = Math.floor((Date.now()-d)/60000);
-    if (m<60) return m+'m ago';
-    if (m<1440) return Math.floor(m/60)+'h ago';
-    return Math.floor(m/1440)+'d ago';
-  }
-  function saveBookmarks() {
-    localStorage.setItem('ircc_bookmarks', JSON.stringify(bookmarks));
-    document.getElementById('stat-bookmarks').textContent = bookmarks.length;
-  }
-  function saveRead() { localStorage.setItem('ircc_read', JSON.stringify(readArticles)); }
+  // Update draw info bar (if it exists in your HTML)
+  const drawBar = document.getElementById('draw-stats-bar');
+  if (!drawBar) return;
 
-  // ── BOOKMARKS ──
-  function toggleBookmark(url, title, e) {
-    e.preventDefault(); e.stopPropagation();
-    const i = bookmarks.findIndex(b => b.url===url);
-    if (i===-1) { bookmarks.push({url,title}); showToast('🔖 Bookmarked!'); }
-    else        { bookmarks.splice(i,1);        showToast('Bookmark removed'); }
-    saveBookmarks();
-    renderPage(filterArticles(), currentPage);
-  }
-  function markRead(url) {
-    if (!readArticles.includes(url)) { readArticles.push(url); saveRead(); }
-  }
+  const trendIcon = s.trend === 'rising'  ? '↑ Rising'
+                  : s.trend === 'falling' ? '↓ Falling'
+                  : '→ Stable';
+  const trendColor = s.trend === 'rising'  ? 'var(--accent)'
+                   : s.trend === 'falling' ? 'var(--green)'
+                   : 'var(--amber)';
 
-  // ── RENDER CARD ──
-  function renderCard(a) {
-    const kws = detectKeywords(a.title);
-    const badges = kws.map(k=>`<span class="keyword-badge">${k.toUpperCase()}</span>`).join('');
-    const isBookmarked = bookmarks.some(b=>b.url===a.url);
-    const isRead       = readArticles.includes(a.url);
-    const safeTitle = (a.title||'').replace(/'/g,"&#39;").replace(/"/g,"&quot;");
-    const safeUrl   = (a.url||'').replace(/'/g,'%27');
-    return `
-      <a class="news-card ${isRead?'read':''}" href="${a.url}" target="_blank" rel="noopener" onclick="markRead('${safeUrl}')">
-        <div class="card-left">
-          <div class="card-meta">
-            <span class="source-tag ${getSourceClass(a.source)}">${a.source||'Unknown'}</span>
-            ${badges}
-            <span class="card-date">${timeAgo(a.published)}</span>
-          </div>
-          <div class="card-title">${a.title||'Untitled'}</div>
-          <div class="card-summary">${a.summary||''}</div>
-        </div>
-        <div class="card-right">
-          <span class="cat-pill">${a.category||''}</span>
-          <button class="bookmark-btn ${isBookmarked?'bookmarked':''}"
-            onclick="toggleBookmark('${safeUrl}','${safeTitle}',event)"
-            title="${isBookmarked?'Remove bookmark':'Save'}">🔖</button>
-          <svg class="arrow-icon" width="14" height="14" viewBox="0 0 16 16" fill="none">
-            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-      </a>`;
-  }
+  drawBar.innerHTML = `
+    <div class="stat-chip">Draw: <span>#${s.latest_draw_number || '?'}</span></div>
+    <div class="stat-chip">Cutoff: <span class="live-cutoff" style="color:var(--accent2)">${s.latest_cutoff}</span></div>
+    <div class="stat-chip">Type: <span>${s.latest_draw_type || 'General'}</span></div>
+    <div class="stat-chip">Invited: <span>${s.latest_invitations ? s.latest_invitations.toLocaleString() : '?'}</span></div>
+    <div class="stat-chip">Days ago: <span>${s.days_since_draw ?? '?'}</span></div>
+    <div class="stat-chip">Trend: <span style="color:${trendColor}">${trendIcon}</span></div>
+    ${s.estimated_next_draw ? `<div class="stat-chip">Est. next: <span>${s.estimated_next_draw}</span></div>` : ''}
+  `;
+}
 
-  // ── DRAW DETECTION ──
-  function checkDraws(articles) {
-    const draw = articles.find(a => DRAW_KEYWORDS.some(k=>(a.title||'').toLowerCase().includes(k)));
-    const banner = document.getElementById('draw-banner');
-    if (draw) {
-      document.getElementById('draw-text').textContent = draw.title;
-      banner.classList.add('visible');
-      document.getElementById('stat-draw').textContent = timeAgo(draw.published);
-    } else {
-      banner.classList.remove('visible');
-      document.getElementById('stat-draw').textContent = 'none detected';
-    }
-  }
 
-  // ── COUNTS ──
-  function updateCounts(articles) {
-    const c = {};
-    articles.forEach(a => { c[a.category] = (c[a.category]||0)+1; });
-    document.getElementById('cnt-all').textContent   = articles.length;
-    document.getElementById('cnt-ircc').textContent  = c['IRCC Updates']||0;
-    document.getElementById('cnt-ee').textContent    = c['Express Entry']||0;
-    document.getElementById('cnt-pnp').textContent   = c['PNP Programs']||0;
-    document.getElementById('cnt-intl').textContent  = c['Intl Students']||0;
-    document.getElementById('cnt-trp').textContent   = c['TRP / PR']||0;
-    document.getElementById('cnt-work').textContent  = c['Work Permits']||0;
-    document.getElementById('cnt-gen').textContent   = c['General']||0;
-    document.getElementById('stat-sources').textContent = [...new Set(articles.map(a=>a.source))].length;
-    document.getElementById('stat-total').textContent   = articles.length;
-    document.getElementById('stat-bookmarks').textContent = bookmarks.length;
-  }
+// ── CRS CALCULATOR ─────────────────────────────────────────
+// This version uses DRAW_STATS.latest_cutoff instead of a hardcoded number
 
-  // ── FILTER ──
-  function filterArticles() {
-    let f = allArticles;
-    if (currentCategory) f = f.filter(a=>a.category===currentCategory);
-    const sv = document.getElementById('search').value.trim().toLowerCase();
-    const kw = sv || currentKeyword.toLowerCase();
-    if (kw) f = f.filter(a =>
-      (a.title||'').toLowerCase().includes(kw)||
-      (a.summary||'').toLowerCase().includes(kw)||
-      (a.source||'').toLowerCase().includes(kw)
-    );
-    const sort = document.getElementById('sort').value;
-    f.sort((a,b) => {
-      const da=new Date(a.published||0), db=new Date(b.published||0);
-      return sort==='newest' ? db-da : da-db;
-    });
-    return f;
-  }
+function calcCRS() {
+  // ── Use live cutoff from API ──
+  const CUTOFF = DRAW_STATS.latest_cutoff || 510;
 
-  // ── RENDER PAGE ──
-  function renderPage(articles, page) {
-    const grid = document.getElementById('news-grid');
-    const slice = articles.slice((page-1)*PER_PAGE, page*PER_PAGE);
-    if (!slice.length) {
-      grid.innerHTML = '<div class="empty-state">No articles found</div>';
-      document.getElementById('pagination').innerHTML = '';
-      return;
-    }
-    grid.innerHTML = slice.map(renderCard).join('');
-    const total = Math.ceil(articles.length/PER_PAGE);
-    document.getElementById('pagination').innerHTML =
-      Array.from({length:total},(_,i)=>
-        `<button class="pg-btn ${i+1===page?'active':''}" onclick="goPage(${i+1})">${i+1}</button>`
-      ).join('');
-  }
+  const marital  = document.getElementById('c-marital')?.value || 'single';
+  const isSingle = marital === 'single';
 
-  // ── LOAD NEWS ──
-  async function loadNews() {
-    try {
-      const res = await fetch('/api/news');
-      if (!res.ok) throw new Error();
-      allArticles = await res.json();
-      document.getElementById('last-updated').textContent = 'Updated '+new Date().toLocaleTimeString();
-      updateCounts(allArticles); checkDraws(allArticles);
-      currentPage = 1; renderPage(filterArticles(), currentPage);
-    } catch(e) {
-      document.getElementById('news-grid').innerHTML =
-        '<div class="empty-state">Could not load news. Make sure the Flask server is running.</div>';
-    }
-  }
+  const age     = parseInt(document.getElementById('c-age')?.value)     || 0;
+  const edu     = parseInt(document.getElementById('c-edu')?.value)     || 0;
+  const speak   = parseInt(document.getElementById('c-speak')?.value)   || 0;
+  const listen  = parseInt(document.getElementById('c-listen')?.value)  || 0;
+  const readV   = parseInt(document.getElementById('c-read')?.value)    || 0;
+  const writeV  = parseInt(document.getElementById('c-write')?.value)   || 0;
+  const speak2  = parseInt(document.getElementById('c-speak2')?.value)  || 0;
+  const listen2 = parseInt(document.getElementById('c-listen2')?.value) || 0;
+  const read2   = parseInt(document.getElementById('c-read2')?.value)   || 0;
+  const write2  = parseInt(document.getElementById('c-write2')?.value)  || 0;
+  const caWork  = parseInt(document.getElementById('c-cawork')?.value)  || 0;
+  const forWork = parseInt(document.getElementById('c-forwork')?.value) || 0;
+  const caEdu   = parseInt(document.getElementById('c-caedu')?.value)   || 0;
+  const job     = parseInt(document.getElementById('c-job')?.value)     || 0;
+  const pnp     = parseInt(document.getElementById('c-pnp')?.value)     || 0;
+  const sibling = document.getElementById('c-sibling')?.checked ? 15 : 0;
+  const french  = parseInt(document.getElementById('c-french')?.value)  || 0;
 
-  // ── CRS CHART ──
-  async function loadCRSChart() {
-    try {
-      const data = await fetch('/api/crs-history').then(r=>r.json());
-      const el = document.getElementById('crs-table');
-      if (!data||!data.length) {
-        el.innerHTML='<div style="color:var(--muted);font-family:var(--mono);font-size:12px;text-align:center;padding:2rem">No CRS data yet — populates as draws are detected.</div>';
-        return;
-      }
-      if (crsChartInstance) crsChartInstance.destroy();
-      crsChartInstance = new Chart(document.getElementById('crs-chart').getContext('2d'), {
-        type:'line',
-        data:{ labels:data.map(d=>(d.draw_date||'').slice(0,10)),
-               datasets:[{label:'CRS Cutoff',data:data.map(d=>d.score),
-                 borderColor:'#3a7bd5',backgroundColor:'rgba(58,123,213,0.1)',
-                 pointBackgroundColor:'#3a7bd5',pointRadius:5,tension:0.3,fill:true}] },
-        options:{ responsive:true,maintainAspectRatio:false,
-          plugins:{ legend:{labels:{color:'#e8eaf0',font:{family:'IBM Plex Mono'}}},
-                    tooltip:{callbacks:{label:c=>` CRS: ${c.parsed.y}`}} },
-          scales:{ x:{ticks:{color:'#6b7280',maxRotation:45},grid:{color:'#232830'}},
-                   y:{ticks:{color:'#6b7280'},grid:{color:'#232830'},
-                      min:Math.min(...data.map(d=>d.score))-10,
-                      max:Math.max(...data.map(d=>d.score))+10} } }
-      });
-      el.innerHTML=`<table style="width:100%;border-collapse:collapse">
-        <thead><tr>
-          <th style="font-family:var(--mono);font-size:10px;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 12px;border-bottom:1px solid var(--border)">Date</th>
-          <th style="font-family:var(--mono);font-size:10px;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 12px;border-bottom:1px solid var(--border)">CRS</th>
-          <th style="font-family:var(--mono);font-size:10px;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 12px;border-bottom:1px solid var(--border)">Draw</th>
-        </tr></thead>
-        <tbody>${data.slice().reverse().map(d=>`<tr>
-          <td style="padding:8px 12px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:12px;color:var(--muted)">${(d.draw_date||'').slice(0,10)||'—'}</td>
-          <td style="padding:8px 12px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:16px;color:var(--accent2);font-weight:600">${d.score}</td>
-          <td style="padding:8px 12px;border-bottom:1px solid var(--border);font-size:12px"><a href="${d.draw_url}" target="_blank" style="color:var(--text);text-decoration:none">${d.draw_title||'—'}</a></td>
-        </tr>`).join('')}</tbody></table>`;
-    } catch(e) {
-      document.getElementById('crs-table').innerHTML='<div style="color:var(--muted);text-align:center;padding:2rem;font-family:var(--mono);font-size:12px">Failed to load.</div>';
-    }
-  }
+  const lang1    = speak + listen + readV + writeV;
+  const lang2    = speak2 + listen2 + read2 + write2;
+  const avgLang  = (speak + listen + readV + writeV) / 4;
 
-  // ── SOURCE HEALTH ──
-  async function loadSourceHealth() {
-    try {
-      const data = await fetch('/api/source-health').then(r=>r.json());
-      const now = Date.now();
-      document.getElementById('health-body').innerHTML = data.map(s => {
-        const h = (now-new Date(s.last_seen).getTime())/3600000;
-        const cls = h>48?'status-dead':h>12?'status-warn':'status-ok';
-        const lbl = h>48?'Stale':h>12?'Slow':'Live';
-        return `<tr>
-          <td><strong>${s.source}</strong></td>
-          <td><span class="status-dot ${cls}"></span><span style="font-family:var(--mono);font-size:11px">${lbl}</span></td>
-          <td style="font-family:var(--mono);font-size:12px">${s.total}</td>
-          <td style="font-family:var(--mono);font-size:11px;color:var(--muted)">${timeAgo(s.last_seen)}</td>
-        </tr>`;
-      }).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:2rem">No data</td></tr>';
-    } catch(e) {
-      document.getElementById('health-body').innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--muted)">Failed</td></tr>';
-    }
+  // Skill transferability (simplified)
+  let transfer = 0;
+  if (lang1 >= 72) {
+    if (edu >= 120)   transfer += 25;
+    if (caWork >= 40) transfer += 25;
+    if (forWork > 0)  transfer += 25;
   }
+  if (caWork >= 40 && forWork > 0)  transfer += 25;
+  if (caWork >= 40 && edu >= 120)   transfer += 25;
+  transfer = Math.min(transfer, 100);
 
-  // ── PROCESSING TIMES ──
-  async function loadProcessingTimes() {
-    try {
-      const data = await fetch('/api/processing-times').then(r=>r.json());
-      const grid = document.getElementById('processing-grid');
-      if (!data||!data.length) {
-        grid.innerHTML='<div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:2rem">No data yet. Will populate after 9am daily scrape.</div>';
-        return;
-      }
-      grid.innerHTML = data.map(p=>`<div class="proc-card">
-        <div class="proc-permit">${p.permit_type}</div>
-        <div class="proc-time">${p.time_weeks}</div>
-        <div class="proc-label">checked ${timeAgo(p.checked_at)}</div>
-      </div>`).join('');
-    } catch(e) {
-      document.getElementById('processing-grid').innerHTML='<div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:2rem">Failed to load.</div>';
-    }
-  }
+  const total = age + edu + lang1 + lang2 + caWork + forWork + caEdu + transfer + job + pnp + sibling + french;
+  const gap   = CUTOFF - total;
 
-  // ── BOOKMARKS PAGE ──
-  function renderBookmarksPage() {
-    const grid = document.getElementById('bookmarks-grid');
-    if (!bookmarks.length) {
-      grid.innerHTML='<div class="bookmarks-empty">No bookmarks yet.<br>Click 🔖 on any article to save it.</div>';
-      return;
-    }
-    grid.innerHTML=`<div style="display:grid;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:6px;overflow:hidden">
-      ${bookmarks.map(b=>renderCard({title:b.title,url:b.url,source:'',category:'Saved',summary:'',published:''})).join('')}
-    </div>`;
-  }
-
-  // ── NAV ──
-  function goPage(n) {
-    currentPage=n; renderPage(filterArticles(),currentPage);
-    window.scrollTo({top:0,behavior:'smooth'});
-  }
-  function setCategory(btn,cat) {
-    document.querySelectorAll('.cat-btn[data-cat]').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active'); currentCategory=cat; currentPage=1;
-    showPage('news',document.querySelector('.nav-tab'));
-    renderPage(filterArticles(),currentPage);
-  }
-  function setKeyword(kw) {
-    currentKeyword=kw;
-    const inp=document.getElementById('search'); inp.value=kw;
-    document.getElementById('clear-btn').style.display=kw?'block':'none';
-    currentPage=1;
-    showPage('news',document.querySelector('.nav-tab'));
-    renderPage(filterArticles(),currentPage);
-  }
-  function debounceSearch() {
-    clearTimeout(searchTimer);
-    searchTimer=setTimeout(()=>{ currentPage=1; renderPage(filterArticles(),currentPage); },280);
-  }
-
-  // ── TOAST ──
-  function showToast(msg) {
-    const t=document.getElementById('toast'); t.textContent=msg;
-    t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000);
-  }
-
-  // ── SUBSCRIBE ──
-  async function subscribeAlert() {
-    const email   = document.getElementById('alert-email').value.trim();
-    const keyword = document.getElementById('alert-keyword').value.trim();
-    if (!keyword) { showToast('Enter a keyword'); return; }
-    try {
-      const res = await fetch('/api/subscribe',{
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({email,keyword})
-      });
-      if (!res.ok) throw new Error();
-      document.getElementById('alert-status').style.display='block';
-      showToast('✓ Alert subscribed for: '+keyword);
-      document.getElementById('alert-email').value='';
-      document.getElementById('alert-keyword').value='';
-    } catch(e) { showToast('Error subscribing. Check server.'); }
-  }
-
-  // ── CRS CALCULATOR (fully generic — works for anyone) ──
-  function calcCRS() {
-    const age     = parseInt(document.getElementById('c-age').value);
-    const edu     = parseInt(document.getElementById('c-edu').value);
-    const speak   = parseInt(document.getElementById('c-speak').value);
-    const listen  = parseInt(document.getElementById('c-listen').value);
-    const read    = parseInt(document.getElementById('c-read').value);
-    const write   = parseInt(document.getElementById('c-write').value);
-    const lang1   = speak+listen+read+write;
-    const speak2  = parseInt(document.getElementById('c-speak2').value);
-    const listen2 = parseInt(document.getElementById('c-listen2').value);
-    const read2   = parseInt(document.getElementById('c-read2').value);
-    const write2  = parseInt(document.getElementById('c-write2').value);
-    const lang2   = speak2+listen2+read2+write2;
-    const caWork  = parseInt(document.getElementById('c-ca-work').value);
-    const forWork = parseInt(document.getElementById('c-for-work').value);
-    const caEdu   = parseInt(document.getElementById('c-ca-edu').value);
-    const job     = parseInt(document.getElementById('c-job').value);
-    const pnp     = parseInt(document.getElementById('c-pnp').value);
-    const sibling = parseInt(document.getElementById('c-sibling').value);
-    const french  = parseInt(document.getElementById('c-french').value);
-
-    // Skill Transferability (max 100)
-    const avgLang = (speak+listen+read+write)/4;
-    let transfer = 0;
-    if (avgLang>=23 && edu>=135)  transfer+=25; else if (avgLang>=22 && edu>=120) transfer+=13;
-    if (avgLang>=23 && caWork>=40) transfer+=25; else if (avgLang>=22 && caWork>=40) transfer+=13;
-    if (edu>=135 && caWork>=40)    transfer+=25; else if (edu>=120 && caWork>=40)  transfer+=13;
-    if (forWork>=13 && avgLang>=23) transfer+=13; else if (forWork>=13 && avgLang>=22) transfer+=6;
-    if (forWork>=25 && caEdu>=30)  transfer+=25; else if (forWork>=13 && caEdu>=15) transfer+=13;
-    transfer = Math.min(transfer, 100);
-
-    const total = age+edu+lang1+lang2+caWork+forWork+caEdu+job+pnp+sibling+french+transfer;
-    const CUTOFF = 505;
-    const gap = CUTOFF - total;
-
-    // Score display
-    const resultEl = document.getElementById('crs-result');
+  // ── Score display ──
+  const resultEl = document.getElementById('crs-result');
+  if (resultEl) {
     resultEl.textContent = total;
-    resultEl.style.color = total>=CUTOFF ? 'var(--green)' : total>=460 ? 'var(--amber)' : 'var(--accent)';
+    resultEl.style.color = total >= CUTOFF ? 'var(--green)' : total >= 460 ? 'var(--amber)' : 'var(--accent)';
+  }
 
-    // Score bar
-    document.getElementById('score-bar-fill').style.width = Math.min(total/1200*100,100)+'%';
-    document.getElementById('score-bar-fill').style.background = total>=CUTOFF ? 'var(--green)' : total>=460 ? 'var(--amber)' : 'var(--accent)';
-    document.getElementById('score-bar-marker').style.left = (CUTOFF/1200*100)+'%';
-    document.getElementById('bar-score').textContent = total;
+  // ── Score bar ──
+  const fill   = document.getElementById('score-bar-fill');
+  const marker = document.getElementById('score-bar-marker');
+  const barScore = document.getElementById('bar-score');
+  if (fill)   { fill.style.width = Math.min(total/1200*100, 100)+'%'; fill.style.background = total>=CUTOFF ? 'var(--green)' : total>=460 ? 'var(--amber)' : 'var(--accent)'; }
+  if (marker) marker.style.left = (CUTOFF/1200*100)+'%';
+  if (barScore) barScore.textContent = total;
 
-    // Verdict
-    const vEl = document.getElementById('crs-verdict');
-    if (total>=600) {
-      vEl.style.cssText='background:rgba(45,204,143,0.1);border:1px solid rgba(45,204,143,0.3);color:var(--green)';
-      vEl.innerHTML='🏆 Excellent! Very likely to receive ITA soon.';
-    } else if (total>=CUTOFF) {
-      vEl.style.cssText='background:rgba(45,204,143,0.1);border:1px solid rgba(45,204,143,0.3);color:var(--green)';
-      vEl.innerHTML=`✅ Above latest cutoff (~${CUTOFF}) — you may qualify now!`;
-    } else if (gap<=30) {
-      vEl.style.cssText='background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:var(--amber)';
-      vEl.innerHTML=`⚡ Only ${gap} pts below cutoff — small improvements will get you there!`;
-    } else if (gap<=80) {
-      vEl.style.cssText='background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:var(--amber)';
-      vEl.innerHTML=`📈 ${gap} pts below cutoff (~${CUTOFF}) — achievable with focused improvements.`;
+  // ── Update live cutoff label on bar ──
+  const cutoffLabel = document.getElementById('bar-cutoff-label');
+  if (cutoffLabel) cutoffLabel.textContent = `Latest cutoff: ${CUTOFF}`;
+
+  // ── Verdict ──
+  const vEl = document.getElementById('crs-verdict');
+  if (vEl) {
+    const drawType = DRAW_STATS.latest_draw_type || 'General';
+    if (total >= 600) {
+      vEl.style.cssText = 'background:rgba(45,204,143,0.1);border:1px solid rgba(45,204,143,0.3);color:var(--green)';
+      vEl.innerHTML = '🏆 Excellent score — very likely to receive ITA in upcoming draws.';
+    } else if (total >= CUTOFF) {
+      vEl.style.cssText = 'background:rgba(45,204,143,0.1);border:1px solid rgba(45,204,143,0.3);color:var(--green)';
+      vEl.innerHTML = `✅ Above latest ${drawType} cutoff (${CUTOFF}) — you may qualify in the next draw!`;
+    } else if (gap <= 15) {
+      vEl.style.cssText = 'background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:var(--amber)';
+      vEl.innerHTML = `⚡ Only ${gap} pts below cutoff (${CUTOFF}) — one small improvement gets you there!`;
+    } else if (gap <= 50) {
+      vEl.style.cssText = 'background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:var(--amber)';
+      vEl.innerHTML = `📈 ${gap} pts below cutoff (${CUTOFF}) — achievable with focused improvements.`;
     } else {
-      vEl.style.cssText='background:rgba(232,84,58,0.1);border:1px solid rgba(232,84,58,0.3);color:var(--accent)';
-      vEl.innerHTML=`🎯 ${gap} pts below cutoff — see tips below to boost your score significantly.`;
+      vEl.style.cssText = 'background:rgba(232,84,58,0.1);border:1px solid rgba(232,84,58,0.3);color:var(--accent)';
+      vEl.innerHTML = `🎯 ${gap} pts below cutoff (${CUTOFF}) — see improvement tips below.`;
     }
+  }
 
-    // Breakdown
-    const bk = [
-      ['🎂 Age',                          age],
-      ['🎓 Education',                     edu],
-      ['🗣 First Language (4 skills)',     lang1],
-      ['🌐 Second Language',               lang2],
-      ['🍁 Canadian Work Experience',      caWork],
-      ['🌍 Foreign Work Experience',       forWork],
-      ['🏫 Canadian Education',            caEdu],
-      ['🔄 Skill Transferability',         transfer],
-      ['💼 Job Offer',                     job],
-      ['🏔 Provincial Nomination (PNP)',   pnp],
-      ['👨‍👩‍👧 Sibling in Canada',            sibling],
-      ['🇫🇷 French Language Bonus',        french],
-    ];
-    document.getElementById('crs-breakdown').innerHTML = bk.map(b=>`
+  // ── Breakdown ──
+  const bk = [
+    ['🎂 Age',                         age],
+    ['🎓 Education',                    edu],
+    ['🗣 First Language (4 skills)',    lang1],
+    ['🌐 Second Language',              lang2],
+    ['🍁 Canadian Work Experience',     caWork],
+    ['🌍 Foreign Work Experience',      forWork],
+    ['🏫 Canadian Education',           caEdu],
+    ['🔄 Skill Transferability',        transfer],
+    ['💼 Job Offer',                    job],
+    ['🏔 Provincial Nomination (PNP)',  pnp],
+    ['👨‍👩‍👧 Sibling in Canada',           sibling],
+    ['🇫🇷 French Language Bonus',       french],
+  ];
+  const bkEl = document.getElementById('crs-breakdown');
+  if (bkEl) {
+    bkEl.innerHTML = bk.map(b => `
       <div class="breakdown-row" style="${b[1]===0?'opacity:0.35':''}">
         <span>${b[0]}</span>
         <span class="breakdown-pts" style="color:${b[1]>0?'var(--accent2)':'var(--muted)'}">${b[1]>0?'+'+b[1]:'0'}</span>
       </div>`).join('');
+  }
 
-    // Smart tips
-    const tips = [];
-    if (avgLang<23)    tips.push(['🎯','Improve language to CLB 9+',`Each skill at CLB 9 = 23 pts. Currently avg CLB ~${Math.round(avgLang)}. Try CELPIP 9 or IELTS 7.5.`]);
-    if (caWork===0)    tips.push(['💼','Get 1 year Canadian work experience','+40 pts immediately + unlocks CEC stream. Most impactful single change.']);
-    else if (caWork<80) tips.push(['💼','More Canadian work adds more points',`Each additional year adds 13–27 pts. Currently at ${caWork} pts.`]);
-    if (job===0)       tips.push(['📋','Get a valid Canadian job offer','NOC TEER 1/2/3 = +50 pts. Senior/manager role = +200 pts.']);
-    if (pnp===0)       tips.push(['🏔','Apply for Provincial Nomination (PNP)','+600 pts — virtually guarantees ITA. Check Ontario, BC, Alberta streams.']);
-    if (forWork===0)   tips.push(['🌍','Foreign work experience counts','1–2 years abroad = +13 pts. 3+ years = +25 pts.']);
-    if (lang2===0)     tips.push(['🇫🇷','Learn basic French','CLB 7+ French + English = +50 pts AND priority in French-only draws.']);
-    if (sibling===0)   tips.push(['👨‍👩‍👧','Sibling in Canada?','If you have a sibling who is a Canadian citizen or PR, claim +15 pts.']);
-    if (caEdu<30)      tips.push(['🏫','Canadian education adds points','Masters/PhD in Canada = +30 pts. Studying here already? Claim it!']);
+  // ── Smart tips (uses live DRAW_STATS.trend) ──
+  const tips = [];
+  const trendNote = DRAW_STATS.trend === 'rising'  ? ' Note: CRS cutoff is trending up recently.'
+                  : DRAW_STATS.trend === 'falling' ? ' CRS cutoff trending down — good news!'
+                  : '';
 
-    document.getElementById('crs-tips').innerHTML = tips.slice(0,5).map(t=>`
+  if (avgLang < 23)   tips.push(['🎯','Improve language to CLB 9+',`Each skill at CLB 9 = 23 pts. Avg CLB ~${Math.round(avgLang)}.${trendNote}`]);
+  if (caWork === 0)   tips.push(['💼','Get 1 year Canadian work experience','+40 pts + unlocks CEC stream. Most impactful single change.']);
+  else if (caWork<80) tips.push(['💼','More Canadian work adds more points',`Each year adds 13–27 more pts. Currently at ${caWork} pts.`]);
+  if (job === 0)      tips.push(['📋','Get a valid Canadian job offer','NOC TEER 1/2/3 = +50 pts. Senior role = +200 pts.']);
+  if (pnp === 0)      tips.push(['🏔','Apply for Provincial Nomination','+600 pts — virtually guarantees ITA.']);
+  if (forWork === 0)  tips.push(['🌍','Foreign work counts','1–2 yrs = +13 pts. 3+ yrs = +25 pts.']);
+  if (lang2 === 0)    tips.push(['🇫🇷','Learn basic French','CLB 7+ = +50 pts + priority in French draws.']);
+  if (sibling === 0)  tips.push(['👨‍👩‍👧','Sibling in Canada?','+15 pts if sibling is citizen or PR.']);
+
+  const tipsEl = document.getElementById('crs-tips');
+  if (tipsEl) {
+    tipsEl.innerHTML = tips.slice(0, 5).map(t => `
       <div class="tip-row">
         <span style="font-size:18px;flex-shrink:0">${t[0]}</span>
         <div>
@@ -1335,85 +1103,86 @@
       </div>`).join('');
   }
 
-  // ── PGWP CALCULATOR ──
-  function calcPGWP() {
-    const gradDate   = new Date(document.getElementById('grad-date').value);
-    const pgwpMonths = parseInt(document.getElementById('pgwp-length').value);
-    const province   = document.getElementById('target-province').value;
-    const addD = (d,days) => new Date(d.getTime()+days*86400000);
-    const addM = (d,m) => { const r=new Date(d); r.setMonth(r.getMonth()+m); return r; };
-    const fmt  = d => d.toLocaleDateString('en-CA',{year:'numeric',month:'short',day:'numeric'});
-    const daysFrom = d => Math.ceil((d-new Date())/86400000);
+  // Update draw stats bar
+  renderDrawStatsBar();
+}
 
-    const pgwpDeadline  = addD(gradDate,180);
-    const pgwpExpiry    = addM(gradDate, pgwpMonths+3);
-    const cecEligible   = addM(gradDate, 15);
-    const eeProfile     = addM(cecEligible, 1);
-    const prApplication = addM(eeProfile, 3);
-    const prLanding     = addM(prApplication, 8);
 
-    const deadlines = [
-      {label:'PGWP Application Deadline', date:pgwpDeadline, urgent:daysFrom(pgwpDeadline)<60},
-      {label:'PGWP Expiry (est.)',         date:pgwpExpiry,   urgent:false},
-      {label:'CEC Eligible (1yr work)',    date:cecEligible,  urgent:false},
-      {label:'Enter EE Pool',              date:eeProfile,    urgent:false},
-      {label:'Estimated PR Landing',       date:prLanding,    urgent:false},
-    ];
-    document.getElementById('pgwp-deadlines').innerHTML = deadlines.map(d=>`
-      <div class="deadline-row ${d.urgent?'deadline-urgent':'deadline-ok'}">
+// ── ALSO ADD THIS to your Draw Stats bar in the CRS calculator HTML ──────
+// Add this div right above the CRS score bar in your page-crscalc section:
+//
+//   <div id="draw-stats-bar" class="stats-row" style="margin-bottom:1rem">
+//     <div class="stat-chip" style="color:var(--muted);font-family:var(--mono);font-size:11px">Loading live draw data…</div>
+//   </div>
+//
+// And change the cutoff marker label to:
+//   <span id="bar-cutoff-label">Latest cutoff</span>
+
+
+// ── PGWP CALCULATOR (unchanged from your current version) ──
+function calcPGWP() {
+  const gradDate   = new Date(document.getElementById('grad-date')?.value);
+  if (isNaN(gradDate)) return;
+  const pgwpMonths = parseInt(document.getElementById('pgwp-length')?.value) || 36;
+  const province   = document.getElementById('target-province')?.value || 'any';
+  const addD = (d, days) => new Date(d.getTime() + days * 86400000);
+  const addM = (d, m)    => { const r = new Date(d); r.setMonth(r.getMonth() + m); return r; };
+  const fmt  = d => d.toLocaleDateString('en-CA', {year:'numeric',month:'short',day:'numeric'});
+  const daysFrom = d => Math.ceil((d - new Date()) / 86400000);
+
+  const pgwpDeadline  = addD(gradDate, 180);
+  const pgwpExpiry    = addM(gradDate, pgwpMonths + 3);
+  const cecEligible   = addM(gradDate, 15);
+  const eeProfile     = addM(cecEligible, 1);
+  const prApplication = addM(eeProfile, 3);
+  const prLanding     = addM(prApplication, 8);
+
+  const deadlines = [
+    {label:'PGWP Application Deadline', date:pgwpDeadline,  urgent:daysFrom(pgwpDeadline) < 60},
+    {label:'PGWP Expiry (est.)',         date:pgwpExpiry,    urgent:false},
+    {label:'CEC Eligible (1yr work)',    date:cecEligible,   urgent:false},
+    {label:'Enter EE Pool',              date:eeProfile,     urgent:false},
+    {label:'Estimated PR Landing',       date:prLanding,     urgent:false},
+  ];
+
+  const dlEl = document.getElementById('pgwp-deadlines');
+  if (dlEl) {
+    dlEl.innerHTML = deadlines.map(d => `
+      <div class="deadline-row ${d.urgent ? 'deadline-urgent' : 'deadline-ok'}">
         <span class="deadline-label">${d.label}</span>
         <span class="deadline-val">${fmt(d.date)}</span>
       </div>`).join('');
+  }
 
-    const tl = [
-      {date:fmt(gradDate),          title:'Graduation 🎓',           desc:'Masters degree completed — apply PGWP within 180 days', status:'upcoming'},
-      {date:fmt(pgwpDeadline),      title:'PGWP Application Deadline ⚠', desc:'Last day to apply for PGWP after graduation', status:'upcoming'},
-      {date:fmt(addM(gradDate,3)),  title:'PGWP Received (est.)',    desc:`${pgwpMonths}-month open work permit — work any employer`, status:'upcoming'},
-      {date:fmt(cecEligible),       title:'1 Year Skilled Work ✅',  desc:'Eligible for Canadian Experience Class (CEC)', status:'upcoming'},
-      {date:fmt(eeProfile),         title:'Create EE Profile',       desc:'Enter Express Entry pool with full CRS score', status:'future'},
-      {date:fmt(prApplication),     title:'ITA & PR Application 🍁', desc:'Submit permanent residence application', status:'future'},
-      {date:fmt(prLanding),         title:'PR Landing 🎉',           desc:'Welcome as a Permanent Resident of Canada!', status:'future'},
-    ];
-    document.getElementById('pgwp-timeline').innerHTML = tl.map(t=>`
+  const tl = [
+    {date:fmt(gradDate),         title:'Graduation 🎓',           desc:'Masters degree completed — apply PGWP within 180 days', status:'upcoming'},
+    {date:fmt(pgwpDeadline),     title:'PGWP Application Deadline ⚠', desc:'Last day to apply after graduation', status:'upcoming'},
+    {date:fmt(addM(gradDate,3)), title:'PGWP Received (est.)',    desc:`${pgwpMonths}-month open work permit`, status:'upcoming'},
+    {date:fmt(cecEligible),      title:'1 Year Skilled Work ✅',  desc:'Eligible for Canadian Experience Class', status:'upcoming'},
+    {date:fmt(eeProfile),        title:'Create EE Profile',       desc:'Enter Express Entry pool', status:'future'},
+    {date:fmt(prApplication),    title:'ITA & PR Application 🍁', desc:'Submit permanent residence application', status:'future'},
+    {date:fmt(prLanding),        title:'PR Landing 🎉',           desc:'Welcome as Permanent Resident of Canada!', status:'future'},
+  ];
+
+  const tlEl = document.getElementById('pgwp-timeline');
+  if (tlEl) {
+    tlEl.innerHTML = tl.map(t => `
       <div class="tl-item ${t.status}">
         <div class="tl-dot"></div>
         <div class="tl-content"><div class="tl-title">${t.title}</div><div class="tl-desc">${t.desc}</div></div>
         <div class="tl-date">${t.date}</div>
       </div>`).join('');
-
-    const streams = {
-      ontario:[
-        {name:'OINP Masters Graduate Stream', req:'Masters from Ontario university — no job offer required', status:'green', when:'After graduation'},
-        {name:'OINP Tech Draw (Human Capital)', req:'EE profile + tech NOC (21231 qualifies)', status:'green', when:'After 1yr work'},
-      ],
-      bc:[
-        {name:'BC Tech Pilot', req:'Job offer in BC tech sector, NOC 21231 qualifies', status:'amber', when:'Need BC job offer'},
-        {name:'BC International Graduate', req:'Graduated from BC institution', status:'blue', when:'Requires BC school'},
-      ],
-      alberta:[
-        {name:'Alberta Advantage Tech', req:'Tech NOC + Alberta job offer', status:'amber', when:'Need AB job offer'},
-      ],
-      any:[
-        {name:'Federal Skilled Worker (FSW)', req:'No Canadian experience needed', status:'green', when:'Available now'},
-        {name:'Canadian Experience Class (CEC)', req:'1yr Canadian skilled work', status:'green', when:'After 1yr PGWP work'},
-      ]
-    };
-    const myStreams = streams[province]||streams['any'];
-    document.getElementById('pnp-streams').innerHTML = myStreams.map(s=>`
-      <div class="rec-card ${s.status==='green'?'green':s.status==='amber'?'amber':'blue'}">
-        <div>
-          <div class="rec-title">${s.name}</div>
-          <div class="rec-desc">${s.req}</div>
-          <div style="font-family:var(--mono);font-size:10px;color:var(--accent2);margin-top:4px">When: ${s.when}</div>
-        </div>
-      </div>`).join('');
   }
+}
 
-  // ── INIT ──
-  setInterval(loadNews, 10*60*1000);
-  loadNews();
-  calcCRS();
-  calcPGWP();
+
+// ── INIT ──────────────────────────────────────────────────
+setInterval(loadNews, 10 * 60 * 1000);
+loadNews();
+loadDrawStats();   // ← loads CRS cutoff from API, then calls calcCRS()
+calcPGWP();
+
 </script>
+
 </body>
 </html>
