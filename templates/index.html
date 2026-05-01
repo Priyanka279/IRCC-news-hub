@@ -415,9 +415,6 @@
       <button class="cat-btn" data-cat="TRP / PR" onclick="setCategory(this,'TRP / PR')">TRP / PR <span class="cat-count" id="cnt-trp">—</span></button>
       <button class="cat-btn" data-cat="Work Permits" onclick="setCategory(this,'Work Permits')">Work Permits <span class="cat-count" id="cnt-work">—</span></button>
       <button class="cat-btn" data-cat="General" onclick="setCategory(this,'General')">General <span class="cat-count" id="cnt-gen">—</span></button>
-      <a href="/noc" class="cat-btn" style="text-decoration:none">
-        🔍 NOC Code Finder
-      </a>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">Keyword Alerts</div>
@@ -428,6 +425,15 @@
         <button onclick="subscribeAlert()">Subscribe</button>
         <div class="alert-status" id="alert-status">✓ Subscribed!</div>
       </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Tools</div>
+      <button class="cat-btn" onclick="window.location.href='/noc'">
+        🔍 NOC Code Finder
+      </button>
+      <button class="cat-btn" onclick="window.location.href='/permits'">
+        📅 Permit Tracker
+      </button>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">Filter by Keyword</div>
