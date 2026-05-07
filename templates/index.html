@@ -372,11 +372,78 @@
       background:var(--accent); border-radius:2px;
     }
 
-    @media (max-width:768px) {
-      .wrapper { grid-template-columns:1fr; }
-      aside { display:none; }
-      main { padding:1rem; }
-      .nav-tabs { display:none; }
+    /* ── MOBILE BOTTOM NAV ── */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(10,12,15,0.98);
+      border-top: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      z-index: 200;
+    }
+    .mobile-nav-inner {
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .mobile-nav-inner::-webkit-scrollbar { display: none; }
+    .mobile-nav-btn {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 3px; flex: 0 0 auto; min-width: 62px;
+      padding: 8px 4px 10px;
+      background: none; border: none; color: var(--muted);
+      font-family: var(--mono); font-size: 9px;
+      text-transform: uppercase; letter-spacing: 0.04em;
+      cursor: pointer; transition: color 0.15s; white-space: nowrap;
+    }
+    .mobile-nav-btn .mnav-icon { font-size: 19px; line-height: 1; }
+    .mobile-nav-btn.active { color: var(--accent2); }
+
+    /* ── MOBILE DRAWER ── */
+    .mobile-drawer-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.65); z-index: 300;
+    }
+    .mobile-drawer-overlay.open { display: block; }
+    .mobile-drawer {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: 280px; background: var(--surface);
+      border-right: 1px solid var(--border);
+      z-index: 301; overflow-y: auto;
+      transform: translateX(-100%);
+      transition: transform 0.25s ease;
+      padding-top: 56px;
+    }
+    .mobile-drawer.open { transform: translateX(0); }
+    .drawer-close {
+      position: absolute; top: 14px; right: 14px;
+      background: var(--card); border: 1px solid var(--border2);
+      color: var(--muted); width: 32px; height: 32px;
+      border-radius: 50%; font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      .wrapper { grid-template-columns: 1fr; padding-bottom: 64px; }
+      aside { display: none; }
+      main { padding: 0.75rem; }
+      .nav-tabs { display: none; }
+      .mobile-nav { display: block; }
+      header { padding: 0 0.75rem; }
+      .logo { font-size: 11px; }
+      .last-updated { display: none; }
+      .news-card { grid-template-columns: 1fr; gap: 0.4rem; padding: 0.85rem 0.9rem; }
+      .card-right { flex-direction: row; align-items: center; justify-content: space-between; min-width: unset; }
+      #page-crscalc > div[style] { display: flex !important; flex-direction: column !important; }
+      #page-pgwp > div { display: flex !important; flex-direction: column !important; }
+      .stats-row { gap: 0.5rem; }
+      .stat-chip { font-size: 10px; }
+      .proc-grid { grid-template-columns: 1fr 1fr !important; }
+      .top-bar { gap: 8px; }
+      .sort-select { font-size: 10px; padding: 8px 6px; }
     }
   </style>
 </head>
@@ -902,6 +969,79 @@
   </main>
 </div>
 
+<!-- ── MOBILE BOTTOM NAV ── -->
+<nav class="mobile-nav">
+  <div class="mobile-nav-inner">
+    <button class="mobile-nav-btn active" id="mnav-news" onclick="mobileNav('news',this)">
+      <span class="mnav-icon">📰</span>News
+    </button>
+    <button class="mobile-nav-btn" id="mnav-crs" onclick="mobileNav('crs',this)">
+      <span class="mnav-icon">📊</span>CRS Chart
+    </button>
+    <button class="mobile-nav-btn" id="mnav-crscalc" onclick="mobileNav('crscalc',this)">
+      <span class="mnav-icon">🧮</span>Calc
+    </button>
+    <button class="mobile-nav-btn" id="mnav-pgwp" onclick="mobileNav('pgwp',this)">
+      <span class="mnav-icon">📅</span>PGWP
+    </button>
+    <button class="mobile-nav-btn" id="mnav-processing" onclick="mobileNav('processing',this)">
+      <span class="mnav-icon">⏱</span>Times
+    </button>
+    <button class="mobile-nav-btn" id="mnav-health" onclick="mobileNav('health',this)">
+      <span class="mnav-icon">🟢</span>Sources
+    </button>
+    <button class="mobile-nav-btn" id="mnav-bookmarks" onclick="mobileNav('bookmarks',this)">
+      <span class="mnav-icon">🔖</span>Saved
+    </button>
+    <button class="mobile-nav-btn" id="mnav-profile" onclick="mobileNav('profile',this)">
+      <span class="mnav-icon">👤</span>Profile
+    </button>
+    <button class="mobile-nav-btn" onclick="window.location.href='/noc'">
+      <span class="mnav-icon">🔍</span>NOC
+    </button>
+    <button class="mobile-nav-btn" onclick="openDrawer()">
+      <span class="mnav-icon">☰</span>Filters
+    </button>
+  </div>
+</nav>
+
+<!-- ── MOBILE DRAWER ── -->
+<div class="mobile-drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="mobile-drawer" id="mobile-drawer">
+  <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Categories</div>
+    <button class="cat-btn" onclick="setCategory(this,'');closeDrawer()" data-cat="">All News</button>
+    <button class="cat-btn" onclick="setCategory(this,'IRCC Updates');closeDrawer()" data-cat="IRCC Updates">IRCC Updates</button>
+    <button class="cat-btn" onclick="setCategory(this,'Express Entry');closeDrawer()" data-cat="Express Entry">Express Entry</button>
+    <button class="cat-btn" onclick="setCategory(this,'PNP Programs');closeDrawer()" data-cat="PNP Programs">PNP Programs</button>
+    <button class="cat-btn" onclick="setCategory(this,'Intl Students');closeDrawer()" data-cat="Intl Students">Int'l Students</button>
+    <button class="cat-btn" onclick="setCategory(this,'TRP / PR');closeDrawer()" data-cat="TRP / PR">TRP / PR</button>
+    <button class="cat-btn" onclick="setCategory(this,'Work Permits');closeDrawer()" data-cat="Work Permits">Work Permits</button>
+    <button class="cat-btn" onclick="setCategory(this,'General');closeDrawer()" data-cat="General">General</button>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Quick Filters</div>
+    <button class="cat-btn" onclick="setKeyword('');closeDrawer()">All</button>
+    <button class="cat-btn" onclick="setKeyword('CRS');closeDrawer()">CRS Score</button>
+    <button class="cat-btn" onclick="setKeyword('Express Entry draw');closeDrawer()">EE Draw</button>
+    <button class="cat-btn" onclick="setKeyword('study permit');closeDrawer()">Study Permit</button>
+    <button class="cat-btn" onclick="setKeyword('PGWP');closeDrawer()">PGWP</button>
+    <button class="cat-btn" onclick="setKeyword('LMIA');closeDrawer()">LMIA</button>
+    <button class="cat-btn" onclick="setKeyword('Ontario PNP');closeDrawer()">Ontario PNP</button>
+    <button class="cat-btn" onclick="setKeyword('TRP');closeDrawer()">TRP</button>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Email Alerts</div>
+    <div class="alert-box">
+      <h4>📬 Subscribe</h4>
+      <input type="email" id="alert-email-m" placeholder="your@email.com"/>
+      <input type="text" id="alert-keyword-m" placeholder="Keyword (e.g. CRS draw)"/>
+      <button onclick="subscribeMobile()">Subscribe</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <!--
@@ -912,6 +1052,39 @@
   ══════════════════════════════════════════════════════════
 -->
 <script>
+
+// ── MOBILE FUNCTIONS ─────────────────────────────────────
+function mobileNav(name, btn) {
+  showPage(name, null);
+  document.querySelectorAll('.mobile-nav-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+function openDrawer() {
+  document.getElementById('mobile-drawer').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDrawer() {
+  document.getElementById('mobile-drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+async function subscribeMobile() {
+  const email   = document.getElementById('alert-email-m')?.value.trim();
+  const keyword = document.getElementById('alert-keyword-m')?.value.trim();
+  if (!email || !keyword) { showToast('Enter email and keyword'); return; }
+  try {
+    await fetch('/api/subscribe', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({email, keyword})
+    });
+    showToast('✓ Subscribed for: ' + keyword);
+    document.getElementById('alert-email-m').value   = '';
+    document.getElementById('alert-keyword-m').value = '';
+    closeDrawer();
+  } catch(e) { showToast('Error. Check connection.'); }
+}
 
 // ── GLOBAL DRAW STATS (loaded once from API) ──────────────
 let DRAW_STATS = {
@@ -994,12 +1167,12 @@ function calcCRS() {
   const listen2 = parseInt(document.getElementById('c-listen2')?.value) || 0;
   const read2   = parseInt(document.getElementById('c-read2')?.value)   || 0;
   const write2  = parseInt(document.getElementById('c-write2')?.value)  || 0;
-  const caWork  = parseInt(document.getElementById('c-ca-work')?.value)  || 0;
-  const forWork = parseInt(document.getElementById('c-for-work')?.value) || 0;
-  const caEdu   = parseInt(document.getElementById('c-ca-edu')?.value)   || 0;
+  const caWork  = parseInt(document.getElementById('c-cawork')?.value)  || 0;
+  const forWork = parseInt(document.getElementById('c-forwork')?.value) || 0;
+  const caEdu   = parseInt(document.getElementById('c-caedu')?.value)   || 0;
   const job     = parseInt(document.getElementById('c-job')?.value)     || 0;
   const pnp     = parseInt(document.getElementById('c-pnp')?.value)     || 0;
-  const sibling = parseInt(document.getElementById('c-sibling')?.value) || 0;
+  const sibling = document.getElementById('c-sibling')?.checked ? 15 : 0;
   const french  = parseInt(document.getElementById('c-french')?.value)  || 0;
 
   const lang1    = speak + listen + readV + writeV;
@@ -1184,348 +1357,6 @@ function calcPGWP() {
   }
 }
 
-
-// ── NEWS STATE ────────────────────────────────────────────
-let allArticles    = [];
-let currentCategory = '';
-let currentKeyword  = '';
-let currentPage     = 1;
-const PER_PAGE      = 20;
-let searchTimer     = null;
-let bookmarks       = JSON.parse(localStorage.getItem('ircc_bookmarks') || '[]');
-
-const SOURCE_CLASS = {
-  'IRCC Official': 'tag-ircc',
-  'CIC News':      'tag-cic',
-  'CBC':           'tag-cbc',
-};
-const CRS_KEYWORDS = ['crs','express entry','draw','ita','pgwp','lmia','trp',
-  'permanent resident','work permit','oinp','international student','open work permit'];
-
-function getSourceClass(source) {
-  for (const [k,v] of Object.entries(SOURCE_CLASS)) {
-    if (source && source.toLowerCase().includes(k.toLowerCase())) return v;
-  }
-  return 'tag-default';
-}
-function detectKeywords(title) {
-  const lower = (title||'').toLowerCase();
-  return CRS_KEYWORDS.filter(k => lower.includes(k)).slice(0,2);
-}
-function timeAgo(dateStr) {
-  if (!dateStr) return '';
-  const d = new Date(dateStr);
-  if (isNaN(d)) return dateStr;
-  const diff = Date.now() - d.getTime();
-  const mins = Math.floor(diff/60000);
-  if (mins < 60)   return `${mins}m ago`;
-  if (mins < 1440) return `${Math.floor(mins/60)}h ago`;
-  return `${Math.floor(mins/1440)}d ago`;
-}
-
-function renderCard(a) {
-  const kws     = detectKeywords(a.title);
-  const badges  = kws.map(k=>`<span class="keyword-badge">${k.toUpperCase()}</span>`).join('');
-  const isRead  = localStorage.getItem('read_'+a.url) ? 'read' : '';
-  const isBookmarked = bookmarks.includes(a.url) ? 'bookmarked' : '';
-  return `
-    <a class="news-card ${isRead}" href="${a.url}" target="_blank" rel="noopener"
-       onclick="markRead('${a.url.replace(/'/g,"\\'")}')">
-      <div class="card-left">
-        <div class="card-meta">
-          <span class="source-tag ${getSourceClass(a.source)}">${a.source||'Unknown'}</span>
-          ${badges}
-          <span class="card-date">${timeAgo(a.published)}</span>
-        </div>
-        <div class="card-title">${a.title||'Untitled'}</div>
-        <div class="card-summary">${a.summary||''}</div>
-      </div>
-      <div class="card-right">
-        <span class="cat-pill">${a.category||''}</span>
-        <button class="bookmark-btn ${isBookmarked}" onclick="toggleBookmark(event,'${a.url.replace(/'/g,"\\'")}','${(a.title||'').replace(/'/g,"\\'")}')">🔖</button>
-        <svg class="arrow-icon" width="14" height="14" viewBox="0 0 16 16" fill="none">
-          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-    </a>`;
-}
-
-function markRead(url) {
-  localStorage.setItem('read_'+url, '1');
-}
-
-function toggleBookmark(e, url, title) {
-  e.preventDefault(); e.stopPropagation();
-  const idx = bookmarks.indexOf(url);
-  if (idx === -1) { bookmarks.push(url); showToast('🔖 Bookmarked'); }
-  else            { bookmarks.splice(idx,1); showToast('Removed bookmark'); }
-  localStorage.setItem('ircc_bookmarks', JSON.stringify(bookmarks));
-  document.getElementById('stat-bookmarks').textContent = bookmarks.length;
-  renderPage(filterArticles(), currentPage);
-}
-
-function checkDrawBanner(articles) {
-  const DRAW_KW = ['express entry draw','invitation to apply','crs cut-off','draw #','rounds of invitations'];
-  const draw = articles.find(a => DRAW_KW.some(k => (a.title||'').toLowerCase().includes(k)));
-  const banner = document.getElementById('draw-banner');
-  if (draw) {
-    document.getElementById('draw-text').textContent = draw.title;
-    banner.classList.add('visible');
-    document.getElementById('stat-draw').textContent = timeAgo(draw.published);
-  } else {
-    banner.classList.remove('visible');
-  }
-}
-
-function updateCounts(articles) {
-  const counts = {};
-  articles.forEach(a => { counts[a.category] = (counts[a.category]||0)+1; });
-  document.getElementById('cnt-all').textContent  = articles.length;
-  document.getElementById('cnt-ircc').textContent = counts['IRCC Updates']||0;
-  document.getElementById('cnt-ee').textContent   = counts['Express Entry']||0;
-  document.getElementById('cnt-pnp').textContent  = counts['PNP Programs']||0;
-  document.getElementById('cnt-intl').textContent = counts['Intl Students']||0;
-  document.getElementById('cnt-trp').textContent  = counts['TRP / PR']||0;
-  document.getElementById('cnt-work').textContent = counts['Work Permits']||0;
-  document.getElementById('cnt-gen').textContent  = counts['General']||0;
-  const sources = [...new Set(articles.map(a=>a.source))].length;
-  document.getElementById('stat-sources').textContent = sources;
-  document.getElementById('stat-total').textContent   = articles.length;
-  document.getElementById('stat-bookmarks').textContent = bookmarks.length;
-}
-
-function filterArticles() {
-  let filtered = [...allArticles];
-  if (currentCategory) filtered = filtered.filter(a => a.category === currentCategory);
-  const search = (document.getElementById('search')?.value||'').trim().toLowerCase();
-  const kw = (currentKeyword || search).toLowerCase();
-  if (kw) filtered = filtered.filter(a =>
-    (a.title||'').toLowerCase().includes(kw) ||
-    (a.summary||'').toLowerCase().includes(kw)
-  );
-  const sort = document.getElementById('sort')?.value || 'newest';
-  filtered.sort((a,b) => {
-    const da = new Date(a.published||0), db = new Date(b.published||0);
-    return sort === 'newest' ? db-da : da-db;
-  });
-  return filtered;
-}
-
-function renderPage(articles, page) {
-  const grid  = document.getElementById('news-grid');
-  const start = (page-1)*PER_PAGE;
-  const slice = articles.slice(start, start+PER_PAGE);
-  if (!slice.length) {
-    grid.innerHTML = '<div class="empty-state">No articles found</div>';
-    document.getElementById('pagination').innerHTML = '';
-    return;
-  }
-  grid.innerHTML = slice.map(renderCard).join('');
-  const total = Math.ceil(articles.length/PER_PAGE);
-  let pg = '';
-  for (let i=1; i<=total; i++) {
-    pg += `<button class="pg-btn ${i===page?'active':''}" onclick="goPage(${i})">${i}</button>`;
-  }
-  document.getElementById('pagination').innerHTML = pg;
-}
-
-function goPage(n) {
-  currentPage = n;
-  renderPage(filterArticles(), currentPage);
-  window.scrollTo({top:0, behavior:'smooth'});
-}
-
-async function loadNews() {
-  try {
-    const sort = document.getElementById('sort')?.value || 'newest';
-    const res  = await fetch(`/api/news?sort=${sort}`);
-    if (!res.ok) throw new Error('API error '+res.status);
-    allArticles = await res.json();
-    document.getElementById('last-updated').textContent = 'Updated '+new Date().toLocaleTimeString();
-    updateCounts(allArticles);
-    checkDrawBanner(allArticles);
-    currentPage = 1;
-    renderPage(filterArticles(), currentPage);
-  } catch(e) {
-    document.getElementById('news-grid').innerHTML =
-      `<div class="empty-state">Could not load news.<br><span style="font-size:11px;color:var(--muted)">${e.message}</span></div>`;
-    console.error('[loadNews]', e);
-  }
-}
-
-function setCategory(btn, cat) {
-  document.querySelectorAll('.cat-btn[data-cat]').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  currentCategory = cat;
-  currentPage = 1;
-  renderPage(filterArticles(), currentPage);
-}
-
-function setKeyword(kw) {
-  currentKeyword = kw;
-  if (document.getElementById('search')) document.getElementById('search').value = kw;
-  currentPage = 1;
-  renderPage(filterArticles(), currentPage);
-}
-
-function clearSearch() {
-  if (document.getElementById('search')) document.getElementById('search').value = '';
-  document.getElementById('clear-btn').style.display = 'none';
-  currentKeyword = '';
-  currentPage = 1;
-  renderPage(filterArticles(), currentPage);
-}
-
-function debounceSearch() {
-  const val = document.getElementById('search')?.value || '';
-  document.getElementById('clear-btn').style.display = val ? 'block' : 'none';
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => {
-    currentPage = 1;
-    renderPage(filterArticles(), currentPage);
-  }, 280);
-}
-
-// ── PAGE NAVIGATION ──────────────────────────────────────
-function showPage(name, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
-  const page = document.getElementById('page-'+name);
-  if (page) page.classList.add('active');
-  if (btn)  btn.classList.add('active');
-  if (name === 'crs')        loadCRSChart();
-  if (name === 'processing') loadProcessingTimes();
-  if (name === 'health')     loadSourceHealth();
-  if (name === 'bookmarks')  renderBookmarks();
-}
-
-// ── CRS CHART ────────────────────────────────────────────
-let crsChartInstance = null;
-async function loadCRSChart() {
-  try {
-    const res  = await fetch('/api/crs-history');
-    const data = await res.json();
-    if (!data.length) {
-      document.getElementById('crs-table').innerHTML =
-        '<div style="color:var(--muted);font-family:var(--mono);font-size:12px;text-align:center;padding:2rem">No draw data yet — check back after first fetch cycle.</div>';
-      return;
-    }
-    const labels = data.map(d => d.draw_date ? d.draw_date.slice(0,10) : `#${d.draw_number||'?'}`);
-    const scores = data.map(d => d.score);
-    if (crsChartInstance) crsChartInstance.destroy();
-    const ctx = document.getElementById('crs-chart').getContext('2d');
-    crsChartInstance = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels,
-        datasets: [{
-          label: 'CRS Cutoff Score',
-          data: scores,
-          borderColor: '#3a7bd5',
-          backgroundColor: 'rgba(58,123,213,0.1)',
-          borderWidth: 2,
-          pointBackgroundColor: '#3a7bd5',
-          pointRadius: 4,
-          tension: 0.3,
-          fill: true
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { ticks: { color: '#6b7280', font:{size:10} }, grid: { color: '#232830' } },
-          y: { ticks: { color: '#6b7280' }, grid: { color: '#232830' }, min: 400, max: 600 }
-        }
-      }
-    });
-    document.getElementById('crs-table').innerHTML = data.slice().reverse().slice(0,10).map(d => `
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
-        <span style="color:var(--muted);font-family:var(--mono);font-size:11px">#${d.draw_number||'?'} · ${d.draw_date||''}</span>
-        <span>${d.draw_type||'General'}</span>
-        <span style="font-family:var(--mono);color:var(--accent2);font-weight:600">${d.score}</span>
-        <span style="color:var(--muted);font-size:11px">${d.invitations ? d.invitations.toLocaleString()+' invited' : ''}</span>
-      </div>`).join('');
-  } catch(e) { console.error('[chart]',e); }
-}
-
-// ── PROCESSING TIMES ─────────────────────────────────────
-async function loadProcessingTimes() {
-  try {
-    const res  = await fetch('/api/processing-times');
-    const data = await res.json();
-    const grid = document.getElementById('processing-grid');
-    if (!grid) return;
-    if (!data.length) { grid.innerHTML = '<div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:2rem">No data yet — processing times will appear after first scrape.</div>'; return; }
-    grid.innerHTML = data.map(d => `
-      <div class="proc-card">
-        <div class="proc-permit">${d.permit_type}</div>
-        <div class="proc-time">${d.time_weeks}</div>
-        <div class="proc-label">Processing time</div>
-      </div>`).join('');
-  } catch(e) { console.error('[processing]',e); }
-}
-
-// ── SOURCE HEALTH ────────────────────────────────────────
-async function loadSourceHealth() {
-  try {
-    const res  = await fetch('/api/source-health');
-    const data = await res.json();
-    const tbody = document.getElementById('health-body');
-    if (!tbody) return;
-    tbody.innerHTML = data.map(s => {
-      const hrs = s.last_seen ? Math.floor((Date.now()-new Date(s.last_seen))/3600000) : 999;
-      const status = hrs < 2 ? 'ok' : hrs < 24 ? 'warn' : 'dead';
-      return `<tr>
-        <td><span class="status-dot status-${status}"></span>${s.source}</td>
-        <td><span class="status-dot status-${status}"></span>${status === 'ok' ? 'Live' : status === 'warn' ? 'Delayed' : 'No data'}</td>
-        <td style="font-family:var(--mono)">${s.total}</td>
-        <td style="font-family:var(--mono);font-size:11px;color:var(--muted)">${timeAgo(s.last_seen)}</td>
-      </tr>`;
-    }).join('');
-  } catch(e) { console.error('[health]',e); }
-}
-
-// ── BOOKMARKS ────────────────────────────────────────────
-function renderBookmarks() {
-  const grid = document.getElementById('bookmarks-grid');
-  if (!grid) return;
-  if (!bookmarks.length) {
-    grid.innerHTML = '<div class="bookmarks-empty">No bookmarks yet.<br>Click 🔖 on any article to save it.</div>';
-    return;
-  }
-  const saved = allArticles.filter(a => bookmarks.includes(a.url));
-  grid.innerHTML = saved.length
-    ? saved.map(renderCard).join('')
-    : '<div class="bookmarks-empty">Bookmarked articles will appear here.</div>';
-}
-
-// ── SUBSCRIBE ALERT ──────────────────────────────────────
-async function subscribeAlert() {
-  const email   = document.getElementById('alert-email')?.value.trim();
-  const keyword = document.getElementById('alert-keyword')?.value.trim();
-  if (!email || !keyword) { showToast('Enter email and keyword'); return; }
-  try {
-    const res  = await fetch('/api/subscribe', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({email, keyword})
-    });
-    const data = await res.json();
-    document.getElementById('alert-status').style.display = 'block';
-    showToast('✓ Alert subscribed for: '+keyword);
-    document.getElementById('alert-email').value   = '';
-    document.getElementById('alert-keyword').value = '';
-  } catch(e) { showToast('Error subscribing. Check server.'); }
-}
-
-// ── TOAST ────────────────────────────────────────────────
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
 
 // ── INIT ──────────────────────────────────────────────────
 setInterval(loadNews, 10 * 60 * 1000);
