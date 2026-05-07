@@ -27,7 +27,7 @@ def scrape_processing_times():
     try:
         soup = BeautifulSoup(res.text, "html.parser")
 
-        conn = sqlite3.connect("news.db", timeout=10)
+        conn = sqlite3.connect(DB_PATH, timeout=10)
         conn.execute("PRAGMA journal_mode=WAL")
         c = conn.cursor()
 

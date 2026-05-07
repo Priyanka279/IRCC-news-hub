@@ -24,8 +24,8 @@ def send_email(to_email: str, subject: str, html_body: str) -> bool:
         msg["From"]    = f"{FROM_NAME} <{SMTP_USER}>"
         msg["To"]      = to_email
         msg.attach(MIMEText(html_body, "html"))
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as server:
-            server.starttls()
+        # Use SMTP_SSL on port 465 — Render blocks port 587 starttls
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
             server.login(SMTP_USER, SMTP_PASSWORD)
             server.sendmail(SMTP_USER, to_email, msg.as_string())
         print(f"[email] Sent to {to_email}: {subject}")

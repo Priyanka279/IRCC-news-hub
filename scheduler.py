@@ -55,4 +55,7 @@ def start_scheduler():
 
     scheduler.start()
     print("[scheduler] Started.")
-    run_all()  # run immediately on startup
+
+    # Delay startup fetch by 20s so gunicorn can bind the port first
+    import threading
+    threading.Timer(20.0, run_all).start()
