@@ -1844,15 +1844,46 @@ function calcCRS() {
   const lang2   = speak2 + listen2 + read2 + write2;
   const avgLang = lang1 / 4;
 
-  let transfer = 0;
-  if (lang1 >= 72) {
-    if (edu >= 120)   transfer += 25;
-    if (caWork >= 40) transfer += 25;
-    if (forWork > 0)  transfer += 25;
-  }
-  if (caWork >= 40 && forWork > 0) transfer += 25;
-  if (caWork >= 40 && edu >= 120)  transfer += 25;
-  transfer = Math.min(transfer, 100);
+  // ── Skill Transferability — Official IRCC 4-category grid ──────────────
+  // CLB thresholds (sum of 4 skills)
+  const clb7 = lang1 >= 64;   // CLB 7+ in all skills  (4 × 16 = 64)
+  const clb9 = lang1 >= 88;   // CLB 9+ in all skills  (4 × 22 = 88)
+  const highEdu = edu >= 120; // Bachelor's degree or higher
+  const midEdu  = edu >= 30 && edu < 120; // 1-2 yr post-secondary
+  const cwe1 = caWork >= 40;  // 1 yr Canadian work exp
+  const cwe2 = caWork >= 53;  // 2+ yr Canadian work exp
+  const fwe1 = forWork >= 13; // 1-2 yr foreign work exp
+  const fwe3 = forWork >= 25; // 3+ yr foreign work exp
+
+  // Category A: Education + First Official Language (max 50)
+  let catA = 0;
+  if      (highEdu && clb9) catA = 50;
+  else if (highEdu && clb7) catA = 25;
+  else if (midEdu  && clb9) catA = 25;
+  else if (midEdu  && clb7) catA = 13;
+
+  // Category B: Education + Canadian Work Experience (max 50)
+  let catB = 0;
+  if      (highEdu && cwe2) catB = 50;
+  else if (highEdu && cwe1) catB = 25;
+  else if (midEdu  && cwe2) catB = 25;
+  else if (midEdu  && cwe1) catB = 13;
+
+  // Category C: Foreign Work Experience + First Official Language (max 50)
+  let catC = 0;
+  if      (fwe3 && clb9) catC = 50;
+  else if (fwe3 && clb7) catC = 25;
+  else if (fwe1 && clb9) catC = 25;
+  else if (fwe1 && clb7) catC = 13;
+
+  // Category D: Foreign Work Experience + Canadian Work Experience (max 50)
+  let catD = 0;
+  if      (fwe3 && cwe2) catD = 50;
+  else if (fwe3 && cwe1) catD = 25;
+  else if (fwe1 && cwe2) catD = 25;
+  else if (fwe1 && cwe1) catD = 13;
+
+  const transfer = Math.min(catA + catB + catC + catD, 100);
 
   const total = age + edu + lang1 + lang2 + caWork + forWork + caEdu + transfer + job + pnp + sibling + french;
   const gap   = CUTOFF - total;
@@ -1902,7 +1933,7 @@ function calcCRS() {
     ['🍁 Canadian Work Experience',    caWork],
     ['🌍 Foreign Work Experience',     forWork],
     ['🏫 Canadian Education',          caEdu],
-    ['🔄 Skill Transferability',       transfer],
+    ['🔄 Transferability (A+B+C+D)',    transfer],
     ['💼 Job Offer',                   job],
     ['🏔 Provincial Nomination (PNP)', pnp],
     ['👨‍👩‍👧 Sibling in Canada',          sibling],
@@ -1910,11 +1941,26 @@ function calcCRS() {
   ];
   const bkEl = document.getElementById('crs-breakdown');
   if (bkEl) {
-    bkEl.innerHTML = bk.map(b => `
+    let html = bk.map(b => `
       <div class="breakdown-row" style="${b[1]===0?'opacity:.4':''}">
         <span style="color:var(--text2)">${b[0]}</span>
         <span class="breakdown-pts" style="color:${b[1]>0?'var(--primary)':'var(--faint)'}">${b[1]>0?'+'+b[1]:'0'}</span>
       </div>`).join('');
+    // Show transferability sub-breakdown when > 0
+    if (transfer > 0) {
+      const subs = [
+        ['A: Edu + Language', catA],
+        ['B: Edu + CA Work',  catB],
+        ['C: Foreign + Lang', catC],
+        ['D: Foreign + CA Work', catD],
+      ].filter(s=>s[1]>0);
+      html += subs.map(s=>`
+        <div class="breakdown-row" style="margin-left:1rem;background:var(--primary-light);border-color:var(--primary-mid)">
+          <span style="color:var(--muted);font-size:11px">&nbsp;&nbsp;↳ ${s[0]}</span>
+          <span class="breakdown-pts" style="color:var(--primary);font-size:11px">+${s[1]}</span>
+        </div>`).join('');
+    }
+    bkEl.innerHTML = html;
   }
 
   const tips = [];
