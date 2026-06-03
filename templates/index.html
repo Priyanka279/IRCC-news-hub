@@ -756,15 +756,15 @@
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">Filter by Keyword</div>
-      <button class="cat-btn" onclick="setKeyword('')">All</button>
-      <button class="cat-btn" onclick="setKeyword('CRS')">CRS Score</button>
-      <button class="cat-btn" onclick="setKeyword('Express Entry draw')">EE Draw</button>
-      <button class="cat-btn" onclick="setKeyword('study permit')">Study Permit</button>
-      <button class="cat-btn" onclick="setKeyword('PGWP')">PGWP</button>
-      <button class="cat-btn" onclick="setKeyword('LMIA')">LMIA</button>
-      <button class="cat-btn" onclick="setKeyword('Ontario PNP')">Ontario PNP</button>
-      <button class="cat-btn" onclick="setKeyword('TRP')">TRP</button>
-      <button class="cat-btn" onclick="setKeyword('TR to PR')">TR to PR</button>
+      <button class="cat-btn kw-btn active" data-kw="" onclick="setKeyword('')">All</button>
+      <button class="cat-btn kw-btn" data-kw="CRS" onclick="setKeyword('CRS')">CRS Score</button>
+      <button class="cat-btn kw-btn" data-kw="Express Entry draw" onclick="setKeyword('Express Entry draw')">EE Draw</button>
+      <button class="cat-btn kw-btn" data-kw="study permit" onclick="setKeyword('study permit')">Study Permit</button>
+      <button class="cat-btn kw-btn" data-kw="PGWP" onclick="setKeyword('PGWP')">PGWP</button>
+      <button class="cat-btn kw-btn" data-kw="LMIA" onclick="setKeyword('LMIA')">LMIA</button>
+      <button class="cat-btn kw-btn" data-kw="Ontario PNP" onclick="setKeyword('Ontario PNP')">Ontario PNP</button>
+      <button class="cat-btn kw-btn" data-kw="TRP" onclick="setKeyword('TRP')">TRP</button>
+      <button class="cat-btn kw-btn" data-kw="TR to PR" onclick="setKeyword('TR to PR')">TR to PR</button>
     </div>
   </aside>
 
@@ -1579,14 +1579,14 @@
   </div>
   <div class="sidebar-section">
     <div class="sidebar-label">Quick Filters</div>
-    <button class="cat-btn" onclick="setKeyword('');closeDrawer()">All</button>
-    <button class="cat-btn" onclick="setKeyword('CRS');closeDrawer()">CRS Score</button>
-    <button class="cat-btn" onclick="setKeyword('Express Entry draw');closeDrawer()">EE Draw</button>
-    <button class="cat-btn" onclick="setKeyword('study permit');closeDrawer()">Study Permit</button>
-    <button class="cat-btn" onclick="setKeyword('PGWP');closeDrawer()">PGWP</button>
-    <button class="cat-btn" onclick="setKeyword('LMIA');closeDrawer()">LMIA</button>
-    <button class="cat-btn" onclick="setKeyword('Ontario PNP');closeDrawer()">Ontario PNP</button>
-    <button class="cat-btn" onclick="setKeyword('TRP');closeDrawer()">TRP</button>
+    <button class="cat-btn kw-btn" data-kw="" onclick="setKeyword('');closeDrawer()">All</button>
+    <button class="cat-btn kw-btn" data-kw="CRS" onclick="setKeyword('CRS');closeDrawer()">CRS Score</button>
+    <button class="cat-btn kw-btn" data-kw="Express Entry draw" onclick="setKeyword('Express Entry draw');closeDrawer()">EE Draw</button>
+    <button class="cat-btn kw-btn" data-kw="study permit" onclick="setKeyword('study permit');closeDrawer()">Study Permit</button>
+    <button class="cat-btn kw-btn" data-kw="PGWP" onclick="setKeyword('PGWP');closeDrawer()">PGWP</button>
+    <button class="cat-btn kw-btn" data-kw="LMIA" onclick="setKeyword('LMIA');closeDrawer()">LMIA</button>
+    <button class="cat-btn kw-btn" data-kw="Ontario PNP" onclick="setKeyword('Ontario PNP');closeDrawer()">Ontario PNP</button>
+    <button class="cat-btn kw-btn" data-kw="TRP" onclick="setKeyword('TRP');closeDrawer()">TRP</button>
   </div>
   <div class="sidebar-section">
     <div class="sidebar-label">Email Alerts</div>
@@ -2048,7 +2048,13 @@ function setCategory(btn,cat){
   if(btn)btn.classList.add('active');currentCategory=cat;currentPage=1;renderPage(filterArticles(),1);
 }
 function setKeyword(kw){
-  currentKeyword=kw;const s=document.getElementById('search');if(s)s.value=kw;
+  currentKeyword=kw;
+  const s=document.getElementById('search');if(s)s.value=kw;
+  // highlight active keyword button in sidebar + drawer
+  document.querySelectorAll('.kw-btn').forEach(b=>b.classList.toggle('active',b.dataset.kw===kw));
+  // always navigate to News page so results are visible
+  showPage('news',null);
+  document.querySelectorAll('.nav-tab').forEach((b,i)=>b.classList.toggle('active',i===0));
   currentPage=1;renderPage(filterArticles(),1);
 }
 function debounceSearch(){
@@ -2059,7 +2065,9 @@ function debounceSearch(){
 function clearSearch(){
   const s=document.getElementById('search');if(s)s.value='';
   const cb=document.getElementById('clear-btn');if(cb)cb.style.display='none';
-  currentKeyword='';currentPage=1;renderPage(filterArticles(),1);
+  currentKeyword='';
+  document.querySelectorAll('.kw-btn').forEach(b=>b.classList.toggle('active',b.dataset.kw===''));
+  currentPage=1;renderPage(filterArticles(),1);
 }
 
 function showPage(name,btn){
