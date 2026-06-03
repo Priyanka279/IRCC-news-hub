@@ -2,9 +2,10 @@
 draw_scraper.py — Express Entry Draw Tracker
 
 Sources tried in order:
-1. CIC News draw history (most reliable on Render free tier)
-2. IRCC official Canada.ca page (often blocked/slow on Render)
-3. Hardcoded seed data — real draws so app is never empty or wrong
+1. IRCC JSON API  (official structured data — fastest)
+2. CIC News HTML  (backup HTML scrape)
+3. IRCC HTML page (often slow/blocked on cloud IPs)
+4. Hardcoded seed data — real draws so app is never empty
 """
 import requests
 import sqlite3
@@ -18,44 +19,47 @@ load_dotenv()
 DB_PATH = os.getenv("DB_PATH", "news.db")
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                  "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+    "User-Agent": ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                   "AppleWebKit/537.36 (KHTML, like Gecko) "
+                   "Chrome/124.0.0.0 Safari/537.36"),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.5",
 }
 
-IRCC_URL    = ("https://www.canada.ca/en/immigration-refugees-citizenship/corporate/"
-               "mandate/policies-operational-instructions-agreements/"
-               "ministerial-instructions/express-entry-rounds.html")
-CICNEWS_URL = "https://www.cicnews.com/express-entry-draw-history/"
+IRCC_JSON_URL = ("https://www.canada.ca/content/dam/ircc/documents/json/"
+                 "ee_rounds_123_en.json")
+IRCC_URL      = ("https://www.canada.ca/en/immigration-refugees-citizenship/corporate/"
+                 "mandate/policies-operational-instructions-agreements/"
+                 "ministerial-instructions/express-entry-rounds.html")
+CICNEWS_URL   = "https://www.cicnews.com/express-entry-draw-history"
 
 # ── REAL DRAW SEED DATA (as of May 2026) ─────────────────────────────────────
-# Guarantees correct data even when scrapers fail.
-# Format: (draw_number, date, draw_type, crs_score, invitations)
 SEED_DRAWS = [
-    (304, "2026-04-23", "Canadian Experience Class",     491,  4500),
-    (303, "2026-04-09", "Provincial Nominee Program",    791,  1000),
-    (302, "2026-03-26", "Canadian Experience Class",     494,  4500),
-    (301, "2026-03-12", "Provincial Nominee Program",    791,  1000),
-    (300, "2026-02-26", "Canadian Experience Class",     496,  4500),
-    (299, "2026-02-12", "Provincial Nominee Program",    791,  1000),
-    (298, "2026-01-29", "Canadian Experience Class",     497,  4500),
-    (297, "2026-01-15", "Provincial Nominee Program",    791,  1000),
-    (296, "2025-12-18", "Canadian Experience Class",     498,  4500),
-    (295, "2025-12-04", "Provincial Nominee Program",    791,  1000),
-    (294, "2025-11-20", "Canadian Experience Class",     499,  4500),
-    (293, "2025-11-06", "Provincial Nominee Program",    791,  1000),
-    (292, "2025-10-23", "Canadian Experience Class",     500,  4500),
-    (291, "2025-10-09", "Provincial Nominee Program",    791,  1000),
-    (290, "2025-09-25", "Canadian Experience Class",     501,  4500),
-    (289, "2025-09-11", "Provincial Nominee Program",    791,  1000),
-    (288, "2025-08-28", "Canadian Experience Class",     503,  4500),
-    (287, "2025-08-14", "Provincial Nominee Program",    791,  1000),
-    (286, "2025-07-31", "Canadian Experience Class",     504,  4500),
-    (285, "2025-07-17", "Provincial Nominee Program",    791,  1000),
-    (284, "2025-07-03", "Canadian Experience Class",     505,  4500),
-    (283, "2025-06-19", "Provincial Nominee Program",    791,  1000),
-    (282, "2025-06-05", "Canadian Experience Class",     506,  4500),
-    (281, "2025-05-22", "Provincial Nominee Program",    791,  1000),
-    (280, "2025-05-08", "Canadian Experience Class",     507,  4500),
+    (304, "2026-04-23", "Canadian Experience Class",  491, 4500),
+    (303, "2026-04-09", "Provincial Nominee Program",  791, 1000),
+    (302, "2026-03-26", "Canadian Experience Class",  494, 4500),
+    (301, "2026-03-12", "Provincial Nominee Program",  791, 1000),
+    (300, "2026-02-26", "Canadian Experience Class",  496, 4500),
+    (299, "2026-02-12", "Provincial Nominee Program",  791, 1000),
+    (298, "2026-01-29", "Canadian Experience Class",  497, 4500),
+    (297, "2026-01-15", "Provincial Nominee Program",  791, 1000),
+    (296, "2025-12-18", "Canadian Experience Class",  498, 4500),
+    (295, "2025-12-04", "Provincial Nominee Program",  791, 1000),
+    (294, "2025-11-20", "Canadian Experience Class",  499, 4500),
+    (293, "2025-11-06", "Provincial Nominee Program",  791, 1000),
+    (292, "2025-10-23", "Canadian Experience Class",  500, 4500),
+    (291, "2025-10-09", "Provincial Nominee Program",  791, 1000),
+    (290, "2025-09-25", "Canadian Experience Class",  501, 4500),
+    (289, "2025-09-11", "Provincial Nominee Program",  791, 1000),
+    (288, "2025-08-28", "Canadian Experience Class",  503, 4500),
+    (287, "2025-08-14", "Provincial Nominee Program",  791, 1000),
+    (286, "2025-07-31", "Canadian Experience Class",  504, 4500),
+    (285, "2025-07-17", "Provincial Nominee Program",  791, 1000),
+    (284, "2025-07-03", "Canadian Experience Class",  505, 4500),
+    (283, "2025-06-19", "Provincial Nominee Program",  791, 1000),
+    (282, "2025-06-05", "Canadian Experience Class",  506, 4500),
+    (281, "2025-05-22", "Provincial Nominee Program",  791, 1000),
+    (280, "2025-05-08", "Canadian Experience Class",  507, 4500),
 ]
 
 
@@ -78,49 +82,103 @@ def _parse_date(val: str) -> str:
 
 
 def _is_valid_score(score) -> bool:
-    """Real CRS scores are always between 400 and 900."""
     return score is not None and 400 <= int(score) <= 900
 
 
-# ── SCRAPER 1: CIC News ──────────────────────────────────────────────────────
-def scrape_cicnews() -> list:
+def _make_session() -> requests.Session:
+    session = requests.Session()
+    adapter = requests.adapters.HTTPAdapter(max_retries=2)
+    session.mount("https://", adapter)
+    session.mount("http://",  adapter)
+    return session
+
+
+# ── SCRAPER 1: IRCC JSON API ─────────────────────────────────────────────────
+def scrape_ircc_json() -> list:
+    """
+    Fetches the official IRCC Express Entry JSON feed.
+    Much faster than HTML scraping and doesn't need BeautifulSoup.
+    """
     draws = []
     try:
-        res = requests.get(CICNEWS_URL, headers=HEADERS, timeout=20)
+        session = _make_session()
+        res = session.get(IRCC_JSON_URL, headers=HEADERS, timeout=15)
         res.raise_for_status()
-        soup  = BeautifulSoup(res.text, "html.parser")
-        table = soup.find("table")
-        if not table:
-            print("[draws] CIC News: no table found.")
-            return []
-        for row in table.find_all("tr")[1:]:
-            cells = [td.get_text(strip=True) for td in row.find_all("td")]
-            if len(cells) < 4:
-                continue
-            number  = _clean_int(cells[0])
-            date    = _parse_date(cells[1])
-            dtype   = cells[2] if len(cells) > 2 else "General"
-            score   = _clean_int(cells[3]) if len(cells) > 3 else None
-            invited = _clean_int(cells[4]) if len(cells) > 4 else None
+        data = res.json()
+
+        # The JSON structure varies — try common key names
+        rounds = (data.get("rounds") or data.get("draws") or
+                  data.get("data") or (data if isinstance(data, list) else []))
+
+        for r in rounds:
+            # Field names differ across API versions
+            number  = _clean_int(r.get("drawNumber") or r.get("number") or r.get("draw_number"))
+            raw_date = (r.get("drawDate") or r.get("date") or r.get("draw_date") or "")
+            dtype   = (r.get("drawName")  or r.get("draw_type") or r.get("type") or "General")
+            score   = _clean_int(r.get("drawCRS")  or r.get("crs") or r.get("score") or r.get("cutoff"))
+            invited = _clean_int(r.get("drawSize") or r.get("invitations") or r.get("invited"))
+            date    = _parse_date(str(raw_date)) if raw_date else ""
+
             if _is_valid_score(score):
                 draws.append({"number": number, "date": date, "draw_type": dtype,
-                               "crs_score": score, "invitations": invited, "url": CICNEWS_URL})
-        print(f"[draws] CIC News: {len(draws)} draws found.")
+                              "crs_score": score, "invitations": invited, "url": IRCC_JSON_URL})
+
+        print(f"[draws] IRCC JSON API: {len(draws)} draws found.")
     except Exception as e:
-        print(f"[draws] CIC News error: {e}")
+        print(f"[draws] IRCC JSON error: {e}")
     return draws
 
 
-# ── SCRAPER 2: IRCC Official ─────────────────────────────────────────────────
+# ── SCRAPER 2: CIC News HTML ─────────────────────────────────────────────────
+def scrape_cicnews() -> list:
+    draws = []
+    urls_to_try = [
+        "https://www.cicnews.com/express-entry-draw-history",
+        "https://www.cicnews.com/express-entry-draw-history/",
+        "https://www.cicnews.com/express-entry/draw-history/",
+    ]
+    for url in urls_to_try:
+        try:
+            session = _make_session()
+            res = session.get(url, headers=HEADERS, timeout=18, allow_redirects=True)
+            if res.status_code == 404:
+                continue
+            res.raise_for_status()
+            soup  = BeautifulSoup(res.text, "html.parser")
+            table = soup.find("table")
+            if not table:
+                continue
+            for row in table.find_all("tr")[1:]:
+                cells = [td.get_text(strip=True) for td in row.find_all("td")]
+                if len(cells) < 4:
+                    continue
+                number  = _clean_int(cells[0])
+                date    = _parse_date(cells[1])
+                dtype   = cells[2] if len(cells) > 2 else "General"
+                score   = _clean_int(cells[3]) if len(cells) > 3 else None
+                invited = _clean_int(cells[4]) if len(cells) > 4 else None
+                if _is_valid_score(score):
+                    draws.append({"number": number, "date": date, "draw_type": dtype,
+                                  "crs_score": score, "invitations": invited, "url": url})
+            if draws:
+                print(f"[draws] CIC News: {len(draws)} draws found at {url}")
+                return draws
+        except Exception as e:
+            print(f"[draws] CIC News error ({url}): {e}")
+    return draws
+
+
+# ── SCRAPER 3: IRCC HTML ─────────────────────────────────────────────────────
 def scrape_ircc() -> list:
     draws = []
     try:
-        res = requests.get(IRCC_URL, headers=HEADERS, timeout=25)
+        session = _make_session()
+        res = session.get(IRCC_URL, headers=HEADERS, timeout=35)
         res.raise_for_status()
         soup  = BeautifulSoup(res.text, "html.parser")
         table = soup.find("table")
         if not table:
-            print("[draws] IRCC: no table found.")
+            print("[draws] IRCC HTML: no table found.")
             return []
         for row in table.find_all("tr")[1:]:
             cells = [td.get_text(strip=True) for td in row.find_all("td")]
@@ -133,10 +191,10 @@ def scrape_ircc() -> list:
             invited = _clean_int(cells[4]) if len(cells) > 4 else None
             if _is_valid_score(score):
                 draws.append({"number": number, "date": date, "draw_type": dtype,
-                               "crs_score": score, "invitations": invited, "url": IRCC_URL})
-        print(f"[draws] IRCC: {len(draws)} draws found.")
+                              "crs_score": score, "invitations": invited, "url": IRCC_URL})
+        print(f"[draws] IRCC HTML: {len(draws)} draws found.")
     except Exception as e:
-        print(f"[draws] IRCC error: {e}")
+        print(f"[draws] IRCC HTML error: {e}")
     return draws
 
 
@@ -149,7 +207,6 @@ def get_seed_draws() -> list:
 
 # ── DB OPERATIONS ────────────────────────────────────────────────────────────
 def _purge_invalid_scores():
-    """Delete any rows with scores outside 400-900 range (fixes bogus 250 etc)."""
     try:
         conn = sqlite3.connect(DB_PATH, timeout=10)
         conn.execute("PRAGMA journal_mode=WAL")
@@ -213,7 +270,6 @@ def get_draw_stats() -> dict:
     rows = [dict(r) for r in c.fetchall()]
     conn.close()
 
-    # If DB is still empty, return hardcoded fallback
     if not rows:
         return {
             "latest_cutoff":       491,
@@ -231,7 +287,6 @@ def get_draw_stats() -> dict:
 
     latest = rows[0]
 
-    # Days since last draw
     days_since = None
     try:
         days_since = (datetime.now() -
@@ -239,7 +294,6 @@ def get_draw_stats() -> dict:
     except Exception:
         pass
 
-    # Average gap between draws
     gaps = []
     for i in range(len(rows) - 1):
         try:
@@ -250,7 +304,6 @@ def get_draw_stats() -> dict:
             pass
     avg_freq = round(sum(gaps) / len(gaps)) if gaps else 14
 
-    # Estimated next draw
     est_next = None
     try:
         last_d = datetime.strptime(latest["draw_date"][:10], "%Y-%m-%d")
@@ -258,15 +311,13 @@ def get_draw_stats() -> dict:
     except Exception:
         pass
 
-    # Use most recent non-PNP draw for the displayed cutoff
-    # PNP draws always show 791 which would confuse users
+    # Use most recent non-PNP draw for displayed cutoff (PNP always shows 791)
     cec_rows   = [r for r in rows if r.get("score", 0) < 700]
     cec_scores = [r["score"] for r in cec_rows[:5]]
 
-    display_cutoff = cec_rows[0]["score"]   if cec_rows else latest["score"]
+    display_cutoff = cec_rows[0]["score"]    if cec_rows else latest["score"]
     display_type   = cec_rows[0]["draw_type"] if cec_rows else latest.get("draw_type", "General")
 
-    # Trend from CEC draws only
     trend = "unknown"
     if len(cec_scores) >= 3:
         if cec_scores[0] > cec_scores[-1] + 5:
@@ -306,18 +357,22 @@ def get_latest_draw():
 
 # ── MAIN ENTRY (called by scheduler) ────────────────────────────────────────
 def fetch_and_save_draws() -> int:
-    """Try scrapers in order, fall back to seed data if both fail."""
+    """
+    Try scrapers in order, fall back to seed data if all fail.
+    Order: JSON API → CIC News HTML → IRCC HTML → seed data
+    """
     _purge_invalid_scores()
 
-    # Always load seed first so DB is never empty
+    # Always seed first so DB is never empty
     save_draws_to_db(get_seed_draws())
 
-    # Try live scrape on top of seed data
-    draws = scrape_cicnews()
-    if not draws:
-        draws = scrape_ircc()
-    if draws:
-        return save_draws_to_db(draws)
+    # Try live sources in priority order
+    for scraper in [scrape_ircc_json, scrape_cicnews, scrape_ircc]:
+        draws = scraper()
+        if draws:
+            return save_draws_to_db(draws)
+
+    print("[draws] All scrapers failed — using seed data only.")
     return 0
 
 
@@ -325,6 +380,8 @@ if __name__ == "__main__":
     print("=== Loading seed draws ===")
     n = save_draws_to_db(get_seed_draws())
     print(f"Inserted: {n}")
+    print("\n=== Live scrape ===")
+    fetch_and_save_draws()
     print("\n=== Draw stats ===")
     s = get_draw_stats()
     print(f"Latest cutoff : {s['latest_cutoff']}")
