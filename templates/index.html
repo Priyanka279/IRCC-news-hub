@@ -558,6 +558,117 @@
       cursor:pointer;transition:all .2s;box-shadow:var(--sh-blue);
     }
 
+    /* ── COUNTDOWN CHIP ── */
+    .countdown-chip{
+      font-size:12px;font-weight:600;color:#fff;
+      display:flex;align-items:center;gap:7px;
+      background:var(--grad);border:none;
+      padding:6px 14px;border-radius:20px;box-shadow:var(--sh-blue);
+    }
+    .countdown-chip .cd-val{font-family:var(--mono);font-weight:700}
+
+    /* ── REVERSE CALC ── */
+    .goal-input-wrap{display:flex;gap:.75rem;align-items:flex-end;margin-bottom:1.5rem;flex-wrap:wrap}
+    .goal-input-wrap input[type=number]{
+      width:160px;background:#fff;border:1.5px solid var(--border);
+      color:var(--text);padding:10px 14px;border-radius:var(--r-sm);
+      font-family:var(--mono);font-size:22px;font-weight:700;
+      box-shadow:var(--sh-xs);transition:all .15s;
+    }
+    .goal-input-wrap input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+    .gap-display{
+      flex:1;min-width:200px;padding:1.25rem;border-radius:var(--r);
+      text-align:center;
+    }
+    .gap-number{font-family:var(--mono);font-size:48px;font-weight:800;line-height:1}
+    .action-path{
+      display:flex;align-items:flex-start;gap:.875rem;padding:.875rem;
+      border-radius:var(--r-sm);background:#fff;border:1.5px solid var(--border);
+      box-shadow:var(--sh-xs);margin-bottom:.5rem;transition:all .2s;
+    }
+    .action-path:hover{border-color:var(--primary);box-shadow:var(--sh-blue)}
+    .action-path-pts{font-family:var(--mono);font-size:18px;font-weight:800;color:var(--green);min-width:48px;text-align:center}
+    .action-path-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+    .action-path-desc{font-size:12px;color:var(--muted)}
+    .path-tag{display:inline-block;font-size:10px;font-weight:700;font-family:var(--mono);text-transform:uppercase;padding:2px 8px;border-radius:20px;margin-bottom:4px}
+    .path-easy{background:#d1fae5;color:#059669}
+    .path-med{background:#dbeafe;color:#2563eb}
+    .path-hard{background:#fef3c7;color:#d97706}
+
+    /* ── SCORE TRACKER ── */
+    .tracker-form{display:flex;gap:.75rem;align-items:flex-end;margin-bottom:1.25rem;flex-wrap:wrap}
+    .tracker-chart-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;height:240px;margin-bottom:1rem;box-shadow:var(--sh-xs)}
+    .tracker-entry{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:9px 12px;background:#fff;border:1px solid var(--border);
+      border-radius:var(--r-sm);margin-bottom:.4rem;box-shadow:var(--sh-xs);
+    }
+    .tracker-score{font-family:var(--mono);font-size:20px;font-weight:800;color:var(--primary)}
+    .tracker-date{font-family:var(--mono);font-size:11px;color:var(--muted)}
+    .tracker-note{font-size:12px;color:var(--text2)}
+    .tracker-del{background:none;border:none;color:var(--faint);cursor:pointer;font-size:16px;padding:2px 6px;border-radius:4px;transition:all .15s}
+    .tracker-del:hover{color:var(--red);background:var(--red-light)}
+    .tracker-delta{font-family:var(--mono);font-size:11px;font-weight:700}
+
+    /* ── PROVINCE COMPARE ── */
+    .compare-table{width:100%;border-collapse:collapse}
+    .compare-table th{
+      padding:10px 14px;font-size:12px;font-weight:700;text-align:left;
+      border-bottom:2px solid var(--border);background:var(--bg);
+    }
+    .compare-table th:first-child{color:var(--muted);font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em}
+    .compare-table th:not(:first-child){color:var(--primary);font-size:14px}
+    .compare-table td{padding:10px 14px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:top}
+    .compare-table tr:last-child td{border-bottom:none}
+    .compare-table tbody tr:hover td{background:var(--primary-light)}
+    .compare-table td:first-child{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+    .c-yes{color:var(--green);font-weight:700}
+    .c-no{color:var(--faint)}
+    .c-best{background:linear-gradient(135deg,rgba(37,99,235,.06) 0%,rgba(124,58,237,.06) 100%)}
+    .province-header{display:flex;flex-direction:column;gap:2px}
+    .prov-flag{font-size:20px;margin-bottom:2px}
+    .prov-name{font-size:14px;font-weight:800;letter-spacing:-.01em}
+    .prov-badge{font-size:10px;font-weight:600;font-family:var(--mono);color:var(--muted)}
+
+    /* ── CHECKLIST ── */
+    .pathway-selector{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.75rem;margin-bottom:1.5rem}
+    .pathway-card{
+      padding:1.25rem;border-radius:var(--r);border:2px solid var(--border);
+      background:#fff;cursor:pointer;transition:all .2s;text-align:center;
+      box-shadow:var(--sh-xs);
+    }
+    .pathway-card:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:var(--sh-blue)}
+    .pathway-card.selected{border-color:var(--primary);background:var(--primary-light);box-shadow:var(--sh-blue)}
+    .pathway-card .pw-icon{font-size:28px;margin-bottom:.5rem}
+    .pathway-card .pw-name{font-size:13px;font-weight:700;color:var(--text)}
+    .pathway-card .pw-desc{font-size:11px;color:var(--muted);margin-top:2px}
+    .checklist-section{margin-bottom:1.25rem}
+    .checklist-section-title{
+      font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;
+      color:var(--faint);margin-bottom:.625rem;padding-bottom:.5rem;
+      border-bottom:2px solid var(--border);font-weight:600;
+    }
+    .checklist-item{
+      display:flex;align-items:flex-start;gap:.875rem;padding:.75rem;
+      border-radius:var(--r-sm);border:1px solid var(--border);background:#fff;
+      margin-bottom:.4rem;box-shadow:var(--sh-xs);cursor:pointer;transition:all .15s;
+    }
+    .checklist-item:hover{border-color:var(--primary-mid)}
+    .checklist-item.done{background:var(--green-light);border-color:#a7f3d0}
+    .checklist-item.done .ci-title{text-decoration:line-through;color:var(--muted)}
+    .ci-check{width:20px;height:20px;border:2px solid var(--border);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:1px}
+    .checklist-item.done .ci-check{background:var(--green);border-color:var(--green);color:#fff}
+    .ci-body{flex:1;min-width:0}
+    .ci-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+    .ci-note{font-size:11px;color:var(--muted)}
+    .ci-req{font-size:10px;font-weight:700;font-family:var(--mono);padding:2px 7px;border-radius:20px;float:right;margin-left:8px}
+    .ci-must{background:#fee2e2;color:var(--red)}
+    .ci-opt{background:#f3f4f6;color:var(--muted)}
+    .print-btn{background:var(--bg);border:1.5px solid var(--border);color:var(--text2);padding:9px 20px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;box-shadow:var(--sh-xs)}
+    .print-btn:hover{border-color:var(--primary);color:var(--primary)}
+    .checklist-progress{background:var(--border);border-radius:4px;height:6px;margin-bottom:1rem}
+    .checklist-progress-fill{height:100%;border-radius:4px;background:var(--grad);transition:width .4s ease}
+
     @media(max-width:768px){
       .wrapper{grid-template-columns:1fr;padding-bottom:68px}
       aside{display:none}
@@ -603,6 +714,10 @@
     <button class="nav-tab" onclick="showPage('crscalc',this)">🧮 CRS Calc</button>
     <button class="nav-tab" onclick="showPage('pgwp',this)">📅 PGWP</button>
     <button class="nav-tab" onclick="showPage('lang',this)">🔤 Language</button>
+    <button class="nav-tab" onclick="showPage('goal',this)">🎯 Score Goal</button>
+    <button class="nav-tab" onclick="showPage('tracker',this)">📈 My Progress</button>
+    <button class="nav-tab" onclick="showPage('provinces',this)">🏔 Provinces</button>
+    <button class="nav-tab" onclick="showPage('checklist',this)">📋 Checklist</button>
   </div>
   <div class="header-right">
     <span class="last-updated" id="last-updated">Checking feeds…</span>
@@ -686,6 +801,9 @@
         <div class="stat-chip">Sources: <span id="stat-sources">—</span></div>
         <div class="stat-chip">Last draw: <span id="stat-draw">checking…</span></div>
         <div class="stat-chip">Bookmarks: <span id="stat-bookmarks">0</span></div>
+        <div class="countdown-chip" id="countdown-chip" style="display:none">
+          ⏳ Next draw: <span class="cd-val" id="countdown-val">—</span>
+        </div>
       </div>
       <div id="news-grid">
         <div class="loading-state">
@@ -1214,6 +1332,216 @@
       </div>
     </div>
 
+    <!-- ── SCORE GOAL (reverse calculator) ── -->
+    <div class="page" id="page-goal">
+      <div class="panel-title">🎯 What Score Do I Need?</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+        <div>
+          <div class="panel-card">
+            <div class="calc-section-title">Set Your Target</div>
+            <div class="goal-input-wrap">
+              <div>
+                <label class="calc-label">Your Target CRS Score</label>
+                <input type="number" id="goal-target" value="500" min="300" max="1200" oninput="calcGoal()" style="width:160px;background:#fff;border:1.5px solid var(--border);color:var(--text);padding:10px 14px;border-radius:var(--r-sm);font-family:var(--mono);font-size:22px;font-weight:700;box-shadow:var(--sh-xs)"/>
+              </div>
+              <div>
+                <label class="calc-label">Your Current Score</label>
+                <input type="number" id="goal-current" value="452" min="0" max="1200" oninput="calcGoal()" style="width:160px;background:#fff;border:1.5px solid var(--border);color:var(--text);padding:10px 14px;border-radius:var(--r-sm);font-family:var(--mono);font-size:22px;font-weight:700;box-shadow:var(--sh-xs)"/>
+              </div>
+            </div>
+            <div id="goal-gap-card" class="gap-display" style="background:var(--primary-light);border:1.5px solid var(--primary-mid);border-radius:var(--r)">
+              <div style="font-size:11px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.25rem">Points needed</div>
+              <div class="gap-number" id="goal-gap" style="color:var(--primary)">48</div>
+              <div style="font-size:12px;color:var(--muted);margin-top:.25rem">to reach your target</div>
+            </div>
+          </div>
+          <div class="panel-card">
+            <div class="calc-section-title">Your Current Profile (for personalized tips)</div>
+            <div class="calc-group">
+              <label class="calc-label">Current Language Level (avg CLB)</label>
+              <select class="calc-input" id="goal-lang" onchange="calcGoal()">
+                <option value="0">Below CLB 7</option>
+                <option value="1">CLB 7 (avg)</option>
+                <option value="2">CLB 8 (avg)</option>
+                <option value="3" selected>CLB 9 (avg)</option>
+                <option value="4">CLB 10 (max)</option>
+              </select>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label">Canadian Work Experience</label>
+              <select class="calc-input" id="goal-cawork" onchange="calcGoal()">
+                <option value="0" selected>None</option>
+                <option value="1">1 year</option>
+                <option value="2">2 years</option>
+                <option value="3">3+ years</option>
+              </select>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label">Job Offer</label>
+              <select class="calc-input" id="goal-job" onchange="calcGoal()">
+                <option value="0" selected>No job offer</option>
+                <option value="1">Yes — TEER 1/2/3</option>
+                <option value="2">Yes — TEER 0 (senior)</option>
+              </select>
+            </div>
+            <div class="calc-group">
+              <label class="calc-label">Provincial Nomination</label>
+              <select class="calc-input" id="goal-pnp" onchange="calcGoal()">
+                <option value="0" selected>No</option>
+                <option value="1">Yes (+600 pts)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="panel-card">
+            <div class="calc-section-title">Fastest Ways to Reach Your Goal</div>
+            <div id="goal-paths" style="display:flex;flex-direction:column;gap:.5rem"></div>
+          </div>
+          <div class="panel-card" style="margin-top:0">
+            <div class="calc-section-title">How Long Will It Take?</div>
+            <div id="goal-timeline" style="display:flex;flex-direction:column;gap:.5rem"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SCORE PROGRESS TRACKER ── -->
+    <div class="page" id="page-tracker">
+      <div class="panel-title">📈 My CRS Score Progress</div>
+      <div class="panel-card" style="margin-bottom:1rem">
+        <div class="calc-section-title">Add Score Entry</div>
+        <div class="tracker-form">
+          <div class="calc-group" style="margin:0">
+            <label class="calc-label">Date</label>
+            <input type="date" class="calc-input" id="tr-date" style="width:160px"/>
+          </div>
+          <div class="calc-group" style="margin:0">
+            <label class="calc-label">CRS Score</label>
+            <input type="number" class="calc-input" id="tr-score" placeholder="e.g. 480" min="0" max="1200" style="width:140px"/>
+          </div>
+          <div class="calc-group" style="margin:0;flex:1">
+            <label class="calc-label">Note (optional)</label>
+            <input type="text" class="calc-input" id="tr-note" placeholder="e.g. After CELPIP retake"/>
+          </div>
+          <button class="btn-primary" onclick="addTrackerEntry()" style="align-self:flex-end;white-space:nowrap">+ Add Entry</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+        <div class="panel-card" style="text-align:center">
+          <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin-bottom:.5rem">Latest Score</div>
+          <div id="tr-latest" style="font-family:var(--mono);font-size:52px;font-weight:800;color:var(--primary);line-height:1">—</div>
+        </div>
+        <div class="panel-card" style="text-align:center">
+          <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin-bottom:.5rem">Total Improvement</div>
+          <div id="tr-delta" style="font-family:var(--mono);font-size:52px;font-weight:800;color:var(--green);line-height:1">—</div>
+          <div id="tr-period" style="font-size:11px;color:var(--muted);margin-top:4px"></div>
+        </div>
+      </div>
+      <div class="panel-card" style="margin-bottom:1rem">
+        <div class="calc-section-title">Score Chart</div>
+        <div class="tracker-chart-wrap"><canvas id="tracker-chart"></canvas></div>
+        <div id="tr-empty" style="text-align:center;color:var(--muted);font-family:var(--mono);font-size:12px;padding:2rem;display:none">Add your first score entry above to start tracking!</div>
+      </div>
+      <div class="panel-card">
+        <div class="calc-section-title" style="display:flex;justify-content:space-between;align-items:center">
+          <span>Score History</span>
+          <button class="btn-ghost" onclick="clearTracker()" style="font-size:11px;padding:5px 12px;color:var(--red);border-color:var(--red)">Clear All</button>
+        </div>
+        <div id="tr-entries"></div>
+      </div>
+    </div>
+
+    <!-- ── PROVINCE COMPARISON ── -->
+    <div class="page" id="page-provinces">
+      <div class="panel-title">🏔 Province Comparison — PNP Streams</div>
+      <div class="panel-card" style="padding:0;overflow:hidden;margin-bottom:1rem">
+        <div style="overflow-x:auto">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th class="c-best"><div class="province-header"><span class="prov-flag">🍁</span><span class="prov-name">Ontario</span><span class="prov-badge">OINP</span></div></th>
+                <th><div class="province-header"><span class="prov-flag">🌊</span><span class="prov-name">BC</span><span class="prov-badge">BC PNP</span></div></th>
+                <th><div class="province-header"><span class="prov-flag">⛰</span><span class="prov-name">Alberta</span><span class="prov-badge">AAIP</span></div></th>
+                <th><div class="province-header"><span class="prov-flag">❄️</span><span class="prov-name">Quebec</span><span class="prov-badge">MIFI</span></div></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Masters Graduate Stream</td><td class="c-best c-yes">✅ Yes — no job offer needed</td><td class="c-yes">✅ Yes</td><td class="c-no">❌ No</td><td class="c-no">❌ No</td></tr>
+              <tr><td>Tech Worker Stream</td><td class="c-best c-yes">✅ HCP (440+ CRS)</td><td class="c-yes">✅ BC Tech Pilot</td><td class="c-yes">✅ Tech stream</td><td class="c-no">❌ Limited</td></tr>
+              <tr><td>Healthcare Stream</td><td class="c-best c-yes">✅ Yes</td><td class="c-yes">✅ Healthcare</td><td class="c-yes">✅ Healthcare</td><td class="c-no">❌ Separate system</td></tr>
+              <tr><td>No Job Offer Option</td><td class="c-best c-yes">✅ Masters stream</td><td class="c-yes">✅ Int'l Graduate</td><td class="c-no">❌ Usually required</td><td>Varies by stream</td></tr>
+              <tr><td>French Required</td><td class="c-best c-no">❌ Not required</td><td class="c-no">❌ Not required</td><td class="c-no">❌ Not required</td><td class="c-yes" style="color:var(--red)">🚨 Mandatory (B2+)</td></tr>
+              <tr><td>Typical PNP Processing</td><td class="c-best">~6–9 months</td><td>~4–6 months</td><td>~3–5 months</td><td>~12–18 months</td></tr>
+              <tr><td>Min. CRS for draws</td><td class="c-best">440+ (HCP)</td><td>~400+</td><td>~300+</td><td>N/A (separate)</td></tr>
+              <tr><td>TEER 1/2/3 required</td><td class="c-best c-yes">✅ Yes</td><td class="c-yes">✅ Yes</td><td class="c-yes">✅ Yes</td><td>Varies</td></tr>
+              <tr><td>Express Entry Linked</td><td class="c-best c-yes">✅ Most streams</td><td class="c-yes">✅ Most streams</td><td class="c-yes">✅ Most streams</td><td class="c-no">❌ Separate Quebec system</td></tr>
+              <tr><td>IT / Software Engineers</td><td class="c-best c-yes">✅ Very strong</td><td class="c-yes">✅ Very strong</td><td class="c-yes">✅ Growing</td><td>Limited pathways</td></tr>
+              <tr><td>Cost of Living</td><td class="c-best">High (Toronto)</td><td>Very High (Van)</td><td>Moderate</td><td>Moderate (MTL)</td></tr>
+              <tr><td>Best For</td><td class="c-best" style="font-weight:600;color:var(--primary)">Masters grads, tech workers, students</td><td style="font-weight:600;color:var(--primary)">Tech industry, outdoors lifestyle</td><td style="font-weight:600;color:var(--primary)">Tradespeople, healthcare, lower cost</td><td style="font-weight:600;color:var(--primary)">French speakers only</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem">
+        <div class="panel-card" style="border-color:rgba(37,99,235,.3);background:var(--primary-light)">
+          <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:.5rem">🍁 Ontario — Best For Masters Grads</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.6">The OINP Masters Graduate stream requires <strong>no job offer</strong>, making it ideal for recent graduates. Apply within 2 years of graduation. Very competitive — express interest as soon as the stream opens each year.</div>
+        </div>
+        <div class="panel-card">
+          <div style="font-size:13px;font-weight:700;color:var(--violet);margin-bottom:.5rem">🌊 BC — Best For Tech Industry</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.6">BC Tech Pilot targets specific NOC codes in software and engineering. No minimum EE score for some roles. Vancouver ecosystem is strong for tech, though cost of living is very high.</div>
+        </div>
+        <div class="panel-card">
+          <div style="font-size:13px;font-weight:700;color:var(--amber);margin-bottom:.5rem">⛰ Alberta — Best For Lower Cost</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.6">Alberta has <strong>no provincial income tax</strong> and lower housing costs. AAIP draws for healthcare, agriculture, and skilled trades. Processing times are fast. Growing tech scene in Calgary.</div>
+        </div>
+        <div class="panel-card" style="border-color:#fca5a5;background:#fff1f2">
+          <div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:.5rem">❄️ Quebec — French Required</div>
+          <div style="font-size:12px;color:var(--text2);line-height:1.6">Quebec has a <strong>completely separate immigration system</strong> (not Express Entry). You must apply through MIFI and French proficiency (B2+) is required. Not suitable without French skills.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DOCUMENT CHECKLIST ── -->
+    <div class="page" id="page-checklist">
+      <div class="panel-title" style="justify-content:space-between">
+        <span>📋 Document Checklist</span>
+        <button class="print-btn" onclick="window.print()">🖨 Print Checklist</button>
+      </div>
+      <div class="pathway-selector" id="pathway-selector">
+        <div class="pathway-card selected" onclick="selectPathway(this,'pgwp')">
+          <div class="pw-icon">🎓</div>
+          <div class="pw-name">PGWP Application</div>
+          <div class="pw-desc">Post-Graduation Work Permit</div>
+        </div>
+        <div class="pathway-card" onclick="selectPathway(this,'cec')">
+          <div class="pw-icon">🍁</div>
+          <div class="pw-name">CEC / Express Entry</div>
+          <div class="pw-desc">Permanent Residence via CEC</div>
+        </div>
+        <div class="pathway-card" onclick="selectPathway(this,'oinp')">
+          <div class="pw-icon">🏔</div>
+          <div class="pw-name">Ontario PNP</div>
+          <div class="pw-desc">OINP Masters Graduate</div>
+        </div>
+        <div class="pathway-card" onclick="selectPathway(this,'trpr')">
+          <div class="pw-icon">⚡</div>
+          <div class="pw-name">TR to PR Pathway</div>
+          <div class="pw-desc">Temporary to Permanent</div>
+        </div>
+      </div>
+      <div class="panel-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
+          <div class="calc-section-title" style="margin:0;border:none;padding:0" id="cl-title">PGWP Application — Documents</div>
+          <div style="font-family:var(--mono);font-size:12px;color:var(--muted)">Progress: <span id="cl-progress-text">0/0</span></div>
+        </div>
+        <div class="checklist-progress"><div class="checklist-progress-fill" id="cl-progress-fill" style="width:0%"></div></div>
+        <div id="checklist-body"></div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -1374,6 +1702,7 @@ async function loadDrawStats() {
     if (data && data.latest_cutoff) DRAW_STATS = data;
     renderDrawStatsBar();
     calcCRS();
+    updateCountdown();
   } catch(e) { console.warn('[draw-stats]', e); }
 }
 
@@ -1742,6 +2071,9 @@ function showPage(name,btn){
   if(name==='processing') loadProcessingTimes();
   if(name==='health')     loadSourceHealth();
   if(name==='bookmarks')  renderBookmarks();
+  if(name==='goal')       calcGoal();
+  if(name==='tracker')    renderTracker();
+  if(name==='checklist')  renderChecklist();
 }
 
 function mobileNav(name,btn){
@@ -2110,6 +2442,367 @@ function buildCLBTable() {
     </tr>`).join('');
 }
 
+// ── NEXT DRAW COUNTDOWN ───────────────────────────────────
+function updateCountdown() {
+  const chip = document.getElementById('countdown-chip');
+  const val  = document.getElementById('countdown-val');
+  if (!chip || !val) return;
+  const est = DRAW_STATS.estimated_next_draw;
+  if (!est) return;
+  const diff = new Date(est) - new Date();
+  chip.style.display = 'flex';
+  if (diff <= 0) { val.textContent = 'Due soon!'; return; }
+  const days = Math.floor(diff / 86400000);
+  const hrs  = Math.floor((diff % 86400000) / 3600000);
+  val.textContent = days > 0 ? `~${days}d ${hrs}h` : `~${hrs}h`;
+}
+setInterval(updateCountdown, 60000);
+
+// ── REVERSE CRS CALCULATOR ────────────────────────────────
+function calcGoal() {
+  const target  = parseInt(document.getElementById('goal-target')?.value)  || 500;
+  const current = parseInt(document.getElementById('goal-current')?.value) || 452;
+  const langLvl = parseInt(document.getElementById('goal-lang')?.value)    || 3;
+  const caWork  = parseInt(document.getElementById('goal-cawork')?.value)  || 0;
+  const job     = parseInt(document.getElementById('goal-job')?.value)     || 0;
+  const pnp     = parseInt(document.getElementById('goal-pnp')?.value)     || 0;
+
+  const gap = Math.max(0, target - current);
+  const gapEl = document.getElementById('goal-gap');
+  if (gapEl) {
+    gapEl.textContent = gap;
+    gapEl.style.color = gap === 0 ? 'var(--green)' : gap <= 20 ? 'var(--amber)' : 'var(--primary)';
+  }
+  const gapCard = document.getElementById('goal-gap-card');
+  if (gapCard) {
+    if (gap === 0) { gapCard.style.background='var(--green-light)'; gapCard.style.borderColor='#a7f3d0'; }
+    else { gapCard.style.background='var(--primary-light)'; gapCard.style.borderColor='var(--primary-mid)'; }
+  }
+
+  // Build ranked action paths
+  const paths = [];
+  if (pnp === 0) paths.push({pts:600,title:'Get a Provincial Nomination (PNP)',desc:'+600 pts instantly — virtually guarantees ITA. Apply to Ontario, BC, or Alberta PNP streams.',diff:'hard',time:'6–18 months'});
+  if (job === 0) paths.push({pts:50,title:'Secure a Valid Job Offer (TEER 1/2/3)',desc:'LMIA-backed or LMIA-exempt job offer in Canada. Most powerful single improvement after PNP.',diff:'hard',time:'3–12 months'});
+  if (caWork < 3) {
+    const pts = [40,53,64,72,80][caWork] || 0;
+    const nextPts = [40,53,64,72,80][Math.min(caWork+1,4)] || 80;
+    paths.push({pts:nextPts - (pts||0), title:`Gain ${['1st','2nd','3rd','4th','5th'][caWork] || 'more'} year of Canadian work (TEER 0/1/2/3)`, desc:'Each year of skilled Canadian work adds significant CRS points + unlocks CEC stream.',diff:caWork===0?'med':'easy',time:'12 months'});
+  }
+  if (langLvl < 4) paths.push({pts:langLvl===3?4:langLvl===2?7:16,title:'Improve Language Scores to CLB 10',desc:'Each skill: CLB 9→10 = +1 pt, CLB 8→9 = +1 pt. Improving all 4 skills = +4 pts.',diff:'med',time:'3–6 months'});
+  paths.push({pts:25,title:'Add Foreign Work Experience (3+ years)',desc:'If you have 1–2 yrs foreign work now, adding to 3+ years gives +25 pts total (up from +13).',diff:'easy',time:'Depends'});
+  paths.push({pts:25,title:'Learn French to CLB 7+',desc:'French CLB 7 + English CLB 5 = +50 CRS pts. Also unlocks French-stream draws with lower cutoffs.',diff:'hard',time:'6–18 months'});
+  paths.push({pts:15,title:'Sibling in Canada?',desc:'+15 pts if you have a brother/sister who is a Canadian citizen or permanent resident.',diff:'easy',time:'Immediate'});
+
+  const sorted = paths.sort((a,b) => b.pts - a.pts);
+  const pathsEl = document.getElementById('goal-paths');
+  if (pathsEl) {
+    pathsEl.innerHTML = sorted.slice(0,5).map(p => `
+      <div class="action-path">
+        <div class="action-path-pts">+${p.pts}</div>
+        <div style="flex:1">
+          <div style="margin-bottom:3px">
+            <span class="path-tag path-${p.diff}">${p.diff==='easy'?'✅ Easy':p.diff==='med'?'⚡ Medium':'🎯 Harder'}</span>
+          </div>
+          <div class="action-path-title">${p.title}</div>
+          <div class="action-path-desc">${p.desc}</div>
+        </div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap;margin-left:.5rem;margin-top:20px">${p.time}</div>
+      </div>`).join('');
+  }
+
+  const tlEl = document.getElementById('goal-timeline');
+  if (tlEl) {
+    const quickest = sorted.filter(p=>p.diff==='easy').slice(0,2);
+    const medium   = sorted.filter(p=>p.diff==='med').slice(0,2);
+    const items = [
+      {label:'🚀 Quick wins (1–3 months)',items:quickest,col:'var(--green)'},
+      {label:'📈 Medium term (3–12 months)',items:medium,col:'var(--primary)'},
+    ];
+    tlEl.innerHTML = items.map(g=>`
+      <div style="padding:.875rem;background:#fff;border:1px solid var(--border);border-radius:var(--r-sm);box-shadow:var(--sh-xs)">
+        <div style="font-size:12px;font-weight:700;color:${g.col};margin-bottom:.5rem">${g.label}</div>
+        ${g.items.length ? g.items.map(p=>`<div style="font-size:12px;color:var(--text2);padding:2px 0">• ${p.title} (+${p.pts} pts)</div>`).join('') : '<div style="font-size:12px;color:var(--muted)">No quick options — focus on medium/hard paths.</div>'}
+      </div>`).join('');
+  }
+}
+
+// ── SCORE PROGRESS TRACKER ────────────────────────────────
+let trackerChart = null;
+
+function getTrackerEntries() {
+  return JSON.parse(localStorage.getItem('ircc_score_history') || '[]');
+}
+function saveTrackerEntries(entries) {
+  localStorage.setItem('ircc_score_history', JSON.stringify(entries));
+}
+
+function addTrackerEntry() {
+  const date  = document.getElementById('tr-date')?.value;
+  const score = parseInt(document.getElementById('tr-score')?.value);
+  const note  = document.getElementById('tr-note')?.value.trim() || '';
+  if (!date || !score || score < 0 || score > 1200) { showToast('Enter a valid date and score (0–1200)'); return; }
+  const entries = getTrackerEntries();
+  entries.push({date, score, note});
+  entries.sort((a,b) => a.date.localeCompare(b.date));
+  saveTrackerEntries(entries);
+  document.getElementById('tr-score').value = '';
+  document.getElementById('tr-note').value  = '';
+  renderTracker();
+  showToast('✓ Score entry added!');
+}
+
+function clearTracker() {
+  if (!confirm('Clear all score history?')) return;
+  localStorage.removeItem('ircc_score_history');
+  renderTracker();
+}
+
+function deleteTrackerEntry(idx) {
+  const entries = getTrackerEntries();
+  entries.splice(idx, 1);
+  saveTrackerEntries(entries);
+  renderTracker();
+}
+
+function renderTracker() {
+  const entries = getTrackerEntries();
+  const latest  = document.getElementById('tr-latest');
+  const delta   = document.getElementById('tr-delta');
+  const period  = document.getElementById('tr-period');
+  const empty   = document.getElementById('tr-empty');
+  const entryEl = document.getElementById('tr-entries');
+
+  if (!entries.length) {
+    if (latest) latest.textContent = '—';
+    if (delta)  delta.textContent = '—';
+    if (period) period.textContent = '';
+    if (empty)  empty.style.display = 'block';
+    if (entryEl) entryEl.innerHTML = '<div style="color:var(--muted);font-family:var(--mono);font-size:12px;text-align:center;padding:1.5rem">No entries yet.</div>';
+    if (trackerChart) { trackerChart.destroy(); trackerChart = null; }
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  const last = entries[entries.length-1];
+  const first = entries[0];
+  if (latest) { latest.textContent = last.score; latest.style.color = last.score >= (DRAW_STATS.latest_cutoff||510) ? 'var(--green)' : 'var(--primary)'; }
+  const diff = last.score - first.score;
+  if (delta)  { delta.textContent = (diff>=0?'+':'')+diff; delta.style.color = diff>=0?'var(--green)':'var(--red)'; }
+  if (period && entries.length > 1) period.textContent = `since ${first.date}`;
+
+  // Chart
+  const canvas = document.getElementById('tracker-chart');
+  if (canvas && window.Chart) {
+    if (trackerChart) trackerChart.destroy();
+    const cutoff = DRAW_STATS.latest_cutoff || 510;
+    trackerChart = new Chart(canvas.getContext('2d'), {
+      type:'line',
+      data:{
+        labels: entries.map(e=>e.date),
+        datasets:[
+          {label:'Your CRS',data:entries.map(e=>e.score),borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.1)',borderWidth:3,pointRadius:6,pointBackgroundColor:'#2563eb',tension:0.3,fill:true},
+          {label:'Cutoff',data:entries.map(()=>cutoff),borderColor:'#e11d48',borderDash:[6,3],borderWidth:2,pointRadius:0,fill:false}
+        ]
+      },
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:true,labels:{color:'#374151',font:{size:11}}}},
+        scales:{x:{ticks:{color:'#6b7280',font:{size:10}},grid:{color:'#e4e9f0'}},
+                y:{ticks:{color:'#6b7280'},grid:{color:'#e4e9f0'},min:Math.max(0,Math.min(...entries.map(e=>e.score))-20)}}}
+    });
+  }
+
+  // Entries list
+  if (entryEl) {
+    entryEl.innerHTML = [...entries].reverse().map((e,i)=>{
+      const realIdx = entries.length-1-i;
+      const prev = realIdx > 0 ? entries[realIdx-1].score : null;
+      const d = prev !== null ? e.score - prev : null;
+      return `<div class="tracker-entry">
+        <div><div class="tracker-score">${e.score}</div><div class="tracker-date">${e.date}</div></div>
+        <div class="tracker-note">${e.note||''}</div>
+        <div style="display:flex;align-items:center;gap:.75rem">
+          ${d!==null?`<span class="tracker-delta" style="color:${d>=0?'var(--green)':'var(--red)'}">${d>=0?'+':''}${d}</span>`:''}
+          <button class="tracker-del" onclick="deleteTrackerEntry(${realIdx})">✕</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ── CHECKLIST GENERATOR ───────────────────────────────────
+const CHECKLISTS = {
+  pgwp: {
+    title: 'PGWP Application — Documents',
+    sections: [
+      {title:'Identity Documents',items:[
+        {t:'Valid Passport',n:'Must be valid for the full duration of PGWP requested',req:true},
+        {t:'Current Study Permit',n:'Your existing study permit document',req:true},
+        {t:'Passport-sized Photos',n:'Per IRCC photo specifications (35mm × 45mm)',req:true},
+      ]},
+      {title:'Academic Documents',items:[
+        {t:'Final Transcripts',n:'Official transcript showing degree completion',req:true},
+        {t:'Letter of Completion / Degree Certificate',n:'From your institution confirming graduation',req:true},
+        {t:'Proof of Full-Time Enrollment',n:'All semesters — enrollment letters from each term',req:true},
+      ]},
+      {title:'Application',items:[
+        {t:'IRCC Online Account',n:'Create/login at canada.ca/ircc',req:true},
+        {t:'PGWP Application Fee ($255)',n:'Paid online via credit card',req:true},
+        {t:'Biometrics ($85)',n:'Required if not done in last 10 years',req:true},
+        {t:'Digital Photo Upload',n:'Meets IRCC specifications',req:true},
+      ]},
+      {title:'Optional but Recommended',items:[
+        {t:'Job Offer Letter (if available)',n:'Strengthens application, not required',req:false},
+        {t:'Proof of Financial Support',n:'Bank statements showing you can support yourself',req:false},
+      ]},
+    ]
+  },
+  cec: {
+    title: 'Canadian Experience Class (CEC) PR — Documents',
+    sections: [
+      {title:'Identity & Travel',items:[
+        {t:'Valid Passport (all pages)',n:'Scan all pages including blank ones',req:true},
+        {t:'Current Status Documents',n:'PGWP / Study Permit / all immigration documents',req:true},
+        {t:'Digital Photo',n:'Per IRCC specifications',req:true},
+      ]},
+      {title:'Language',items:[
+        {t:'CELPIP or IELTS Results',n:'Must be less than 2 years old at time of ITA',req:true},
+        {t:'CLB 7+ in all 4 skills',n:'Minimum for CEC — CLB 9 strongly recommended',req:true},
+      ]},
+      {title:'Education',items:[
+        {t:'WES Educational Credential Assessment',n:'Apply early — takes 4–8 weeks. Required for foreign degrees',req:true},
+        {t:'Degree/Diploma Certificates',n:'All post-secondary credentials',req:true},
+        {t:'Official Transcripts',n:'From each institution attended',req:true},
+      ]},
+      {title:'Work Experience',items:[
+        {t:'Employment Letters',n:'On company letterhead: role, dates, hours/week, duties',req:true},
+        {t:'Pay Stubs or T4 Slips',n:'Proving paid employment in Canada',req:true},
+        {t:'ROE (Record of Employment)',n:'From each Canadian employer',req:false},
+        {t:'Reference Letters',n:'From managers/supervisors',req:false},
+      ]},
+      {title:'Finances & Settlement',items:[
+        {t:'Proof of Funds',n:'Bank statements — generally not required for CEC but good to have',req:false},
+        {t:'PR Application Fee ($1,325)',n:'Principal applicant processing fee',req:true},
+        {t:'Right of Permanent Residence Fee ($500)',n:'Paid before confirmation of PR',req:true},
+        {t:'Biometrics ($85)',n:'Required with PR application',req:true},
+      ]},
+      {title:'Medical & Security',items:[
+        {t:'Immigration Medical Exam',n:'From IRCC-approved panel physician only (~$200–450)',req:true},
+        {t:'Police Certificate — Canada',n:'RCMP clearance for time in Canada',req:true},
+        {t:'Police Certificate — India',n:'For any country lived 6+ months since age 18',req:true},
+      ]},
+    ]
+  },
+  oinp: {
+    title: 'Ontario PNP (OINP Masters Graduate) — Documents',
+    sections: [
+      {title:'Academic',items:[
+        {t:'Ontario University Final Transcripts',n:'Official — showing all completed courses',req:true},
+        {t:'Degree Certificate / Letter of Completion',n:'From Ontario institution',req:true},
+        {t:'Proof of Full-Time Study in Ontario',n:'Enrollment records for each term',req:true},
+      ]},
+      {title:'Immigration Status',items:[
+        {t:'Valid Passport',n:'Must be valid',req:true},
+        {t:'Current Study or Work Permit',n:'Must be valid at time of application',req:true},
+        {t:'Ontario Address Proof',n:'Utility bill, lease agreement, or bank statement',req:true},
+      ]},
+      {title:'Language',items:[
+        {t:'CELPIP or IELTS Results',n:'CLB 7+ in all skills (CLB 9+ strongly recommended)',req:true},
+      ]},
+      {title:'Application',items:[
+        {t:'OINP e-Filing System Account',n:'Apply at ontario.ca/oinp',req:true},
+        {t:'Expression of Interest (EOI)',n:'Submit profile and wait for invitation',req:true},
+        {t:'OINP Application Fee',n:'$1,500 CAD — non-refundable',req:true},
+      ]},
+      {title:'After Nomination',items:[
+        {t:'Provincial Nomination Certificate',n:'Received from OINP after approval',req:true},
+        {t:'Express Entry Profile with PNP',n:'Add nomination to EE profile (+600 CRS pts)',req:true},
+        {t:'Full CEC/FSW PR Documents',n:'Then complete standard PR application',req:true},
+      ]},
+    ]
+  },
+  trpr: {
+    title: 'TR to PR Pathway — Documents',
+    sections: [
+      {title:'Identity',items:[
+        {t:'Valid Passport',n:'All pages scanned',req:true},
+        {t:'Current Temporary Status',n:'Study permit, work permit, or visitor record',req:true},
+        {t:'Previous Immigration Documents',n:'All visas, permits, refusals in last 10 years',req:true},
+      ]},
+      {title:'Language',items:[
+        {t:'CELPIP or IELTS (CLB 5+)',n:'Minimum CLB 5 for TR to PR — higher is better',req:true},
+        {t:'Test must be less than 2 years old',n:'Retake if expired',req:true},
+      ]},
+      {title:'Education',items:[
+        {t:'WES Educational Credential Assessment',n:'Required for foreign degrees — apply immediately',req:true},
+        {t:'Canadian diploma/degree (if applicable)',n:'Strongest option for TR to PR',req:false},
+      ]},
+      {title:'Work Experience',items:[
+        {t:'Proof of Canadian Work Experience',n:'Employment letter + pay stubs',req:true},
+        {t:'Proof of work authorization',n:'Work permit allowing the employment',req:true},
+      ]},
+      {title:'Fees',items:[
+        {t:'Application Processing Fee',n:'Varies — confirm at ircc.canada.ca when pathway opens',req:true},
+        {t:'Biometrics ($85)',n:'Required',req:true},
+        {t:'Right of PR Fee ($500)',n:'Paid on approval',req:true},
+      ]},
+      {title:'Medical & Police',items:[
+        {t:'Immigration Medical Exam',n:'From approved panel physician',req:true},
+        {t:'Police Certificates',n:'All countries lived 6+ months since age 18',req:true},
+      ]},
+    ]
+  }
+};
+
+let clStates = {};
+let currentPathway = 'pgwp';
+
+function selectPathway(card, pathway) {
+  document.querySelectorAll('.pathway-card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+  currentPathway = pathway;
+  clStates = {};
+  renderChecklist();
+}
+
+function renderChecklist() {
+  const cl  = CHECKLISTS[currentPathway];
+  const tEl = document.getElementById('cl-title');
+  if (tEl) tEl.textContent = cl.title;
+  let totalItems = 0, doneItems = 0;
+  let html = '';
+  cl.sections.forEach(sec => {
+    html += `<div class="checklist-section"><div class="checklist-section-title">${sec.title}</div>`;
+    sec.items.forEach((item,i) => {
+      const key  = currentPathway + '_' + sec.title + '_' + i;
+      const done = clStates[key] || false;
+      totalItems++;
+      if (done) doneItems++;
+      html += `
+        <div class="checklist-item ${done?'done':''}" onclick="toggleCheck('${key}',this)">
+          <div class="ci-check">${done?'✓':''}</div>
+          <div class="ci-body">
+            <div class="ci-title">
+              <span class="ci-req ${item.req?'ci-must':'ci-opt'}">${item.req?'Required':'Optional'}</span>
+              ${item.t}
+            </div>
+            <div class="ci-note">${item.n}</div>
+          </div>
+        </div>`;
+    });
+    html += '</div>';
+  });
+  const bodyEl = document.getElementById('checklist-body');
+  if (bodyEl) bodyEl.innerHTML = html;
+  const progEl  = document.getElementById('cl-progress-fill');
+  const progTxt = document.getElementById('cl-progress-text');
+  if (progEl)  progEl.style.width  = totalItems ? (doneItems/totalItems*100)+'%' : '0%';
+  if (progTxt) progTxt.textContent = `${doneItems}/${totalItems}`;
+}
+
+function toggleCheck(key, el) {
+  clStates[key] = !clStates[key];
+  renderChecklist();
+}
+
 setInterval(loadNews, 10*60*1000);
 loadNews();
 loadDrawStats();
@@ -2118,6 +2811,11 @@ calcPGWP();
 renderProfile();
 rebuildLangInputs();
 buildCLBTable();
+renderChecklist();
+renderTracker();
+// Set today's date as default in tracker form
+const trDate = document.getElementById('tr-date');
+if (trDate) trDate.value = new Date().toISOString().slice(0,10);
 </script>
 </body>
 </html>
