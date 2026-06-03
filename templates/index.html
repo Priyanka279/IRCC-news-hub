@@ -3,441 +3,532 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>IRCC News Hub</title>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <title>IRCC News Hub — Canada Immigration Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <style>
     :root {
-      --bg:      #0a0c0f;
-      --surface: #111318;
-      --card:    #161a22;
-      --border:  #232830;
-      --border2: #2e3540;
-      --accent:  #e8543a;
-      --accent2: #3a7bd5;
-      --green:   #2dcc8f;
-      --amber:   #f5a623;
-      --text:    #e8eaf0;
-      --muted:   #6b7280;
-      --mono:    'IBM Plex Mono', monospace;
-      --sans:    'IBM Plex Sans', sans-serif;
+      --bg:        #07090f;
+      --surface:   #0c0f1a;
+      --card:      #101420;
+      --card-h:    #141929;
+      --border:    #1a2032;
+      --border2:   #232d45;
+      --primary:   #6366f1;
+      --primary2:  #22d3ee;
+      --green:     #34d399;
+      --amber:     #fbbf24;
+      --red:       #fb7185;
+      --grad:      linear-gradient(135deg,#6366f1 0%,#22d3ee 100%);
+      --grad-sub:  linear-gradient(135deg,rgba(99,102,241,.12) 0%,rgba(34,211,238,.12) 100%);
+      --glow:      0 0 20px rgba(99,102,241,.22);
+      --glow2:     0 0 20px rgba(34,211,238,.18);
+      --text:      #e2e8f0;
+      --text2:     #94a3b8;
+      --muted:     #546070;
+      --mono:      'JetBrains Mono',monospace;
+      --sans:      'Inter',system-ui,sans-serif;
+      --r:         12px;
+      --r-sm:      8px;
+      --shadow:    0 4px 24px rgba(0,0,0,.5);
+      --shadow-lg: 0 8px 48px rgba(0,0,0,.65);
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--bg); color: var(--text);
-      font-family: var(--sans); min-height: 100vh;
-      font-size: 14px; line-height: 1.6;
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      background:var(--bg);color:var(--text);font-family:var(--sans);
+      min-height:100vh;font-size:14px;line-height:1.6;
+      background-image:
+        radial-gradient(ellipse 80% 60% at 20% 0%,rgba(99,102,241,.06) 0%,transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 100%,rgba(34,211,238,.04) 0%,transparent 60%);
     }
+    ::-webkit-scrollbar{width:5px;height:5px}
+    ::-webkit-scrollbar-track{background:var(--bg)}
+    ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+    ::-webkit-scrollbar-thumb:hover{background:var(--primary)}
 
     /* ── HEADER ── */
-    header {
-      border-bottom: 1px solid var(--border);
-      padding: 0 1.5rem;
-      display: flex; align-items: center; justify-content: space-between;
-      height: 56px; position: sticky; top: 0;
-      background: rgba(10,12,15,0.97);
-      backdrop-filter: blur(8px); z-index: 100;
+    header{
+      border-bottom:1px solid var(--border);
+      padding:0 1.75rem;
+      display:flex;align-items:center;justify-content:space-between;
+      height:60px;position:sticky;top:0;
+      background:rgba(7,9,15,.92);
+      backdrop-filter:blur(24px) saturate(180%);
+      -webkit-backdrop-filter:blur(24px) saturate(180%);
+      z-index:100;
     }
-    .logo {
-      display: flex; align-items: center; gap: 10px;
-      font-family: var(--mono); font-weight: 600;
-      font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
+    .logo{display:flex;align-items:center;gap:10px;text-decoration:none;cursor:pointer}
+    .logo-icon{
+      width:34px;height:34px;background:var(--grad);border-radius:9px;
+      display:flex;align-items:center;justify-content:center;font-size:16px;
+      box-shadow:var(--glow);position:relative;flex-shrink:0;
     }
-    .logo-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--accent); animation: pulse 2s ease-in-out infinite;
+    .logo-icon::after{
+      content:'';position:absolute;top:-3px;right:-3px;
+      width:9px;height:9px;background:var(--green);border-radius:50%;
+      border:2px solid var(--bg);
+      animation:live-pulse 2.2s ease-in-out infinite;
     }
-    @keyframes pulse {
-      0%,100% { opacity:1; box-shadow:0 0 0 0 rgba(232,84,58,0.4); }
-      50%      { opacity:0.7; box-shadow:0 0 0 6px rgba(232,84,58,0); }
+    @keyframes live-pulse{
+      0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.5)}
+      50%{box-shadow:0 0 0 5px rgba(52,211,153,0)}
     }
-    .header-right { display:flex; align-items:center; gap:10px; }
-    .last-updated { font-family:var(--mono); font-size:11px; color:var(--muted); }
-    .refresh-btn {
-      background:var(--surface); border:1px solid var(--border2); color:var(--text);
-      padding:6px 14px; border-radius:4px; font-family:var(--mono); font-size:11px;
-      cursor:pointer; transition:all 0.15s; text-transform:uppercase; letter-spacing:0.05em;
+    .logo-text{
+      font-weight:700;font-size:15px;letter-spacing:-.02em;
+      background:var(--grad);-webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;background-clip:text;
     }
-    .refresh-btn:hover { border-color:var(--accent); color:var(--accent); }
+    .header-right{display:flex;align-items:center;gap:10px}
+    .last-updated{
+      font-family:var(--mono);font-size:11px;color:var(--muted);
+      padding:4px 12px;background:var(--surface);border-radius:20px;
+      border:1px solid var(--border);
+    }
+    .refresh-btn{
+      background:var(--grad);border:none;color:#fff;
+      padding:7px 18px;border-radius:20px;
+      font-family:var(--sans);font-size:12px;font-weight:600;
+      cursor:pointer;transition:all .2s;
+      box-shadow:var(--glow);letter-spacing:.01em;
+    }
+    .refresh-btn:hover{opacity:.82;transform:translateY(-1px);box-shadow:var(--glow),0 4px 16px rgba(99,102,241,.3)}
 
     /* NAV TABS */
-    .nav-tabs { display:flex; gap:3px; flex-wrap:wrap; }
-    .nav-tab {
-      background:none; border:1px solid transparent; color:var(--muted);
-      padding:5px 10px; border-radius:4px; font-family:var(--mono); font-size:10px;
-      cursor:pointer; transition:all 0.15s; text-transform:uppercase; letter-spacing:0.05em;
-      white-space:nowrap;
+    .nav-tabs{display:flex;gap:2px;flex-wrap:wrap}
+    .nav-tab{
+      background:none;border:none;color:var(--muted);
+      padding:6px 13px;border-radius:20px;
+      font-family:var(--sans);font-size:12px;font-weight:500;
+      cursor:pointer;transition:all .15s;white-space:nowrap;
     }
-    .nav-tab:hover { color:var(--text); border-color:var(--border2); }
-    .nav-tab.active { color:var(--accent2); border-color:var(--accent2); background:rgba(58,123,213,0.08); }
+    .nav-tab:hover{color:var(--text);background:rgba(255,255,255,.05)}
+    .nav-tab.active{background:var(--grad);color:#fff;box-shadow:var(--glow)}
 
     /* LAYOUT */
-    .wrapper { display:grid; grid-template-columns:220px 1fr; min-height:calc(100vh - 56px); }
+    .wrapper{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 60px)}
 
     /* SIDEBAR */
-    aside {
-      border-right:1px solid var(--border); padding:1.5rem 0;
-      position:sticky; top:56px; height:calc(100vh - 56px); overflow-y:auto;
+    aside{
+      border-right:1px solid var(--border);padding:1.5rem 0;
+      position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;
+      background:var(--surface);
     }
-    .sidebar-section { margin-bottom:2rem; }
-    .sidebar-label {
-      font-family:var(--mono); font-size:10px; text-transform:uppercase;
-      letter-spacing:0.12em; color:var(--muted); padding:0 1.25rem; margin-bottom:0.5rem;
+    .sidebar-section{margin-bottom:1.75rem}
+    .sidebar-label{
+      font-family:var(--mono);font-size:10px;text-transform:uppercase;
+      letter-spacing:.14em;color:var(--muted);
+      padding:0 1.25rem;margin-bottom:.5rem;
     }
-    .cat-btn {
-      display:flex; align-items:center; justify-content:space-between;
-      width:100%; padding:8px 1.25rem; background:none; border:none;
-      color:var(--muted); font-family:var(--sans); font-size:13px;
-      cursor:pointer; transition:all 0.12s; text-align:left;
+    .cat-btn{
+      display:flex;align-items:center;justify-content:space-between;
+      width:100%;padding:8px 1.25rem;background:none;border:none;
+      color:var(--text2);font-family:var(--sans);font-size:13px;
+      cursor:pointer;transition:all .13s;text-align:left;
     }
-    .cat-btn:hover { color:var(--text); background:rgba(255,255,255,0.03); }
-    .cat-btn.active {
-      color:var(--accent); background:rgba(232,84,58,0.06);
-      border-left:2px solid var(--accent); padding-left:calc(1.25rem - 2px);
+    .cat-btn:hover{color:var(--text);background:rgba(255,255,255,.04)}
+    .cat-btn.active{
+      color:var(--primary);background:rgba(99,102,241,.1);
+      border-left:2px solid var(--primary);padding-left:calc(1.25rem - 2px);
     }
-    .cat-count {
-      font-family:var(--mono); font-size:11px; color:var(--muted);
-      background:var(--surface); padding:1px 6px; border-radius:3px;
+    .cat-count{
+      font-family:var(--mono);font-size:10px;color:var(--muted);
+      background:var(--card);padding:2px 8px;border-radius:10px;
+      border:1px solid var(--border);
     }
-    .cat-btn.active .cat-count { background:rgba(232,84,58,0.15); color:var(--accent); }
-    .alert-box {
-      margin:0 1rem; background:var(--surface); border:1px solid var(--border);
-      border-radius:6px; padding:1rem;
+    .cat-btn.active .cat-count{
+      background:rgba(99,102,241,.15);color:var(--primary);
+      border-color:rgba(99,102,241,.3);
     }
-    .alert-box h4 {
-      font-family:var(--mono); font-size:11px; text-transform:uppercase;
-      letter-spacing:0.1em; color:var(--green); margin-bottom:0.75rem;
+    .alert-box{
+      margin:0 1rem;background:var(--card);border:1px solid var(--border);
+      border-radius:var(--r);padding:1rem;
     }
-    .alert-box input {
-      width:100%; background:var(--card); border:1px solid var(--border2);
-      color:var(--text); padding:6px 8px; border-radius:4px;
-      font-family:var(--sans); font-size:12px; margin-bottom:0.5rem;
+    .alert-box h4{font-size:12px;font-weight:600;color:var(--green);margin-bottom:.75rem}
+    .alert-box input{
+      width:100%;background:var(--surface);border:1px solid var(--border2);
+      color:var(--text);padding:8px 10px;border-radius:var(--r-sm);
+      font-family:var(--sans);font-size:12px;margin-bottom:.5rem;
+      transition:border-color .15s;
     }
-    .alert-box input:focus { outline:none; border-color:var(--accent2); }
-    .alert-box button {
-      width:100%; background:var(--accent2); border:none; color:#fff;
-      padding:7px; border-radius:4px; font-family:var(--mono); font-size:11px;
-      cursor:pointer; transition:opacity 0.15s; text-transform:uppercase; letter-spacing:0.05em;
+    .alert-box input::placeholder{color:var(--muted)}
+    .alert-box input:focus{outline:none;border-color:var(--primary)}
+    .alert-box button{
+      width:100%;background:var(--grad);border:none;color:#fff;
+      padding:8px;border-radius:var(--r-sm);
+      font-family:var(--sans);font-size:12px;font-weight:600;
+      cursor:pointer;transition:opacity .15s;
     }
-    .alert-box button:hover { opacity:0.85; }
-    .alert-status { font-size:11px; color:var(--green); margin-top:0.4rem; display:none; }
+    .alert-box button:hover{opacity:.82}
+    .alert-status{font-size:11px;color:var(--green);margin-top:.4rem;display:none}
 
     /* MAIN */
-    main { padding:1.5rem 2rem; }
-    .page { display:none; }
-    .page.active { display:block; }
+    main{padding:1.5rem 2rem;background:var(--bg)}
+    .page{display:none}
+    .page.active{display:block}
 
-    /* Search bar */
-    .top-bar { display:flex; gap:12px; margin-bottom:1.5rem; align-items:center; }
-    .search-wrap { flex:1; position:relative; }
-    .search-wrap > svg {
-      position:absolute; left:10px; top:50%; transform:translateY(-50%);
-      opacity:0.4; z-index:1; pointer-events:none;
+    /* SEARCH BAR */
+    .top-bar{display:flex;gap:10px;margin-bottom:1.25rem;align-items:center}
+    .search-wrap{flex:1;position:relative}
+    .search-wrap>svg{
+      position:absolute;left:13px;top:50%;transform:translateY(-50%);
+      opacity:.35;z-index:1;pointer-events:none;
     }
-    #search {
-      width:100%; background:var(--surface); border:1px solid var(--border2);
-      color:var(--text); padding:9px 36px 9px 34px; border-radius:5px;
-      font-family:var(--sans); font-size:13px; transition:border-color 0.15s;
+    #search{
+      width:100%;background:var(--surface);border:1px solid var(--border2);
+      color:var(--text);padding:10px 38px 10px 38px;border-radius:22px;
+      font-family:var(--sans);font-size:13px;transition:all .2s;
     }
-    #search:focus { outline:none; border-color:var(--accent2); }
-    #search::placeholder { color:var(--muted); }
-    .clear-btn {
-      position:absolute; right:10px; top:50%; transform:translateY(-50%);
-      background:none; border:none; color:var(--muted); cursor:pointer;
-      font-size:15px; line-height:1; padding:2px 4px; display:none;
+    #search:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,.14)}
+    #search::placeholder{color:var(--muted)}
+    .clear-btn{
+      position:absolute;right:12px;top:50%;transform:translateY(-50%);
+      background:none;border:none;color:var(--muted);cursor:pointer;
+      font-size:14px;line-height:1;padding:2px 4px;display:none;transition:color .15s;
     }
-    .clear-btn:hover { color:var(--text); }
-    .sort-select {
-      background:var(--surface); border:1px solid var(--border2); color:var(--text);
-      padding:9px 10px; border-radius:5px; font-family:var(--mono); font-size:11px; cursor:pointer;
+    .clear-btn:hover{color:var(--text)}
+    .sort-select{
+      background:var(--surface);border:1px solid var(--border2);color:var(--text);
+      padding:10px 14px;border-radius:22px;font-family:var(--sans);font-size:12px;
+      cursor:pointer;transition:border-color .15s;appearance:none;
+      background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-repeat:no-repeat;background-position:right 10px center;background-size:14px;
+      padding-right:32px;
     }
-    .sort-select:focus { outline:none; }
+    .sort-select:focus{outline:none;border-color:var(--primary)}
 
-    /* Stats row */
-    .stats-row { display:flex; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap; }
-    .stat-chip { font-family:var(--mono); font-size:11px; color:var(--muted); display:flex; align-items:center; gap:6px; }
-    .stat-chip span { color:var(--text); font-weight:500; }
+    /* STATS ROW */
+    .stats-row{display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap}
+    .stat-chip{
+      font-family:var(--mono);font-size:11px;color:var(--muted);
+      display:flex;align-items:center;gap:6px;
+      background:var(--surface);border:1px solid var(--border);
+      padding:5px 12px;border-radius:20px;
+    }
+    .stat-chip span{color:var(--text);font-weight:600}
 
-    /* Draw banner */
-    .draw-banner {
-      background:linear-gradient(90deg,rgba(45,204,143,0.08) 0%,transparent 100%);
-      border:1px solid rgba(45,204,143,0.25); border-radius:6px;
-      padding:10px 14px; margin-bottom:1.5rem; display:none; align-items:center; gap:10px;
+    /* DRAW BANNER */
+    .draw-banner{
+      background:var(--grad-sub);border:1px solid rgba(99,102,241,.3);
+      border-radius:var(--r);padding:12px 16px;margin-bottom:1.25rem;
+      display:none;align-items:center;gap:12px;
     }
-    .draw-banner.visible { display:flex; }
-    .draw-tag {
-      font-family:var(--mono); font-size:10px; text-transform:uppercase;
-      letter-spacing:0.1em; background:var(--green); color:#000;
-      padding:2px 7px; border-radius:3px; white-space:nowrap;
+    .draw-banner.visible{display:flex}
+    .draw-tag{
+      font-family:var(--mono);font-size:10px;text-transform:uppercase;
+      letter-spacing:.07em;background:var(--grad);color:#fff;
+      padding:3px 10px;border-radius:20px;white-space:nowrap;
     }
-    .draw-text { font-size:13px; color:var(--green); }
+    .draw-text{font-size:13px;color:var(--primary2);font-weight:500}
 
-    /* News grid */
-    #news-grid {
-      display:grid; gap:1px; background:var(--border);
-      border:1px solid var(--border); border-radius:6px; overflow:hidden;
+    /* NEWS GRID */
+    #news-grid{
+      display:flex;flex-direction:column;
+      background:var(--card);border:1px solid var(--border);
+      border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);
     }
-    .news-card {
-      background:var(--card); padding:1rem 1.25rem;
-      display:grid; grid-template-columns:1fr auto;
-      gap:0.5rem; transition:background 0.12s; text-decoration:none; color:inherit;
+    .news-card{
+      background:var(--card);padding:1rem 1.25rem;
+      display:grid;grid-template-columns:1fr auto;
+      gap:.75rem;transition:background .15s;text-decoration:none;color:inherit;
+      border-bottom:1px solid var(--border);
     }
-    .news-card:hover { background:var(--surface); }
-    .news-card.read { opacity:0.5; }
-    .news-card.read .card-title { color:var(--muted); }
-    .card-left { min-width:0; }
-    .card-meta { display:flex; align-items:center; gap:8px; margin-bottom:5px; flex-wrap:wrap; }
-    .source-tag {
-      font-family:var(--mono); font-size:10px; text-transform:uppercase;
-      letter-spacing:0.08em; padding:2px 7px; border-radius:3px;
+    .news-card:last-child{border-bottom:none}
+    .news-card:hover{background:var(--card-h)}
+    .news-card.read{opacity:.5}
+    .card-left{min-width:0}
+    .card-meta{display:flex;align-items:center;gap:7px;margin-bottom:5px;flex-wrap:wrap}
+    .source-tag{
+      font-family:var(--mono);font-size:10px;text-transform:uppercase;
+      letter-spacing:.06em;padding:2px 9px;border-radius:20px;
     }
-    .tag-ircc    { background:rgba(232,84,58,0.15);  color:var(--accent); }
-    .tag-cic     { background:rgba(58,123,213,0.15); color:var(--accent2); }
-    .tag-cbc     { background:rgba(245,166,35,0.15); color:var(--amber); }
-    .tag-default { background:rgba(107,114,128,0.2); color:var(--muted); }
-    .keyword-badge {
-      font-family:var(--mono); font-size:10px; text-transform:uppercase;
-      letter-spacing:0.06em; padding:2px 6px; border-radius:3px;
-      background:rgba(245,166,35,0.15); color:var(--amber); border:1px solid rgba(245,166,35,0.3);
+    .tag-ircc{background:rgba(99,102,241,.15);color:var(--primary);border:1px solid rgba(99,102,241,.3)}
+    .tag-cic{background:rgba(34,211,238,.1);color:var(--primary2);border:1px solid rgba(34,211,238,.3)}
+    .tag-cbc{background:rgba(251,191,36,.1);color:var(--amber);border:1px solid rgba(251,191,36,.3)}
+    .tag-default{background:rgba(84,96,112,.15);color:var(--muted);border:1px solid var(--border)}
+    .keyword-badge{
+      font-family:var(--mono);font-size:10px;text-transform:uppercase;
+      letter-spacing:.04em;padding:2px 7px;border-radius:20px;
+      background:rgba(251,191,36,.1);color:var(--amber);border:1px solid rgba(251,191,36,.25);
     }
-    .card-date { font-family:var(--mono); font-size:11px; color:var(--muted); }
-    .card-title { font-size:14px; font-weight:500; color:var(--text); line-height:1.45; margin-bottom:5px; }
-    .news-card:hover .card-title { color:#fff; }
-    .card-summary {
-      font-size:12px; color:var(--muted); line-height:1.5; overflow:hidden;
-      display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; line-clamp:2;
+    .card-date{font-family:var(--mono);font-size:11px;color:var(--muted)}
+    .card-title{font-size:14px;font-weight:500;color:var(--text);line-height:1.45;margin-bottom:4px}
+    .news-card:hover .card-title{color:#fff}
+    .card-summary{
+      font-size:12px;color:var(--muted);line-height:1.5;overflow:hidden;
+      display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;
     }
-    .card-right {
-      display:flex; flex-direction:column; align-items:flex-end;
-      justify-content:space-between; min-width:80px; gap:4px;
+    .card-right{
+      display:flex;flex-direction:column;align-items:flex-end;
+      justify-content:space-between;min-width:90px;gap:6px;
     }
-    .cat-pill {
-      font-family:var(--mono); font-size:10px; color:var(--muted);
-      border:1px solid var(--border2); padding:2px 7px; border-radius:10px;
-      white-space:nowrap; text-transform:uppercase; letter-spacing:0.06em;
+    .cat-pill{
+      font-family:var(--mono);font-size:10px;color:var(--muted);
+      border:1px solid var(--border2);padding:3px 9px;border-radius:20px;
+      white-space:nowrap;text-transform:uppercase;letter-spacing:.04em;
     }
-    .bookmark-btn {
-      background:none; border:none; cursor:pointer; font-size:13px;
-      opacity:0.25; transition:opacity 0.15s; padding:0; line-height:1;
+    .bookmark-btn{
+      background:none;border:none;cursor:pointer;font-size:14px;
+      opacity:.2;transition:opacity .15s;padding:0;line-height:1;
     }
-    .bookmark-btn:hover, .bookmark-btn.bookmarked { opacity:1; }
-    .arrow-icon { opacity:0.3; transition:opacity 0.12s; }
-    .news-card:hover .arrow-icon { opacity:0.8; }
+    .bookmark-btn:hover,.bookmark-btn.bookmarked{opacity:1}
+    .arrow-icon{opacity:.22;transition:opacity .15s}
+    .news-card:hover .arrow-icon{opacity:.65}
 
-    /* States */
-    .empty-state { padding:4rem 2rem; text-align:center; color:var(--muted); font-family:var(--mono); font-size:13px; }
-    .loading-state { padding:3rem 2rem; text-align:center; color:var(--muted); font-family:var(--mono); font-size:12px; }
-    .loading-dots span { animation:blink 1.2s infinite; font-size:20px; }
-    .loading-dots span:nth-child(2) { animation-delay:0.2s; }
-    .loading-dots span:nth-child(3) { animation-delay:0.4s; }
-    @keyframes blink { 0%,80%,100%{opacity:0} 40%{opacity:1} }
+    /* STATES */
+    .empty-state{padding:4rem 2rem;text-align:center;color:var(--muted);font-family:var(--mono);font-size:13px}
+    .loading-state{padding:3rem 2rem;text-align:center;color:var(--muted);font-family:var(--mono);font-size:12px}
+    .loading-dots span{animation:blink 1.2s infinite;font-size:20px}
+    .loading-dots span:nth-child(2){animation-delay:.2s}
+    .loading-dots span:nth-child(3){animation-delay:.4s}
+    @keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
 
-    /* Pagination */
-    .pagination { display:flex; gap:8px; justify-content:center; margin-top:1.5rem; flex-wrap:wrap; }
-    .pg-btn {
-      background:var(--surface); border:1px solid var(--border2); color:var(--muted);
-      padding:6px 14px; border-radius:4px; font-family:var(--mono); font-size:11px; cursor:pointer; transition:all 0.12s;
+    /* PAGINATION */
+    .pagination{display:flex;gap:6px;justify-content:center;margin-top:1.5rem;flex-wrap:wrap}
+    .pg-btn{
+      background:var(--surface);border:1px solid var(--border);
+      color:var(--muted);padding:6px 14px;border-radius:20px;
+      font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .15s;
     }
-    .pg-btn:hover, .pg-btn.active { border-color:var(--accent2); color:var(--accent2); }
+    .pg-btn:hover{border-color:var(--primary);color:var(--primary)}
+    .pg-btn.active{background:var(--grad);border-color:transparent;color:#fff}
 
-    /* Panel pages */
-    .panel-title {
-      font-family:var(--mono); font-size:13px; text-transform:uppercase;
-      letter-spacing:0.1em; color:var(--muted); margin-bottom:1.5rem;
-      padding-bottom:0.75rem; border-bottom:1px solid var(--border);
+    /* PANELS */
+    .panel-title{
+      font-size:18px;font-weight:700;color:var(--text);
+      margin-bottom:1.5rem;letter-spacing:-.02em;
     }
-    .panel-card {
-      background:var(--card); border:1px solid var(--border);
-      border-radius:6px; padding:1.25rem; margin-bottom:1rem;
+    .panel-card{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:var(--r);padding:1.5rem;margin-bottom:1rem;
+      box-shadow:var(--shadow);
     }
-    .chart-wrap {
-      background:var(--card); border:1px solid var(--border); border-radius:6px;
-      padding:1.25rem; margin-bottom:1.5rem; position:relative; height:280px;
-    }
-
-    /* Health table */
-    .health-table { width:100%; border-collapse:collapse; }
-    .health-table th {
-      font-family:var(--mono); font-size:10px; text-transform:uppercase;
-      letter-spacing:0.1em; color:var(--muted); text-align:left;
-      padding:8px 12px; border-bottom:1px solid var(--border);
-    }
-    .health-table td { padding:10px 12px; font-size:13px; border-bottom:1px solid var(--border); }
-    .health-table tr:last-child td { border-bottom:none; }
-    .status-dot { display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:6px; }
-    .status-ok   { background:var(--green); }
-    .status-warn { background:var(--amber); }
-    .status-dead { background:var(--accent); }
-
-    /* Processing times */
-    .proc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1rem; }
-    .proc-card { background:var(--card); border:1px solid var(--border); border-radius:6px; padding:1rem; }
-    .proc-permit { font-size:13px; font-weight:500; color:var(--text); margin-bottom:4px; }
-    .proc-time { font-family:var(--mono); font-size:18px; color:var(--accent2); font-weight:600; }
-    .proc-label { font-family:var(--mono); font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; }
-
-    /* Bookmarks */
-    .bookmarks-empty { text-align:center; padding:4rem; color:var(--muted); font-family:var(--mono); font-size:13px; }
-
-    /* Toast */
-    #toast {
-      position:fixed; bottom:24px; right:24px; background:var(--surface);
-      border:1px solid var(--green); color:var(--green); padding:10px 16px;
-      border-radius:5px; font-family:var(--mono); font-size:12px;
-      opacity:0; transform:translateY(10px); transition:all 0.2s; pointer-events:none; z-index:999;
-    }
-    #toast.show { opacity:1; transform:translateY(0); }
-
-    /* Profile page */
-    .profile-row {
-      display:flex; justify-content:space-between; align-items:center;
-      padding:6px 0; border-bottom:1px solid var(--border); font-size:13px;
-    }
-    .profile-row:last-child { border-bottom:none; }
-    .profile-label { font-family:var(--mono); font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; }
-    .profile-val { color:var(--text); font-weight:500; }
-
-    /* Timeline */
-    .timeline { display:flex; flex-direction:column; gap:0; }
-    .tl-item {
-      display:grid; grid-template-columns:16px 1fr auto; gap:0 1rem;
-      padding:0.75rem 0; border-left:2px solid var(--border2);
-      margin-left:7px; padding-left:1.5rem; position:relative;
-    }
-    .tl-dot {
-      position:absolute; left:-8px; top:1rem;
-      width:14px; height:14px; border-radius:50%;
-      border:2px solid var(--border2); background:var(--bg);
-    }
-    .tl-item.done .tl-dot     { background:var(--green);  border-color:var(--green); }
-    .tl-item.upcoming .tl-dot { background:var(--accent2); border-color:var(--accent2); }
-    .tl-item.future .tl-dot   { background:var(--amber);  border-color:var(--amber); }
-    .tl-item.done     { border-left-color:var(--green); }
-    .tl-item.upcoming { border-left-color:var(--accent2); }
-    .tl-item.future   { border-left-color:var(--amber); }
-    .tl-title { font-size:13px; font-weight:500; color:var(--text); }
-    .tl-desc  { font-size:12px; color:var(--muted); margin-top:2px; }
-    .tl-date  { font-family:var(--mono); font-size:11px; color:var(--muted); white-space:nowrap; padding-top:2px; }
-
-    /* Rec cards */
-    .rec-card { display:flex; gap:0.75rem; padding:0.75rem; border-radius:6px; border:1px solid var(--border); align-items:flex-start; }
-    .rec-card.green { border-color:rgba(45,204,143,0.3); background:rgba(45,204,143,0.05); }
-    .rec-card.amber { border-color:rgba(245,166,35,0.3); background:rgba(245,166,35,0.05); }
-    .rec-card.blue  { border-color:rgba(58,123,213,0.3); background:rgba(58,123,213,0.05); }
-    .rec-icon  { font-size:16px; flex-shrink:0; }
-    .rec-title { font-size:13px; font-weight:500; color:var(--text); margin-bottom:3px; }
-    .rec-desc  { font-size:12px; color:var(--muted); line-height:1.4; }
-
-    /* Calculator */
-    .calc-section-title {
-      font-family:var(--mono); font-size:10px; text-transform:uppercase;
-      letter-spacing:0.1em; color:var(--muted); margin-bottom:1rem;
-      padding-bottom:0.5rem; border-bottom:1px solid var(--border);
-    }
-    .calc-group { margin-bottom:0.875rem; }
-    .calc-label {
-      display:block; font-family:var(--mono); font-size:11px; color:var(--muted);
-      text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;
-    }
-    .calc-input {
-      width:100%; background:var(--surface); border:1px solid var(--border2);
-      color:var(--text); padding:7px 10px; border-radius:4px;
-      font-family:var(--sans); font-size:13px;
-    }
-    .calc-input:focus { outline:none; border-color:var(--accent2); }
-    .breakdown-row {
-      display:flex; justify-content:space-between; align-items:center;
-      padding:5px 8px; border-radius:4px; font-size:12px; background:var(--surface);
-    }
-    .breakdown-pts { font-family:var(--mono); font-weight:600; }
-    .tip-row {
-      display:flex; gap:8px; padding:8px; border-radius:4px;
-      background:rgba(58,123,213,0.06); border:1px solid rgba(58,123,213,0.15);
-      font-size:12px; align-items:flex-start;
-    }
-    .deadline-row {
-      display:flex; justify-content:space-between; padding:8px 10px;
-      border-radius:5px; background:var(--surface); font-size:12px; align-items:center;
-    }
-    .deadline-label { color:var(--muted); font-family:var(--mono); font-size:11px; }
-    .deadline-val   { font-weight:500; color:var(--text); font-family:var(--mono); }
-    .deadline-urgent { border:1px solid rgba(232,84,58,0.3); background:rgba(232,84,58,0.06); }
-    .deadline-ok     { border:1px solid rgba(45,204,143,0.3); background:rgba(45,204,143,0.06); }
-
-    /* Score bar */
-    .score-bar-bg { background:var(--border); border-radius:4px; height:14px; position:relative; overflow:visible; }
-    .score-bar-fill { height:100%; border-radius:4px; transition:width 0.5s ease; }
-    .score-bar-marker {
-      position:absolute; top:-5px; width:3px; height:24px;
-      background:var(--accent); border-radius:2px;
+    .chart-wrap{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+      padding:1.5rem;margin-bottom:1.5rem;position:relative;height:300px;
+      box-shadow:var(--shadow);
     }
 
-    /* ── MOBILE BOTTOM NAV ── */
-    .mobile-nav {
-      display: none; position: fixed; bottom:0; left:0; right:0;
-      background: rgba(10,12,15,0.98); border-top:1px solid var(--border);
-      backdrop-filter: blur(12px); z-index: 200;
+    /* HEALTH TABLE */
+    .health-table{width:100%;border-collapse:collapse}
+    .health-table th{
+      font-family:var(--mono);font-size:10px;text-transform:uppercase;
+      letter-spacing:.12em;color:var(--muted);text-align:left;
+      padding:10px 14px;border-bottom:1px solid var(--border);
     }
-    .mobile-nav-inner {
-      display: flex; overflow-x: auto; scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-    }
-    .mobile-nav-inner::-webkit-scrollbar { display:none; }
-    .mobile-nav-btn {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 3px; flex: 0 0 auto; min-width: 58px; padding: 7px 4px 10px;
-      background: none; border: none; color: var(--muted);
-      font-family: var(--mono); font-size: 9px; text-transform: uppercase;
-      letter-spacing: 0.04em; cursor: pointer; transition: color 0.15s; white-space: nowrap;
-    }
-    .mobile-nav-btn .mnav-icon { font-size: 18px; line-height: 1; }
-    .mobile-nav-btn.active { color: var(--accent2); }
+    .health-table td{padding:12px 14px;font-size:13px;border-bottom:1px solid var(--border)}
+    .health-table tr:last-child td{border-bottom:none}
+    .health-table tbody tr:hover td{background:rgba(255,255,255,.02)}
+    .status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px}
+    .status-ok{background:var(--green);box-shadow:0 0 8px rgba(52,211,153,.55)}
+    .status-warn{background:var(--amber)}
+    .status-dead{background:var(--red)}
 
-    /* ── MOBILE DRAWER ── */
-    .mobile-drawer-overlay {
-      display: none; position: fixed; inset:0;
-      background: rgba(0,0,0,0.65); z-index:300;
+    /* PROCESSING */
+    .proc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
+    .proc-card{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+      padding:1.25rem;transition:all .2s;
     }
-    .mobile-drawer-overlay.open { display:block; }
-    .mobile-drawer {
-      position: fixed; top:0; left:0; bottom:0; width:280px;
-      background: var(--surface); border-right:1px solid var(--border);
-      z-index:301; overflow-y:auto;
-      transform: translateX(-100%); transition: transform 0.25s ease;
-      padding-top: 56px;
+    .proc-card:hover{border-color:var(--primary);box-shadow:var(--glow)}
+    .proc-permit{font-size:13px;font-weight:500;color:var(--text);margin-bottom:6px}
+    .proc-time{font-family:var(--mono);font-size:22px;color:var(--primary2);font-weight:700;margin-bottom:3px}
+    .proc-label{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+
+    /* TOAST */
+    #toast{
+      position:fixed;bottom:24px;right:24px;
+      background:var(--card);border:1px solid rgba(99,102,241,.5);color:var(--text);
+      padding:12px 20px;border-radius:var(--r);
+      font-family:var(--sans);font-size:13px;font-weight:500;
+      opacity:0;transform:translateY(10px);transition:all .25s;
+      pointer-events:none;z-index:999;
+      box-shadow:var(--shadow-lg),var(--glow);
     }
-    .mobile-drawer.open { transform: translateX(0); }
-    .drawer-close {
-      position: absolute; top:14px; right:14px;
-      background: var(--card); border:1px solid var(--border2); color:var(--muted);
-      width:32px; height:32px; border-radius:50%; font-size:16px; cursor:pointer;
-      display:flex; align-items:center; justify-content:center;
+    #toast.show{opacity:1;transform:translateY(0)}
+
+    /* PROFILE */
+    .profile-row{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;
+    }
+    .profile-row:last-child{border-bottom:none}
+    .profile-label{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+    .profile-val{color:var(--text);font-weight:500}
+
+    /* TIMELINE */
+    .timeline{display:flex;flex-direction:column}
+    .tl-item{
+      display:grid;grid-template-columns:1fr auto;gap:0 1rem;
+      padding:.875rem 0;border-left:2px solid var(--border);
+      margin-left:7px;padding-left:1.5rem;position:relative;
+    }
+    .tl-dot{
+      position:absolute;left:-8px;top:1rem;
+      width:14px;height:14px;border-radius:50%;
+      border:2px solid var(--border);background:var(--bg);
+    }
+    .tl-item.done .tl-dot{background:var(--green);border-color:var(--green);box-shadow:0 0 8px rgba(52,211,153,.45)}
+    .tl-item.upcoming .tl-dot{background:var(--primary);border-color:var(--primary);box-shadow:0 0 8px rgba(99,102,241,.45)}
+    .tl-item.future .tl-dot{background:var(--amber);border-color:var(--amber)}
+    .tl-item.done{border-left-color:var(--green)}
+    .tl-item.upcoming{border-left-color:var(--primary)}
+    .tl-item.future{border-left-color:var(--amber)}
+    .tl-title{font-size:13px;font-weight:600;color:var(--text)}
+    .tl-desc{font-size:12px;color:var(--muted);margin-top:2px}
+    .tl-date{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap;padding-top:2px}
+
+    /* REC CARDS */
+    .rec-card{
+      display:flex;gap:.75rem;padding:.875rem;border-radius:var(--r-sm);
+      border:1px solid var(--border);align-items:flex-start;transition:all .2s;
+    }
+    .rec-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+    .rec-card.green{border-color:rgba(52,211,153,.25);background:rgba(52,211,153,.05)}
+    .rec-card.amber{border-color:rgba(251,191,36,.25);background:rgba(251,191,36,.05)}
+    .rec-card.blue{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.05)}
+    .rec-icon{font-size:16px;flex-shrink:0}
+    .rec-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+    .rec-desc{font-size:12px;color:var(--muted);line-height:1.4}
+
+    /* CALCULATOR */
+    .calc-section-title{
+      font-family:var(--mono);font-size:10px;text-transform:uppercase;
+      letter-spacing:.12em;color:var(--muted);margin-bottom:1rem;
+      padding-bottom:.625rem;border-bottom:1px solid var(--border);
+    }
+    .calc-group{margin-bottom:.875rem}
+    .calc-label{
+      display:block;font-family:var(--mono);font-size:11px;color:var(--muted);
+      text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;
+    }
+    .calc-input{
+      width:100%;background:var(--surface);border:1px solid var(--border2);
+      color:var(--text);padding:9px 12px;border-radius:var(--r-sm);
+      font-family:var(--sans);font-size:13px;transition:all .15s;
+    }
+    select.calc-input{
+      appearance:none;cursor:pointer;
+      background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-repeat:no-repeat;background-position:right 10px center;
+      background-size:14px;padding-right:32px;
+    }
+    .calc-input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+    .breakdown-row{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:6px 10px;border-radius:var(--r-sm);font-size:12px;
+      background:var(--surface);margin-bottom:3px;
+    }
+    .breakdown-pts{font-family:var(--mono);font-weight:600}
+    .tip-row{
+      display:flex;gap:10px;padding:10px;border-radius:var(--r-sm);
+      background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.15);
+      font-size:12px;align-items:flex-start;
+    }
+    .deadline-row{
+      display:flex;justify-content:space-between;padding:10px 12px;
+      border-radius:var(--r-sm);background:var(--surface);font-size:12px;
+      align-items:center;border:1px solid var(--border);
+    }
+    .deadline-label{color:var(--muted);font-family:var(--mono);font-size:11px}
+    .deadline-val{font-weight:600;color:var(--text);font-family:var(--mono)}
+    .deadline-urgent{border-color:rgba(251,74,90,.3);background:rgba(251,74,90,.07)}
+    .deadline-ok{border-color:rgba(52,211,153,.25);background:rgba(52,211,153,.05)}
+
+    /* SCORE BAR */
+    .score-bar-bg{background:var(--border);border-radius:6px;height:12px;position:relative;overflow:visible}
+    .score-bar-fill{height:100%;border-radius:6px;transition:width .5s ease,background .3s}
+    .score-bar-marker{
+      position:absolute;top:-7px;width:2px;height:26px;
+      background:var(--red);border-radius:2px;
+      box-shadow:0 0 8px rgba(251,74,90,.65);
     }
 
-    @media (max-width: 768px) {
-      .wrapper { grid-template-columns:1fr; padding-bottom:64px; }
-      aside { display:none; }
-      main { padding:0.75rem; }
-      .nav-tabs { display:none; }
-      .mobile-nav { display:block; }
-      header { padding:0 0.75rem; }
-      .logo { font-size:11px; }
-      .last-updated { display:none; }
-      .news-card { grid-template-columns:1fr; gap:0.4rem; padding:0.85rem 0.9rem; }
-      .card-right { flex-direction:row; align-items:center; justify-content:space-between; min-width:unset; }
-      .stats-row { gap:0.5rem; flex-wrap:wrap; }
-      .stat-chip { font-size:10px; }
-      .top-bar { gap:8px; }
-      .sort-select { font-size:10px; padding:8px 6px; }
+    /* MOBILE NAV */
+    .mobile-nav{
+      display:none;position:fixed;bottom:0;left:0;right:0;
+      background:rgba(7,9,15,.97);border-top:1px solid var(--border);
+      backdrop-filter:blur(20px);z-index:200;
+    }
+    .mobile-nav-inner{
+      display:flex;overflow-x:auto;scrollbar-width:none;
+      -webkit-overflow-scrolling:touch;
+    }
+    .mobile-nav-inner::-webkit-scrollbar{display:none}
+    .mobile-nav-btn{
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:4px;flex:0 0 auto;min-width:58px;padding:8px 4px 12px;
+      background:none;border:none;color:var(--muted);
+      font-family:var(--sans);font-size:9px;font-weight:500;text-transform:uppercase;
+      letter-spacing:.03em;cursor:pointer;transition:color .15s;white-space:nowrap;
+    }
+    .mobile-nav-btn .mnav-icon{font-size:18px;line-height:1}
+    .mobile-nav-btn.active{color:var(--primary)}
+
+    /* MOBILE DRAWER */
+    .mobile-drawer-overlay{
+      display:none;position:fixed;inset:0;
+      background:rgba(0,0,0,.7);z-index:300;backdrop-filter:blur(4px);
+    }
+    .mobile-drawer-overlay.open{display:block}
+    .mobile-drawer{
+      position:fixed;top:0;left:0;bottom:0;width:290px;
+      background:var(--surface);border-right:1px solid var(--border);
+      z-index:301;overflow-y:auto;
+      transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);
+      padding-top:60px;
+    }
+    .mobile-drawer.open{transform:translateX(0)}
+    .drawer-close{
+      position:absolute;top:14px;right:14px;
+      background:var(--card);border:1px solid var(--border);color:var(--muted);
+      width:32px;height:32px;border-radius:50%;font-size:14px;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;transition:all .15s;
+    }
+    .drawer-close:hover{color:var(--text);border-color:var(--border2)}
+
+    /* BADGE on sidebar button */
+    .sidebar-tool-btn{
+      display:flex;align-items:center;gap:8px;
+      width:100%;padding:8px 1.25rem;background:none;border:none;
+      color:var(--text2);font-family:var(--sans);font-size:13px;
+      cursor:pointer;transition:all .13s;text-align:left;
+    }
+    .sidebar-tool-btn:hover{color:var(--primary2);background:rgba(34,211,238,.05)}
+
+    @media(max-width:768px){
+      .wrapper{grid-template-columns:1fr;padding-bottom:68px}
+      aside{display:none}
+      main{padding:.875rem}
+      .nav-tabs{display:none}
+      .mobile-nav{display:block}
+      header{padding:0 .875rem;height:56px}
+      .logo-text{font-size:13px}
+      .last-updated{display:none}
+      .news-card{grid-template-columns:1fr;gap:.5rem;padding:.875rem 1rem}
+      .card-right{flex-direction:row;align-items:center;justify-content:space-between;min-width:unset}
+      .stats-row{gap:.5rem}
+      .stat-chip{font-size:10px;padding:4px 10px}
+      .top-bar{gap:8px}
+      .sort-select{font-size:11px;padding:9px 10px}
+      .panel-title{font-size:16px}
+      .panel-card{padding:1rem}
+      .chart-wrap{height:220px}
+      #page-crscalc>div,
+      #page-pgwp>div{grid-template-columns:1fr!important}
+      .profile-section-grid{grid-template-columns:1fr!important}
+    }
+    @media(max-width:1100px) and (min-width:769px){
+      .wrapper{grid-template-columns:200px 1fr}
     }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">
-    <div class="logo-dot"></div>
-    IRCC News Hub
+  <div class="logo" onclick="showPage('news',null);document.querySelectorAll('.nav-tab').forEach((b,i)=>{b.classList.toggle('active',i===0)})">
+    <div class="logo-icon">🍁</div>
+    <span class="logo-text">IRCC News Hub</span>
   </div>
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="showPage('news',this)">📰 News</button>
@@ -480,12 +571,9 @@
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">Tools</div>
-      <button class="cat-btn" onclick="window.location.href='/noc'">
-        🔍 NOC Code Finder
-      </button>
-      <button class="cat-btn" onclick="window.location.href='/permits'">
-        📅 Permit Tracker
-      </button>
+      <button class="sidebar-tool-btn" onclick="window.location.href='/noc'">🔍 NOC Code Finder</button>
+      <button class="sidebar-tool-btn" onclick="showPage('crscalc',null);document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'))">🧮 CRS Calculator</button>
+      <button class="sidebar-tool-btn" onclick="showPage('pgwp',null);document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'))">📅 PGWP Timeline</button>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">Filter by Keyword</div>
@@ -570,17 +658,19 @@
     <div class="page" id="page-bookmarks">
       <div class="panel-title">🔖 Saved Articles</div>
       <div id="bookmarks-grid">
-        <div class="bookmarks-empty">No bookmarks yet.<br>Click 🔖 on any article to save it.</div>
+        <div class="panel-card" style="text-align:center;color:var(--muted);font-family:var(--mono);font-size:13px;padding:3rem">
+          No bookmarks yet.<br><span style="font-size:11px;margin-top:6px;display:block">Click 🔖 on any article to save it.</span>
+        </div>
       </div>
     </div>
 
     <!-- ── MY PROFILE ── -->
     <div class="page" id="page-profile">
       <div class="panel-title">👤 My Immigration Profile</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem" class="profile-section-grid">
         <div class="panel-card">
-          <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:1rem">Your Profile</div>
-          <div style="display:flex;flex-direction:column;gap:0.6rem">
+          <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:1rem">Your Profile</div>
+          <div style="display:flex;flex-direction:column;gap:.5rem">
             <div class="profile-row"><span class="profile-label">Name</span><span class="profile-val">Priyanka</span></div>
             <div class="profile-row"><span class="profile-label">Age</span><span class="profile-val">25</span></div>
             <div class="profile-row"><span class="profile-label">Education</span><span class="profile-val">Masters — Software Engineering</span></div>
@@ -593,15 +683,15 @@
           </div>
         </div>
         <div class="panel-card">
-          <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:1rem">Estimated CRS Score</div>
-          <div style="text-align:center;padding:1rem 0">
-            <div style="font-family:var(--mono);font-size:56px;font-weight:600;color:var(--accent2);line-height:1">465</div>
-            <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:0.5rem">estimated current score (incl. India exp)</div>
-            <div style="margin-top:1rem;padding:0.75rem;background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.2);border-radius:6px">
+          <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:1rem">Estimated CRS Score</div>
+          <div style="text-align:center;padding:.5rem 0">
+            <div style="font-family:var(--mono);font-size:56px;font-weight:800;color:var(--primary2);line-height:1">465</div>
+            <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:.5rem">estimated current score (incl. India exp)</div>
+            <div style="margin-top:1rem;padding:.75rem;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.25);border-radius:var(--r-sm)">
               <div style="font-family:var(--mono);font-size:11px;color:var(--amber)">⚠ Latest draw cutoff: ~490–510</div>
               <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px">Gap: ~40–45 points</div>
             </div>
-            <div style="margin-top:0.75rem;padding:0.75rem;background:rgba(45,204,143,0.08);border:1px solid rgba(45,204,143,0.2);border-radius:6px">
+            <div style="margin-top:.75rem;padding:.75rem;background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.22);border-radius:var(--r-sm)">
               <div style="font-family:var(--mono);font-size:11px;color:var(--green)">✓ After PGWP + 1yr CEC: ~+60–80 pts</div>
               <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px">Projected score 2028: ~520–540 ✅</div>
             </div>
@@ -609,15 +699,14 @@
         </div>
       </div>
 
-      <!-- TR to PR Alert -->
-      <div style="background:rgba(58,123,213,0.08);border:1px solid rgba(58,123,213,0.3);border-radius:6px;padding:1rem;margin-bottom:1rem">
-        <div style="font-family:var(--mono);font-size:11px;color:var(--accent2);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem">🚨 New Opportunity — TR to PR Pathway 2026</div>
-        <div style="font-size:13px;color:var(--text);margin-bottom:0.5rem">Canada has launched a <strong>one-time TR to PR pathway</strong> for 33,000 workers. You may qualify if you have a valid study/work permit and Canadian work experience.</div>
+      <div style="background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.3);border-radius:var(--r);padding:1rem;margin-bottom:1rem">
+        <div style="font-family:var(--mono);font-size:11px;color:var(--primary);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem">🚨 New Opportunity — TR to PR Pathway 2026</div>
+        <div style="font-size:13px;color:var(--text);margin-bottom:.5rem">Canada has launched a <strong>one-time TR to PR pathway</strong> for 33,000 workers. You may qualify if you have a valid study/work permit and Canadian work experience.</div>
         <div style="font-family:var(--mono);font-size:11px;color:var(--muted)">Action: Prepare your WES (ECA), keep CELPIP valid, document all work hours. Full criteria expected April 2026.</div>
       </div>
 
       <div class="panel-card" style="margin-bottom:1rem">
-        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:1.25rem">Your PR Pathway Timeline</div>
+        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:1.25rem">Your PR Pathway Timeline</div>
         <div class="timeline">
           <div class="tl-item done"><div class="tl-dot"></div><div class="tl-content"><div class="tl-title">Study Permit Active</div><div class="tl-desc">Currently studying Masters in Software Engineering</div></div><div class="tl-date">Now</div></div>
           <div class="tl-item done"><div class="tl-dot"></div><div class="tl-content"><div class="tl-title">Canadian Work Experience</div><div class="tl-desc">Gas station work accumulating — track every hour</div></div><div class="tl-date">Now</div></div>
@@ -630,8 +719,8 @@
       </div>
 
       <div class="panel-card">
-        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:1rem">What To Focus On Right Now</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:1rem">What To Focus On Right Now</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
           <div class="rec-card green"><div class="rec-icon">✅</div><div><div class="rec-title">Improve CELPIP to 9+</div><div class="rec-desc">Each skill at CLB 10 = +6 pts × 4 = +24 pts total</div></div></div>
           <div class="rec-card green"><div class="rec-icon">✅</div><div><div class="rec-title">Get WES (ECA) Done Now</div><div class="rec-desc">Required for TR to PR + Express Entry. Takes 4–8 weeks</div></div></div>
           <div class="rec-card amber"><div class="rec-icon">⚡</div><div><div class="rec-title">Ontario Masters Stream</div><div class="rec-desc">OINP Masters Graduate — no job offer needed after graduation</div></div></div>
@@ -642,7 +731,7 @@
       </div>
     </div>
 
-    <!-- ── CRS CALCULATOR (GENERIC — anyone can use) ── -->
+    <!-- ── CRS CALCULATOR ── -->
     <div class="page" id="page-crscalc">
       <div class="panel-title">🧮 CRS Score Calculator — Express Entry</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
@@ -662,24 +751,24 @@
             <div class="calc-group">
               <label class="calc-label">Age</label>
               <select class="calc-input" id="c-age" onchange="calcCRS()">
-                <option value="110">17–19 years old</option>
-                <option value="110">20–29 years old (maximum points)</option>
-                <option value="105" selected>25 years old</option>
-                <option value="99">26 years old</option>
-                <option value="94">27 years old</option>
-                <option value="88">28 years old</option>
-                <option value="83">29 years old</option>
-                <option value="75">30 years old</option>
-                <option value="69">31 years old</option>
-                <option value="63">32 years old</option>
-                <option value="57">33 years old</option>
-                <option value="52">34 years old</option>
-                <option value="45">35 years old</option>
-                <option value="36">36 years old</option>
-                <option value="27">37 years old</option>
-                <option value="18">38 years old</option>
-                <option value="9">39 years old</option>
-                <option value="0">40+ years old</option>
+                <option value="0">Under 18</option>
+                <option value="110" selected>18–29 years old (110 pts — max)</option>
+                <option value="105">30 years old (105 pts)</option>
+                <option value="99">31 years old (99 pts)</option>
+                <option value="94">32 years old (94 pts)</option>
+                <option value="88">33 years old (88 pts)</option>
+                <option value="83">34 years old (83 pts)</option>
+                <option value="75">35 years old (75 pts)</option>
+                <option value="69">36 years old (69 pts)</option>
+                <option value="63">37 years old (63 pts)</option>
+                <option value="57">38 years old (57 pts)</option>
+                <option value="52">39 years old (52 pts)</option>
+                <option value="45">40 years old (45 pts)</option>
+                <option value="36">41 years old (36 pts)</option>
+                <option value="27">42 years old (27 pts)</option>
+                <option value="18">43 years old (18 pts)</option>
+                <option value="9">44 years old (9 pts)</option>
+                <option value="0">45+ years old (0 pts)</option>
               </select>
             </div>
             <div class="calc-group">
@@ -687,68 +776,68 @@
               <select class="calc-input" id="c-edu" onchange="calcCRS()">
                 <option value="0">Less than secondary (high school)</option>
                 <option value="30">Secondary diploma (high school)</option>
-                <option value="98">1-year post-secondary diploma</option>
-                <option value="98">2-year post-secondary diploma</option>
-                <option value="120">Bachelor's degree (3yr+)</option>
+                <option value="90">1-year post-secondary diploma (90 pts)</option>
+                <option value="98">2-year post-secondary diploma (98 pts)</option>
+                <option value="120">Bachelor's degree / 3-year program (120 pts)</option>
                 <option value="128">Two or more credentials (one 3yr+)</option>
-                <option value="135" selected>Master's degree / Professional degree</option>
-                <option value="150">PhD / Doctoral degree</option>
+                <option value="135" selected>Master's degree / Professional degree (135 pts)</option>
+                <option value="150">PhD / Doctoral degree (150 pts)</option>
               </select>
             </div>
           </div>
 
           <div class="panel-card">
             <div class="calc-section-title">First Official Language — Enter Each Skill Separately</div>
-            <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:0.75rem;padding:6px 8px;background:var(--surface);border-radius:4px">
-              CELPIP → CLB: 4=4, 5=6, 6=7, 7=8, 8=9, 9=10, 10=12 &nbsp;|&nbsp; IELTS → CLB: 6=7, 7=8, 7.5=9, 8=10
+            <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:.75rem;padding:6px 10px;background:var(--surface);border-radius:var(--r-sm)">
+              CELPIP → CLB: 4=4, 5=6, 6=7, 7=8, 8=9, 9=10 &nbsp;|&nbsp; IELTS → CLB: 6=7, 7=8, 7.5=9, 8+=10
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
               <div class="calc-group">
                 <label class="calc-label">Speaking</label>
                 <select class="calc-input" id="c-speak" onchange="calcCRS()">
-                  <option value="0">Below CLB 4</option>
-                  <option value="6">CLB 4–5</option>
-                  <option value="8">CLB 6</option>
-                  <option value="16">CLB 7</option>
-                  <option value="22">CLB 8</option>
-                  <option value="23" selected>CLB 9 (CELPIP 8 / IELTS 7.5)</option>
-                  <option value="23">CLB 10+ (CELPIP 9+ / IELTS 8+)</option>
+                  <option value="0">Below CLB 4 (0 pts)</option>
+                  <option value="6">CLB 4–5 (6 pts)</option>
+                  <option value="8">CLB 6 (8 pts)</option>
+                  <option value="16">CLB 7 (16 pts)</option>
+                  <option value="22">CLB 8 (22 pts)</option>
+                  <option value="23" selected>CLB 9 (23 pts)</option>
+                  <option value="24">CLB 10+ (24 pts)</option>
                 </select>
               </div>
               <div class="calc-group">
                 <label class="calc-label">Listening</label>
                 <select class="calc-input" id="c-listen" onchange="calcCRS()">
-                  <option value="0">Below CLB 4</option>
-                  <option value="6">CLB 4–5</option>
-                  <option value="8">CLB 6</option>
-                  <option value="16">CLB 7</option>
-                  <option value="22">CLB 8</option>
-                  <option value="23" selected>CLB 9</option>
-                  <option value="23">CLB 10+</option>
+                  <option value="0">Below CLB 4 (0 pts)</option>
+                  <option value="6">CLB 4–5 (6 pts)</option>
+                  <option value="8">CLB 6 (8 pts)</option>
+                  <option value="16">CLB 7 (16 pts)</option>
+                  <option value="22">CLB 8 (22 pts)</option>
+                  <option value="23" selected>CLB 9 (23 pts)</option>
+                  <option value="24">CLB 10+ (24 pts)</option>
                 </select>
               </div>
               <div class="calc-group">
                 <label class="calc-label">Reading</label>
                 <select class="calc-input" id="c-read" onchange="calcCRS()">
-                  <option value="0">Below CLB 4</option>
-                  <option value="6">CLB 4–5</option>
-                  <option value="8">CLB 6</option>
-                  <option value="16">CLB 7</option>
-                  <option value="22">CLB 8</option>
-                  <option value="23" selected>CLB 9</option>
-                  <option value="23">CLB 10+</option>
+                  <option value="0">Below CLB 4 (0 pts)</option>
+                  <option value="6">CLB 4–5 (6 pts)</option>
+                  <option value="8">CLB 6 (8 pts)</option>
+                  <option value="16">CLB 7 (16 pts)</option>
+                  <option value="22">CLB 8 (22 pts)</option>
+                  <option value="23" selected>CLB 9 (23 pts)</option>
+                  <option value="24">CLB 10+ (24 pts)</option>
                 </select>
               </div>
               <div class="calc-group">
                 <label class="calc-label">Writing</label>
                 <select class="calc-input" id="c-write" onchange="calcCRS()">
-                  <option value="0">Below CLB 4</option>
-                  <option value="6">CLB 4–5</option>
-                  <option value="8">CLB 6</option>
-                  <option value="16">CLB 7</option>
-                  <option value="22">CLB 8</option>
-                  <option value="23" selected>CLB 9</option>
-                  <option value="23">CLB 10+</option>
+                  <option value="0">Below CLB 4 (0 pts)</option>
+                  <option value="6">CLB 4–5 (6 pts)</option>
+                  <option value="8">CLB 6 (8 pts)</option>
+                  <option value="16">CLB 7 (16 pts)</option>
+                  <option value="22">CLB 8 (22 pts)</option>
+                  <option value="23" selected>CLB 9 (23 pts)</option>
+                  <option value="24">CLB 10+ (24 pts)</option>
                 </select>
               </div>
             </div>
@@ -756,41 +845,41 @@
 
           <div class="panel-card">
             <div class="calc-section-title">Second Official Language (Optional — French or English)</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
               <div class="calc-group">
                 <label class="calc-label">Speaking</label>
                 <select class="calc-input" id="c-speak2" onchange="calcCRS()">
                   <option value="0" selected>None / Below CLB 5</option>
-                  <option value="1">CLB 5–6</option>
-                  <option value="3">CLB 7–8</option>
-                  <option value="6">CLB 9+</option>
+                  <option value="1">CLB 5–6 (1 pt)</option>
+                  <option value="3">CLB 7–8 (3 pts)</option>
+                  <option value="6">CLB 9+ (6 pts)</option>
                 </select>
               </div>
               <div class="calc-group">
                 <label class="calc-label">Listening</label>
                 <select class="calc-input" id="c-listen2" onchange="calcCRS()">
                   <option value="0" selected>None / Below CLB 5</option>
-                  <option value="1">CLB 5–6</option>
-                  <option value="3">CLB 7–8</option>
-                  <option value="6">CLB 9+</option>
+                  <option value="1">CLB 5–6 (1 pt)</option>
+                  <option value="3">CLB 7–8 (3 pts)</option>
+                  <option value="6">CLB 9+ (6 pts)</option>
                 </select>
               </div>
               <div class="calc-group">
                 <label class="calc-label">Reading</label>
                 <select class="calc-input" id="c-read2" onchange="calcCRS()">
                   <option value="0" selected>None / Below CLB 5</option>
-                  <option value="1">CLB 5–6</option>
-                  <option value="3">CLB 7–8</option>
-                  <option value="6">CLB 9+</option>
+                  <option value="1">CLB 5–6 (1 pt)</option>
+                  <option value="3">CLB 7–8 (3 pts)</option>
+                  <option value="6">CLB 9+ (6 pts)</option>
                 </select>
               </div>
               <div class="calc-group">
                 <label class="calc-label">Writing</label>
                 <select class="calc-input" id="c-write2" onchange="calcCRS()">
                   <option value="0" selected>None / Below CLB 5</option>
-                  <option value="1">CLB 5–6</option>
-                  <option value="3">CLB 7–8</option>
-                  <option value="6">CLB 9+</option>
+                  <option value="1">CLB 5–6 (1 pt)</option>
+                  <option value="3">CLB 7–8 (3 pts)</option>
+                  <option value="6">CLB 9+ (6 pts)</option>
                 </select>
               </div>
             </div>
@@ -800,21 +889,21 @@
             <div class="calc-section-title">Work Experience</div>
             <div class="calc-group">
               <label class="calc-label">Canadian Work Experience (NOC TEER 0/1/2/3)</label>
-              <select class="calc-input" id="c-ca-work" onchange="calcCRS()">
+              <select class="calc-input" id="c-cawork" onchange="calcCRS()">
                 <option value="0" selected>None / Less than 1 year</option>
-                <option value="40">1 year</option>
-                <option value="53">2 years</option>
-                <option value="64">3 years</option>
-                <option value="72">4 years</option>
-                <option value="80">5+ years</option>
+                <option value="40">1 year (40 pts)</option>
+                <option value="53">2 years (53 pts)</option>
+                <option value="64">3 years (64 pts)</option>
+                <option value="72">4 years (72 pts)</option>
+                <option value="80">5+ years (80 pts)</option>
               </select>
             </div>
             <div class="calc-group">
               <label class="calc-label">Foreign Work Experience (India / abroad)</label>
-              <select class="calc-input" id="c-for-work" onchange="calcCRS()">
+              <select class="calc-input" id="c-forwork" onchange="calcCRS()">
                 <option value="0">None</option>
-                <option value="13" selected>1–2 years</option>
-                <option value="25">3+ years</option>
+                <option value="13" selected>1–2 years (13 pts)</option>
+                <option value="25">3+ years (25 pts)</option>
               </select>
             </div>
           </div>
@@ -823,10 +912,10 @@
             <div class="calc-section-title">Additional Points</div>
             <div class="calc-group">
               <label class="calc-label">Canadian Education (studied in Canada)</label>
-              <select class="calc-input" id="c-ca-edu" onchange="calcCRS()">
+              <select class="calc-input" id="c-caedu" onchange="calcCRS()">
                 <option value="0">No Canadian education</option>
-                <option value="15">1–2 year Canadian program</option>
-                <option value="30" selected>Masters / PhD / 3yr+ in Canada</option>
+                <option value="15">1–2 year Canadian program (15 pts)</option>
+                <option value="30" selected>Masters / PhD / 3yr+ in Canada (30 pts)</option>
               </select>
             </div>
             <div class="calc-group">
@@ -848,14 +937,14 @@
               <label class="calc-label">Sibling in Canada (citizen or PR)</label>
               <select class="calc-input" id="c-sibling" onchange="calcCRS()">
                 <option value="0" selected>No</option>
-                <option value="15">Yes (+15 pts)</option>
+                <option value="15">Yes — sibling is Canadian citizen or PR (+15 pts)</option>
               </select>
             </div>
             <div class="calc-group">
               <label class="calc-label">French Language Bonus</label>
               <select class="calc-input" id="c-french" onchange="calcCRS()">
                 <option value="0" selected>No French / Below CLB 7</option>
-                <option value="25">French CLB 7+ only</option>
+                <option value="25">French CLB 7+ only (+25 pts)</option>
                 <option value="50">French CLB 7+ AND English CLB 5+ (+50 pts)</option>
               </select>
             </div>
@@ -867,37 +956,40 @@
         <div style="display:flex;flex-direction:column;gap:1rem;position:sticky;top:70px;align-self:start">
 
           <div class="panel-card" style="text-align:center;padding:2rem">
-            <div style="font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:0.5rem">Your CRS Score</div>
-            <div id="crs-result" style="font-family:var(--mono);font-size:84px;font-weight:600;line-height:1;transition:color 0.3s">452</div>
-            <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px">out of 1200</div>
-            <div id="crs-verdict" style="margin-top:1rem;padding:0.75rem;border-radius:6px;font-family:var(--mono);font-size:12px;text-align:left"></div>
+            <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:.75rem">Your CRS Score</div>
+            <div id="crs-result" style="font-family:var(--mono);font-size:88px;font-weight:800;line-height:1;transition:color .3s;color:var(--primary2)">452</div>
+            <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:6px">out of 1200</div>
+            <div id="crs-verdict" style="margin-top:1rem;padding:.875rem;border-radius:var(--r-sm);font-family:var(--sans);font-size:12px;text-align:left;line-height:1.5"></div>
           </div>
 
           <div class="panel-card">
             <div class="calc-section-title">Your Score vs Recent Cutoffs</div>
-            <div style="margin-bottom:0.5rem">
+            <div id="draw-stats-bar" class="stats-row" style="margin-bottom:1rem;flex-wrap:wrap">
+              <div class="stat-chip" style="font-size:11px">Loading live draw data…</div>
+            </div>
+            <div style="margin-bottom:.5rem">
               <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:5px">
                 <span>0</span><span>300</span><span>600</span><span>900</span><span>1200</span>
               </div>
               <div class="score-bar-bg">
-                <div id="score-bar-fill" class="score-bar-fill" style="background:var(--accent2);width:0%"></div>
+                <div id="score-bar-fill" class="score-bar-fill" style="background:var(--primary2);width:0%"></div>
                 <div id="score-bar-marker" class="score-bar-marker" style="left:42%"></div>
               </div>
-              <div style="display:flex;justify-content:space-between;margin-top:6px;font-family:var(--mono);font-size:11px">
-                <span style="color:var(--accent2)">Your score: <strong id="bar-score">0</strong></span>
-                <span style="color:var(--accent)">↑ Cutoff ~505</span>
+              <div style="display:flex;justify-content:space-between;margin-top:8px;font-family:var(--mono);font-size:11px">
+                <span style="color:var(--primary2)">Your score: <strong id="bar-score">0</strong></span>
+                <span style="color:var(--red)">↑ Cutoff: <span id="bar-cutoff-label">~505</span></span>
               </div>
             </div>
           </div>
 
           <div class="panel-card">
             <div class="calc-section-title">Score Breakdown</div>
-            <div id="crs-breakdown" style="display:flex;flex-direction:column;gap:0.4rem"></div>
+            <div id="crs-breakdown" style="display:flex;flex-direction:column;gap:3px"></div>
           </div>
 
           <div class="panel-card">
             <div class="calc-section-title">💡 How to Improve Your Score</div>
-            <div id="crs-tips" style="display:flex;flex-direction:column;gap:0.5rem"></div>
+            <div id="crs-tips" style="display:flex;flex-direction:column;gap:.5rem"></div>
           </div>
 
         </div>
@@ -906,7 +998,7 @@
 
     <!-- ── PGWP TIMELINE ── -->
     <div class="page" id="page-pgwp">
-      <div class="panel-title">📅 PGWP & Immigration Timeline Calculator</div>
+      <div class="panel-title">📅 PGWP &amp; Immigration Timeline Calculator</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1rem">
         <div class="panel-card">
           <div class="calc-section-title">Your Details</div>
@@ -921,9 +1013,9 @@
           <div class="calc-group">
             <label class="calc-label">Program Length</label>
             <select class="calc-input" id="pgwp-length" onchange="calcPGWP()">
-              <option value="36" selected>2+ years → 3yr PGWP</option>
-              <option value="24">2 years exactly → 2yr PGWP</option>
-              <option value="12">1 year → 1yr PGWP</option>
+              <option value="36" selected>2+ years → 3-year PGWP</option>
+              <option value="24">2 years exactly → 2-year PGWP</option>
+              <option value="12">1 year → 1-year PGWP</option>
             </select>
           </div>
           <div class="calc-group">
@@ -938,7 +1030,7 @@
         </div>
         <div class="panel-card">
           <div class="calc-section-title">Critical Deadlines</div>
-          <div id="pgwp-deadlines" style="display:flex;flex-direction:column;gap:0.75rem"></div>
+          <div id="pgwp-deadlines" style="display:flex;flex-direction:column;gap:.75rem"></div>
         </div>
       </div>
       <div class="panel-card" style="margin-bottom:1rem">
@@ -947,7 +1039,7 @@
       </div>
       <div class="panel-card">
         <div class="calc-section-title">PNP Streams You May Qualify For</div>
-        <div id="pnp-streams" style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem"></div>
+        <div id="pnp-streams" style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem"></div>
       </div>
     </div>
 
@@ -957,36 +1049,16 @@
 <!-- ── MOBILE BOTTOM NAV ── -->
 <nav class="mobile-nav">
   <div class="mobile-nav-inner">
-    <button class="mobile-nav-btn active" onclick="mobileNav('news',this)">
-      <span class="mnav-icon">📰</span>News
-    </button>
-    <button class="mobile-nav-btn" onclick="mobileNav('crs',this)">
-      <span class="mnav-icon">📊</span>CRS
-    </button>
-    <button class="mobile-nav-btn" onclick="mobileNav('crscalc',this)">
-      <span class="mnav-icon">🧮</span>Calc
-    </button>
-    <button class="mobile-nav-btn" onclick="mobileNav('pgwp',this)">
-      <span class="mnav-icon">📅</span>PGWP
-    </button>
-    <button class="mobile-nav-btn" onclick="mobileNav('processing',this)">
-      <span class="mnav-icon">⏱</span>Times
-    </button>
-    <button class="mobile-nav-btn" onclick="mobileNav('health',this)">
-      <span class="mnav-icon">🟢</span>Sources
-    </button>
-    <button class="mobile-nav-btn" onclick="mobileNav('bookmarks',this)">
-      <span class="mnav-icon">🔖</span>Saved
-    </button>
-    <button class="mobile-nav-btn" onclick="mobileNav('profile',this)">
-      <span class="mnav-icon">👤</span>Profile
-    </button>
-    <button class="mobile-nav-btn" onclick="window.location.href='/noc'">
-      <span class="mnav-icon">🔍</span>NOC
-    </button>
-    <button class="mobile-nav-btn" onclick="openDrawer()">
-      <span class="mnav-icon">☰</span>Filters
-    </button>
+    <button class="mobile-nav-btn active" onclick="mobileNav('news',this)"><span class="mnav-icon">📰</span>News</button>
+    <button class="mobile-nav-btn" onclick="mobileNav('crs',this)"><span class="mnav-icon">📊</span>CRS</button>
+    <button class="mobile-nav-btn" onclick="mobileNav('crscalc',this)"><span class="mnav-icon">🧮</span>Calc</button>
+    <button class="mobile-nav-btn" onclick="mobileNav('pgwp',this)"><span class="mnav-icon">📅</span>PGWP</button>
+    <button class="mobile-nav-btn" onclick="mobileNav('processing',this)"><span class="mnav-icon">⏱</span>Times</button>
+    <button class="mobile-nav-btn" onclick="mobileNav('health',this)"><span class="mnav-icon">🟢</span>Sources</button>
+    <button class="mobile-nav-btn" onclick="mobileNav('bookmarks',this)"><span class="mnav-icon">🔖</span>Saved</button>
+    <button class="mobile-nav-btn" onclick="mobileNav('profile',this)"><span class="mnav-icon">👤</span>Profile</button>
+    <button class="mobile-nav-btn" onclick="window.location.href='/noc'"><span class="mnav-icon">🔍</span>NOC</button>
+    <button class="mobile-nav-btn" onclick="openDrawer()"><span class="mnav-icon">☰</span>Filters</button>
   </div>
 </nav>
 
@@ -1021,7 +1093,7 @@
     <div class="alert-box">
       <h4>📬 Subscribe</h4>
       <input type="email" id="alert-email-m" placeholder="your@email.com"/>
-      <input type="text"  id="alert-keyword-m" placeholder="Keyword (e.g. CRS draw)"/>
+      <input type="text" id="alert-keyword-m" placeholder="Keyword (e.g. CRS draw)"/>
       <button onclick="subscribeMobile()">Subscribe</button>
     </div>
   </div>
@@ -1029,107 +1101,80 @@
 
 <div id="toast"></div>
 
-<!--
-  ══════════════════════════════════════════════════════════
-  PASTE THIS ENTIRE <script> BLOCK to REPLACE the existing
-  calcCRS() function and the // ── INIT ── section in your
-  index.html. It makes the CRS cutoff dynamic.
-  ══════════════════════════════════════════════════════════
--->
 <script>
 
-// ── GLOBAL DRAW STATS (loaded once from API) ──────────────
+// ── GLOBAL DRAW STATS ─────────────────────────────────────
 let DRAW_STATS = {
-  latest_cutoff:       510,   // fallback until API responds
+  latest_cutoff:       510,
   latest_draw_number:  null,
   latest_invitations:  null,
-  latest_draw_type:    "General",
+  latest_draw_type:    'General',
   latest_draw_date:    null,
   days_since_draw:     null,
   avg_frequency_days:  null,
-  trend:               "unknown",
+  trend:               'unknown',
   estimated_next_draw: null,
   recent_draws:        []
 };
 
-// Load draw stats from backend, then refresh calculator
 async function loadDrawStats() {
   try {
     const res  = await fetch('/api/draw-stats');
     const data = await res.json();
-    if (data && data.latest_cutoff) {
-      DRAW_STATS = data;
-    }
+    if (data && data.latest_cutoff) DRAW_STATS = data;
     renderDrawStatsBar();
-    calcCRS();   // recalculate with live cutoff
-  } catch (e) {
-    console.warn('[draw-stats] Could not load:', e);
+    calcCRS();
+  } catch(e) {
+    console.warn('[draw-stats]', e);
   }
 }
 
 function renderDrawStatsBar() {
   const s = DRAW_STATS;
   if (!s.latest_cutoff) return;
-
-  // Update any elements that show the live cutoff
-  document.querySelectorAll('.live-cutoff').forEach(el => {
-    el.textContent = s.latest_cutoff;
-  });
-
-  // Update draw info bar (if it exists in your HTML)
+  document.querySelectorAll('.live-cutoff').forEach(el => { el.textContent = s.latest_cutoff; });
   const drawBar = document.getElementById('draw-stats-bar');
   if (!drawBar) return;
-
-  const trendIcon = s.trend === 'rising'  ? '↑ Rising'
-                  : s.trend === 'falling' ? '↓ Falling'
-                  : '→ Stable';
-  const trendColor = s.trend === 'rising'  ? 'var(--accent)'
-                   : s.trend === 'falling' ? 'var(--green)'
-                   : 'var(--amber)';
-
+  const trendIcon  = s.trend==='rising' ? '↑ Rising' : s.trend==='falling' ? '↓ Falling' : '→ Stable';
+  const trendColor = s.trend==='rising' ? 'var(--red)' : s.trend==='falling' ? 'var(--green)' : 'var(--amber)';
   drawBar.innerHTML = `
-    <div class="stat-chip">Draw: <span>#${s.latest_draw_number || '?'}</span></div>
-    <div class="stat-chip">Cutoff: <span class="live-cutoff" style="color:var(--accent2)">${s.latest_cutoff}</span></div>
-    <div class="stat-chip">Type: <span>${s.latest_draw_type || 'General'}</span></div>
-    <div class="stat-chip">Invited: <span>${s.latest_invitations ? s.latest_invitations.toLocaleString() : '?'}</span></div>
-    <div class="stat-chip">Days ago: <span>${s.days_since_draw ?? '?'}</span></div>
+    <div class="stat-chip">Draw: <span>#${s.latest_draw_number||'?'}</span></div>
+    <div class="stat-chip">Cutoff: <span class="live-cutoff" style="color:var(--primary2)">${s.latest_cutoff}</span></div>
+    <div class="stat-chip">Type: <span>${s.latest_draw_type||'General'}</span></div>
+    <div class="stat-chip">Invited: <span>${s.latest_invitations ? s.latest_invitations.toLocaleString():'?'}</span></div>
+    <div class="stat-chip">Days ago: <span>${s.days_since_draw??'?'}</span></div>
     <div class="stat-chip">Trend: <span style="color:${trendColor}">${trendIcon}</span></div>
     ${s.estimated_next_draw ? `<div class="stat-chip">Est. next: <span>${s.estimated_next_draw}</span></div>` : ''}
   `;
 }
 
 
-// ── CRS CALCULATOR ─────────────────────────────────────────
-// This version uses DRAW_STATS.latest_cutoff instead of a hardcoded number
-
+// ── CRS CALCULATOR ────────────────────────────────────────
 function calcCRS() {
-  // ── Use live cutoff from API ──
   const CUTOFF = DRAW_STATS.latest_cutoff || 510;
 
   const marital  = document.getElementById('c-marital')?.value || 'single';
-  const isSingle = marital === 'single';
+  const age      = parseInt(document.getElementById('c-age')?.value)     || 0;
+  const edu      = parseInt(document.getElementById('c-edu')?.value)     || 0;
+  const speak    = parseInt(document.getElementById('c-speak')?.value)   || 0;
+  const listen   = parseInt(document.getElementById('c-listen')?.value)  || 0;
+  const readV    = parseInt(document.getElementById('c-read')?.value)    || 0;
+  const writeV   = parseInt(document.getElementById('c-write')?.value)   || 0;
+  const speak2   = parseInt(document.getElementById('c-speak2')?.value)  || 0;
+  const listen2  = parseInt(document.getElementById('c-listen2')?.value) || 0;
+  const read2    = parseInt(document.getElementById('c-read2')?.value)   || 0;
+  const write2   = parseInt(document.getElementById('c-write2')?.value)  || 0;
+  const caWork   = parseInt(document.getElementById('c-cawork')?.value)  || 0;
+  const forWork  = parseInt(document.getElementById('c-forwork')?.value) || 0;
+  const caEdu    = parseInt(document.getElementById('c-caedu')?.value)   || 0;
+  const job      = parseInt(document.getElementById('c-job')?.value)     || 0;
+  const pnp      = parseInt(document.getElementById('c-pnp')?.value)     || 0;
+  const sibling  = parseInt(document.getElementById('c-sibling')?.value) || 0;
+  const french   = parseInt(document.getElementById('c-french')?.value)  || 0;
 
-  const age     = parseInt(document.getElementById('c-age')?.value)     || 0;
-  const edu     = parseInt(document.getElementById('c-edu')?.value)     || 0;
-  const speak   = parseInt(document.getElementById('c-speak')?.value)   || 0;
-  const listen  = parseInt(document.getElementById('c-listen')?.value)  || 0;
-  const readV   = parseInt(document.getElementById('c-read')?.value)    || 0;
-  const writeV  = parseInt(document.getElementById('c-write')?.value)   || 0;
-  const speak2  = parseInt(document.getElementById('c-speak2')?.value)  || 0;
-  const listen2 = parseInt(document.getElementById('c-listen2')?.value) || 0;
-  const read2   = parseInt(document.getElementById('c-read2')?.value)   || 0;
-  const write2  = parseInt(document.getElementById('c-write2')?.value)  || 0;
-  const caWork  = parseInt(document.getElementById('c-cawork')?.value)  || 0;
-  const forWork = parseInt(document.getElementById('c-forwork')?.value) || 0;
-  const caEdu   = parseInt(document.getElementById('c-caedu')?.value)   || 0;
-  const job     = parseInt(document.getElementById('c-job')?.value)     || 0;
-  const pnp     = parseInt(document.getElementById('c-pnp')?.value)     || 0;
-  const sibling = document.getElementById('c-sibling')?.checked ? 15 : 0;
-  const french  = parseInt(document.getElementById('c-french')?.value)  || 0;
-
-  const lang1    = speak + listen + readV + writeV;
-  const lang2    = speak2 + listen2 + read2 + write2;
-  const avgLang  = (speak + listen + readV + writeV) / 4;
+  const lang1   = speak + listen + readV + writeV;
+  const lang2   = speak2 + listen2 + read2 + write2;
+  const avgLang = lang1 / 4;
 
   // Skill transferability (simplified)
   let transfer = 0;
@@ -1138,87 +1183,85 @@ function calcCRS() {
     if (caWork >= 40) transfer += 25;
     if (forWork > 0)  transfer += 25;
   }
-  if (caWork >= 40 && forWork > 0)  transfer += 25;
-  if (caWork >= 40 && edu >= 120)   transfer += 25;
+  if (caWork >= 40 && forWork > 0) transfer += 25;
+  if (caWork >= 40 && edu >= 120)  transfer += 25;
   transfer = Math.min(transfer, 100);
 
   const total = age + edu + lang1 + lang2 + caWork + forWork + caEdu + transfer + job + pnp + sibling + french;
   const gap   = CUTOFF - total;
 
-  // ── Score display ──
+  // Score display
   const resultEl = document.getElementById('crs-result');
   if (resultEl) {
     resultEl.textContent = total;
-    resultEl.style.color = total >= CUTOFF ? 'var(--green)' : total >= 460 ? 'var(--amber)' : 'var(--accent)';
+    resultEl.style.color = total >= CUTOFF ? 'var(--green)' : total >= 460 ? 'var(--amber)' : 'var(--red)';
   }
 
-  // ── Score bar ──
-  const fill   = document.getElementById('score-bar-fill');
-  const marker = document.getElementById('score-bar-marker');
+  // Score bar
+  const fill     = document.getElementById('score-bar-fill');
+  const marker   = document.getElementById('score-bar-marker');
   const barScore = document.getElementById('bar-score');
-  if (fill)   { fill.style.width = Math.min(total/1200*100, 100)+'%'; fill.style.background = total>=CUTOFF ? 'var(--green)' : total>=460 ? 'var(--amber)' : 'var(--accent)'; }
+  if (fill)   { fill.style.width = Math.min(total/1200*100,100)+'%'; fill.style.background = total>=CUTOFF ? 'var(--green)' : total>=460 ? 'var(--amber)' : 'var(--red)'; }
   if (marker) marker.style.left = (CUTOFF/1200*100)+'%';
   if (barScore) barScore.textContent = total;
 
-  // ── Update live cutoff label on bar ──
   const cutoffLabel = document.getElementById('bar-cutoff-label');
-  if (cutoffLabel) cutoffLabel.textContent = `Latest cutoff: ${CUTOFF}`;
+  if (cutoffLabel) cutoffLabel.textContent = CUTOFF;
 
-  // ── Verdict ──
+  // Verdict
   const vEl = document.getElementById('crs-verdict');
   if (vEl) {
     const drawType = DRAW_STATS.latest_draw_type || 'General';
     if (total >= 600) {
-      vEl.style.cssText = 'background:rgba(45,204,143,0.1);border:1px solid rgba(45,204,143,0.3);color:var(--green)';
+      vEl.style.cssText = 'background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);color:var(--green)';
       vEl.innerHTML = '🏆 Excellent score — very likely to receive ITA in upcoming draws.';
     } else if (total >= CUTOFF) {
-      vEl.style.cssText = 'background:rgba(45,204,143,0.1);border:1px solid rgba(45,204,143,0.3);color:var(--green)';
+      vEl.style.cssText = 'background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);color:var(--green)';
       vEl.innerHTML = `✅ Above latest ${drawType} cutoff (${CUTOFF}) — you may qualify in the next draw!`;
     } else if (gap <= 15) {
-      vEl.style.cssText = 'background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:var(--amber)';
+      vEl.style.cssText = 'background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);color:var(--amber)';
       vEl.innerHTML = `⚡ Only ${gap} pts below cutoff (${CUTOFF}) — one small improvement gets you there!`;
     } else if (gap <= 50) {
-      vEl.style.cssText = 'background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.3);color:var(--amber)';
+      vEl.style.cssText = 'background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);color:var(--amber)';
       vEl.innerHTML = `📈 ${gap} pts below cutoff (${CUTOFF}) — achievable with focused improvements.`;
     } else {
-      vEl.style.cssText = 'background:rgba(232,84,58,0.1);border:1px solid rgba(232,84,58,0.3);color:var(--accent)';
+      vEl.style.cssText = 'background:rgba(251,74,90,.1);border:1px solid rgba(251,74,90,.3);color:var(--red)';
       vEl.innerHTML = `🎯 ${gap} pts below cutoff (${CUTOFF}) — see improvement tips below.`;
     }
   }
 
-  // ── Breakdown ──
+  // Breakdown
   const bk = [
-    ['🎂 Age',                         age],
-    ['🎓 Education',                    edu],
-    ['🗣 First Language (4 skills)',    lang1],
-    ['🌐 Second Language',              lang2],
-    ['🍁 Canadian Work Experience',     caWork],
-    ['🌍 Foreign Work Experience',      forWork],
-    ['🏫 Canadian Education',           caEdu],
-    ['🔄 Skill Transferability',        transfer],
-    ['💼 Job Offer',                    job],
-    ['🏔 Provincial Nomination (PNP)',  pnp],
-    ['👨‍👩‍👧 Sibling in Canada',           sibling],
-    ['🇫🇷 French Language Bonus',       french],
+    ['🎂 Age',                        age],
+    ['🎓 Education',                   edu],
+    ['🗣 First Language (4 skills)',   lang1],
+    ['🌐 Second Language',             lang2],
+    ['🍁 Canadian Work Experience',    caWork],
+    ['🌍 Foreign Work Experience',     forWork],
+    ['🏫 Canadian Education',          caEdu],
+    ['🔄 Skill Transferability',       transfer],
+    ['💼 Job Offer',                   job],
+    ['🏔 Provincial Nomination (PNP)', pnp],
+    ['👨‍👩‍👧 Sibling in Canada',          sibling],
+    ['🇫🇷 French Language Bonus',      french],
   ];
   const bkEl = document.getElementById('crs-breakdown');
   if (bkEl) {
     bkEl.innerHTML = bk.map(b => `
-      <div class="breakdown-row" style="${b[1]===0?'opacity:0.35':''}">
+      <div class="breakdown-row" style="${b[1]===0?'opacity:.35':''}">
         <span>${b[0]}</span>
-        <span class="breakdown-pts" style="color:${b[1]>0?'var(--accent2)':'var(--muted)'}">${b[1]>0?'+'+b[1]:'0'}</span>
+        <span class="breakdown-pts" style="color:${b[1]>0?'var(--primary2)':'var(--muted)'}">${b[1]>0?'+'+b[1]:'0'}</span>
       </div>`).join('');
   }
 
-  // ── Smart tips (uses live DRAW_STATS.trend) ──
+  // Tips
   const tips = [];
-  const trendNote = DRAW_STATS.trend === 'rising'  ? ' Note: CRS cutoff is trending up recently.'
-                  : DRAW_STATS.trend === 'falling' ? ' CRS cutoff trending down — good news!'
+  const trendNote = DRAW_STATS.trend==='rising'  ? ' Note: CRS cutoff is trending up recently.'
+                  : DRAW_STATS.trend==='falling' ? ' CRS cutoff trending down — good news!'
                   : '';
-
   if (avgLang < 23)   tips.push(['🎯','Improve language to CLB 9+',`Each skill at CLB 9 = 23 pts. Avg CLB ~${Math.round(avgLang)}.${trendNote}`]);
   if (caWork === 0)   tips.push(['💼','Get 1 year Canadian work experience','+40 pts + unlocks CEC stream. Most impactful single change.']);
-  else if (caWork<80) tips.push(['💼','More Canadian work adds more points',`Each year adds 13–27 more pts. Currently at ${caWork} pts.`]);
+  else if (caWork<80) tips.push(['💼','More Canadian work adds more points',`Each year adds 11–27 more pts. Currently at ${caWork} pts.`]);
   if (job === 0)      tips.push(['📋','Get a valid Canadian job offer','NOC TEER 1/2/3 = +50 pts. Senior role = +200 pts.']);
   if (pnp === 0)      tips.push(['🏔','Apply for Provincial Nomination','+600 pts — virtually guarantees ITA.']);
   if (forWork === 0)  tips.push(['🌍','Foreign work counts','1–2 yrs = +13 pts. 3+ yrs = +25 pts.']);
@@ -1227,33 +1270,21 @@ function calcCRS() {
 
   const tipsEl = document.getElementById('crs-tips');
   if (tipsEl) {
-    tipsEl.innerHTML = tips.slice(0, 5).map(t => `
+    tipsEl.innerHTML = tips.slice(0,5).map(t => `
       <div class="tip-row">
         <span style="font-size:18px;flex-shrink:0">${t[0]}</span>
         <div>
-          <div style="font-weight:500;color:var(--text);margin-bottom:2px">${t[1]}</div>
-          <div style="color:var(--muted);font-size:11px;line-height:1.4">${t[2]}</div>
+          <div style="font-weight:600;color:var(--text);margin-bottom:2px">${t[1]}</div>
+          <div style="color:var(--muted);font-size:11px;line-height:1.45">${t[2]}</div>
         </div>
       </div>`).join('');
   }
 
-  // Update draw stats bar
   renderDrawStatsBar();
 }
 
 
-// ── ALSO ADD THIS to your Draw Stats bar in the CRS calculator HTML ──────
-// Add this div right above the CRS score bar in your page-crscalc section:
-//
-//   <div id="draw-stats-bar" class="stats-row" style="margin-bottom:1rem">
-//     <div class="stat-chip" style="color:var(--muted);font-family:var(--mono);font-size:11px">Loading live draw data…</div>
-//   </div>
-//
-// And change the cutoff marker label to:
-//   <span id="bar-cutoff-label">Latest cutoff</span>
-
-
-// ── PGWP CALCULATOR (unchanged from your current version) ──
+// ── PGWP CALCULATOR ───────────────────────────────────────
 function calcPGWP() {
   const gradDate   = new Date(document.getElementById('grad-date')?.value);
   if (isNaN(gradDate)) return;
@@ -1282,20 +1313,20 @@ function calcPGWP() {
   const dlEl = document.getElementById('pgwp-deadlines');
   if (dlEl) {
     dlEl.innerHTML = deadlines.map(d => `
-      <div class="deadline-row ${d.urgent ? 'deadline-urgent' : 'deadline-ok'}">
+      <div class="deadline-row ${d.urgent ? 'deadline-urgent':'deadline-ok'}">
         <span class="deadline-label">${d.label}</span>
         <span class="deadline-val">${fmt(d.date)}</span>
       </div>`).join('');
   }
 
   const tl = [
-    {date:fmt(gradDate),         title:'Graduation 🎓',           desc:'Masters degree completed — apply PGWP within 180 days', status:'upcoming'},
+    {date:fmt(gradDate),         title:'Graduation 🎓',              desc:'Masters degree completed — apply PGWP within 180 days', status:'upcoming'},
     {date:fmt(pgwpDeadline),     title:'PGWP Application Deadline ⚠', desc:'Last day to apply after graduation', status:'upcoming'},
-    {date:fmt(addM(gradDate,3)), title:'PGWP Received (est.)',    desc:`${pgwpMonths}-month open work permit`, status:'upcoming'},
-    {date:fmt(cecEligible),      title:'1 Year Skilled Work ✅',  desc:'Eligible for Canadian Experience Class', status:'upcoming'},
-    {date:fmt(eeProfile),        title:'Create EE Profile',       desc:'Enter Express Entry pool', status:'future'},
-    {date:fmt(prApplication),    title:'ITA & PR Application 🍁', desc:'Submit permanent residence application', status:'future'},
-    {date:fmt(prLanding),        title:'PR Landing 🎉',           desc:'Welcome as Permanent Resident of Canada!', status:'future'},
+    {date:fmt(addM(gradDate,3)), title:'PGWP Received (est.)',        desc:`${pgwpMonths}-month open work permit`, status:'upcoming'},
+    {date:fmt(cecEligible),      title:'1 Year Skilled Work ✅',      desc:'Eligible for Canadian Experience Class', status:'upcoming'},
+    {date:fmt(eeProfile),        title:'Create EE Profile',           desc:'Enter Express Entry pool', status:'future'},
+    {date:fmt(prApplication),    title:'ITA & PR Application 🍁',    desc:'Submit permanent residence application', status:'future'},
+    {date:fmt(prLanding),        title:'PR Landing 🎉',               desc:'Welcome as Permanent Resident of Canada!', status:'future'},
   ];
 
   const tlEl = document.getElementById('pgwp-timeline');
@@ -1307,12 +1338,37 @@ function calcPGWP() {
         <div class="tl-date">${t.date}</div>
       </div>`).join('');
   }
+
+  // PNP streams based on province
+  const streamsEl = document.getElementById('pnp-streams');
+  if (streamsEl) {
+    const streams = province === 'ontario' ? [
+      {color:'green', icon:'🎓', name:'Ontario Masters Graduate (OINP)', desc:'No job offer needed. Apply within 2 yrs of graduation. Very competitive — apply immediately when stream opens.'},
+      {color:'blue',  icon:'💻', name:'Ontario Human Capital Priorities', desc:'EE candidates with 440+ CRS. Tech roles in NOC TEER 0/1/2. Linked to federal pool.'},
+      {color:'amber', icon:'🍁', name:'Canadian Experience Class (CEC)', desc:'After 1yr skilled work (NOC TEER 0/1/2/3). Most common path for graduates. Federal EE stream.'},
+      {color:'blue',  icon:'🏢', name:'Ontario Employer Job Offer', desc:'Valid job offer in Ontario (NOC TEER 0/1/2/3). Faster pathway if you have an employer sponsor.'},
+    ] : province === 'bc' ? [
+      {color:'green', icon:'💻', name:'BC Tech Pilot', desc:'For tech NOC workers. No minimum EE score for some roles. Targeted draws for software, data, engineering.'},
+      {color:'blue',  icon:'🎓', name:'BC International Graduate', desc:'Recent BC post-secondary graduates. Direct application stream — no job offer required.'},
+      {color:'amber', icon:'🍁', name:'Canadian Experience Class (CEC)', desc:'1yr skilled Canadian work experience. Federal EE draw — most reliable long-term path.'},
+    ] : province === 'alberta' ? [
+      {color:'green', icon:'⚡', name:'Alberta Advantage Immigration Program', desc:'Demand-driven stream. Targeted draws for healthcare, tech, trades, hospitality workers.'},
+      {color:'blue',  icon:'🎓', name:'Alberta International Graduate', desc:'Recent graduates from Alberta institutions. Employer job offer may be required.'},
+      {color:'amber', icon:'🍁', name:'Canadian Experience Class (CEC)', desc:'Federal EE pathway — 1yr skilled Canadian work experience. Works from any province.'},
+    ] : [
+      {color:'blue',  icon:'🍁', name:'Canadian Experience Class (CEC)', desc:'Core federal EE pathway. 1yr Canadian skilled work experience. Most common for graduates.'},
+      {color:'green', icon:'🌐', name:'Federal Skilled Worker (FSW)', desc:'For candidates with strong foreign work experience. Requires language + education + work.'},
+      {color:'amber', icon:'🏔', name:'Provincial Nominee Program (PNP)', desc:'+600 CRS pts — virtually guarantees ITA. Research your target province streams early.'},
+    ];
+
+    streamsEl.innerHTML = streams.map(s => `
+      <div class="rec-card ${s.color}">
+        <div class="rec-icon">${s.icon}</div>
+        <div><div class="rec-title">${s.name}</div><div class="rec-desc">${s.desc}</div></div>
+      </div>`).join('');
+  }
 }
 
-
-// ══════════════════════════════════════════════════════════
-// CORE FUNCTIONS — news loading, rendering, navigation
-// ══════════════════════════════════════════════════════════
 
 // ── STATE ─────────────────────────────────────────────────
 let allArticles     = [];
@@ -1323,7 +1379,7 @@ const PER_PAGE      = 20;
 let searchTimer     = null;
 let bookmarks       = JSON.parse(localStorage.getItem('ircc_bookmarks') || '[]');
 
-const SOURCE_CLASS = { 'IRCC Official':'tag-ircc','CIC News':'tag-cic','CBC':'tag-cbc' };
+const SOURCE_CLASS = {'IRCC Official':'tag-ircc','CIC News':'tag-cic','CBC':'tag-cbc'};
 const CRS_KW = ['crs','express entry','draw','ita','pgwp','lmia','trp',
   'permanent resident','work permit','oinp','international student'];
 
@@ -1351,7 +1407,6 @@ function renderCard(a) {
   const bdg   = kws.map(k=>`<span class="keyword-badge">${k.toUpperCase()}</span>`).join('');
   const isRead = localStorage.getItem('read_'+a.url) ? 'opacity:0.6' : '';
   const urlEsc = (a.url||'').replace(/'/g,"\\'");
-  const ttlEsc = (a.title||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
   return `
     <a class="news-card" href="${a.url}" target="_blank" rel="noopener"
        style="${isRead}" onclick="localStorage.setItem('read_${urlEsc}','1')">
@@ -1393,11 +1448,11 @@ function filterArticles() {
 
 // ── RENDER PAGE ──────────────────────────────────────────
 function renderPage(articles, page) {
-  const grid  = document.getElementById('news-grid');
+  const grid = document.getElementById('news-grid');
   if (!grid) return;
   const slice = articles.slice((page-1)*PER_PAGE, page*PER_PAGE);
   if (!slice.length) {
-    grid.innerHTML = '<div class="empty-state">No articles found</div>';
+    grid.innerHTML = '<div class="empty-state">No articles found matching your filters</div>';
     document.getElementById('pagination').innerHTML = '';
     return;
   }
@@ -1446,7 +1501,7 @@ function checkDrawBanner(articles) {
   } else { banner.classList.remove('visible'); }
 }
 
-// ── LOAD NEWS (main fetch) ───────────────────────────────
+// ── LOAD NEWS ────────────────────────────────────────────
 async function loadNews() {
   try {
     const sort = document.getElementById('sort')?.value || 'newest';
@@ -1537,9 +1592,9 @@ async function subscribeMobile() {
 let crsChartInstance = null;
 async function loadCRSChart() {
   try {
-    const res = await fetch('/api/crs-history');
+    const res  = await fetch('/api/crs-history');
     const data = await res.json();
-    const tbl = document.getElementById('crs-table');
+    const tbl  = document.getElementById('crs-table');
     if (!data.length) {
       if (tbl) tbl.innerHTML = '<div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:2rem;text-align:center">No draw data yet.</div>';
       return;
@@ -1549,22 +1604,33 @@ async function loadCRSChart() {
       if (crsChartInstance) crsChartInstance.destroy();
       crsChartInstance = new Chart(canvas.getContext('2d'), {
         type:'line',
-        data:{ labels:data.map(d=>d.draw_date?d.draw_date.slice(0,10):'#'+(d.draw_number||'?')),
-               datasets:[{label:'CRS Cutoff',data:data.map(d=>d.score),
-               borderColor:'#3a7bd5',backgroundColor:'rgba(58,123,213,0.1)',
-               borderWidth:2,pointRadius:4,tension:0.3,fill:true}] },
-        options:{responsive:true,maintainAspectRatio:false,
+        data:{
+          labels: data.map(d=>d.draw_date?d.draw_date.slice(0,10):'#'+(d.draw_number||'?')),
+          datasets:[{
+            label:'CRS Cutoff',
+            data: data.map(d=>d.score),
+            borderColor:'#6366f1',
+            backgroundColor:'rgba(99,102,241,0.08)',
+            borderWidth:2,pointRadius:4,pointBackgroundColor:'#6366f1',
+            tension:0.35,fill:true
+          }]
+        },
+        options:{
+          responsive:true, maintainAspectRatio:false,
           plugins:{legend:{display:false}},
-          scales:{x:{ticks:{color:'#6b7280',font:{size:10}},grid:{color:'#232830'}},
-                  y:{ticks:{color:'#6b7280'},grid:{color:'#232830'},min:400,max:600}}}
+          scales:{
+            x:{ticks:{color:'#546070',font:{size:10}},grid:{color:'#1a2032'}},
+            y:{ticks:{color:'#546070'},grid:{color:'#1a2032'},min:400,max:600}
+          }
+        }
       });
     }
     if (tbl) tbl.innerHTML = data.slice().reverse().slice(0,10).map(d=>`
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;flex-wrap:wrap;gap:4px">
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;flex-wrap:wrap;gap:4px;align-items:center">
         <span style="color:var(--muted);font-family:var(--mono);font-size:11px">#${d.draw_number||'?'} · ${d.draw_date||''}</span>
-        <span>${d.draw_type||'General'}</span>
-        <span style="font-family:var(--mono);color:var(--accent2);font-weight:600">${d.score}</span>
-        <span style="color:var(--muted);font-size:11px">${d.invitations?d.invitations.toLocaleString()+' invited':''}</span>
+        <span style="color:var(--text2)">${d.draw_type||'General'}</span>
+        <span style="font-family:var(--mono);color:var(--primary2);font-weight:700;font-size:16px">${d.score}</span>
+        <span style="color:var(--muted);font-size:11px;font-family:var(--mono)">${d.invitations?d.invitations.toLocaleString()+' invited':''}</span>
       </div>`).join('');
   } catch(e) { console.error('[chart]',e); }
 }
@@ -1574,10 +1640,15 @@ async function loadProcessingTimes() {
   try {
     const res  = await fetch('/api/processing-times');
     const data = await res.json();
-    const grid = document.getElementById('processing-grid') || document.getElementById('proc-grid');
+    const grid = document.getElementById('processing-grid');
     if (!grid) return;
     grid.innerHTML = data.length
-      ? data.map(d=>`<div class="proc-card"><div class="proc-permit">${d.permit_type}</div><div class="proc-time">${d.time_weeks}</div><div class="proc-label">Processing time</div></div>`).join('')
+      ? data.map(d=>`
+          <div class="proc-card">
+            <div class="proc-permit">${d.permit_type}</div>
+            <div class="proc-time">${d.time_weeks}</div>
+            <div class="proc-label">Processing time</div>
+          </div>`).join('')
       : '<div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:2rem">No data yet.</div>';
   } catch(e) { console.error('[processing]',e); }
 }
@@ -1585,16 +1656,16 @@ async function loadProcessingTimes() {
 // ── SOURCE HEALTH ────────────────────────────────────────
 async function loadSourceHealth() {
   try {
-    const res  = await fetch('/api/source-health');
-    const data = await res.json();
-    const tbody = document.getElementById('health-body') || document.getElementById('health-tbody');
+    const res   = await fetch('/api/source-health');
+    const data  = await res.json();
+    const tbody = document.getElementById('health-body');
     if (!tbody) return;
     tbody.innerHTML = data.map(s=>{
       const hrs = s.last_seen ? Math.floor((Date.now()-new Date(s.last_seen))/3600000) : 999;
       const st  = hrs<2?'ok':hrs<24?'warn':'dead';
       return `<tr>
         <td><span class="status-dot status-${st}"></span>${s.source}</td>
-        <td><span style="color:${st==='ok'?'var(--green)':st==='warn'?'var(--amber)':'var(--accent)'}">${st==='ok'?'Live':st==='warn'?'Delayed':'No data'}</span></td>
+        <td><span style="color:${st==='ok'?'var(--green)':st==='warn'?'var(--amber)':'var(--red)'}">${st==='ok'?'Live':st==='warn'?'Delayed':'No data'}</span></td>
         <td style="font-family:var(--mono)">${s.total}</td>
         <td style="font-family:var(--mono);font-size:11px;color:var(--muted)">${timeAgo(s.last_seen)}</td>
       </tr>`;
@@ -1606,12 +1677,17 @@ async function loadSourceHealth() {
 function renderBookmarks() {
   const grid = document.getElementById('bookmarks-grid');
   if (!grid) return;
-  if (!bookmarks.length) { grid.innerHTML = '<div style="color:var(--muted);font-family:var(--mono);padding:2rem;text-align:center">No bookmarks yet. Click 🔖 on any article.</div>'; return; }
+  if (!bookmarks.length) {
+    grid.innerHTML = '<div class="panel-card" style="color:var(--muted);font-family:var(--mono);padding:3rem;text-align:center">No bookmarks yet.<br><span style="font-size:11px;margin-top:6px;display:block">Click 🔖 on any article to save it.</span></div>';
+    return;
+  }
   const saved = allArticles.filter(a=>bookmarks.includes(a.url));
-  grid.innerHTML = saved.length ? saved.map(renderCard).join('') : '<div style="color:var(--muted);padding:2rem;text-align:center;font-family:var(--mono)">Bookmarked articles appear here.</div>';
+  grid.innerHTML = saved.length
+    ? `<div id="bookmarks-list" style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden">${saved.map(renderCard).join('')}</div>`
+    : '<div class="panel-card" style="color:var(--muted);padding:2rem;text-align:center;font-family:var(--mono)">Refresh the news page first, then bookmarks will appear here.</div>';
 }
 
-// ── SUBSCRIBE ────────────────────────────────────────────
+// ── SUBSCRIBE ─────────────────────────────────────────────
 async function subscribeAlert() {
   const email   = document.getElementById('alert-email')?.value.trim();
   const keyword = document.getElementById('alert-keyword')?.value.trim();
@@ -1625,21 +1701,21 @@ async function subscribeAlert() {
   } catch(e) { showToast('Error subscribing.'); }
 }
 
-// ── TOAST ────────────────────────────────────────────────
+// ── TOAST ─────────────────────────────────────────────────
 function showToast(msg) {
   const t = document.getElementById('toast');
   if (!t) return;
   t.textContent = msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2500);
+  setTimeout(()=>t.classList.remove('show'), 2800);
 }
 
 // ── INIT ──────────────────────────────────────────────────
 setInterval(loadNews, 10 * 60 * 1000);
 loadNews();
-loadDrawStats();   // ← loads CRS cutoff from API, then calls calcCRS()
+loadDrawStats();
+calcCRS();
 calcPGWP();
 
 </script>
-
 </body>
 </html>
