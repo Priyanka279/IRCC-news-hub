@@ -669,6 +669,52 @@
     .checklist-progress{background:var(--border);border-radius:4px;height:6px;margin-bottom:1rem}
     .checklist-progress-fill{height:100%;border-radius:4px;background:var(--grad);transition:width .4s ease}
 
+    /* ── JOB DEMAND ── */
+    .jobs-filters{display:flex;gap:.75rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}
+    .jobs-filter-label{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);font-weight:600;white-space:nowrap}
+    .jobs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem}
+    .job-card{
+      background:#fff;border:1px solid var(--border);border-radius:var(--r);
+      padding:1.25rem;box-shadow:var(--sh-xs);transition:all .2s;
+      display:flex;flex-direction:column;gap:.75rem;
+      border-top:3px solid var(--border);
+    }
+    .job-card:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
+    .job-card.demand-critical{border-top-color:#e11d48}
+    .job-card.demand-high{border-top-color:#2563eb}
+    .job-card.demand-moderate{border-top-color:#d97706}
+    .job-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem}
+    .job-demand-badge{
+      font-family:var(--mono);font-size:10px;font-weight:700;text-transform:uppercase;
+      letter-spacing:.06em;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;
+    }
+    .badge-critical{background:#fee2e2;color:#e11d48}
+    .badge-high{background:#dbeafe;color:#2563eb}
+    .badge-moderate{background:#fef3c7;color:#d97706}
+    .job-code{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:600}
+    .job-title{font-size:15px;font-weight:700;color:var(--text);line-height:1.35}
+    .job-salary{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--green)}
+    .job-tags{display:flex;gap:6px;flex-wrap:wrap}
+    .job-tag{font-family:var(--mono);font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em}
+    .jt-teer0{background:#d1fae5;color:#059669}
+    .jt-teer1{background:#dbeafe;color:#2563eb}
+    .jt-teer2{background:#ede9fe;color:#7c3aed}
+    .jt-teer3{background:#fef3c7;color:#d97706}
+    .jt-ee{background:#d1fae5;color:#059669;border:1px solid #a7f3d0}
+    .jt-lmia{background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe}
+    .job-why{font-size:12px;color:var(--muted);line-height:1.55}
+    .job-provinces{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+    .job-prov-label{font-family:var(--mono);font-size:10px;color:var(--faint);text-transform:uppercase;letter-spacing:.08em}
+    .job-prov{font-size:12px;font-weight:600;background:var(--bg);border:1px solid var(--border);padding:2px 9px;border-radius:20px;color:var(--text2)}
+    .job-growth{font-family:var(--mono);font-size:11px;color:var(--green);font-weight:700}
+    .job-card-footer{display:flex;justify-content:space-between;align-items:center;padding-top:.5rem;border-top:1px solid var(--border)}
+    .job-noc-link{font-size:12px;font-weight:600;color:var(--primary);text-decoration:none;transition:opacity .15s}
+    .job-noc-link:hover{opacity:.75}
+    .jobs-empty{text-align:center;padding:3rem;color:var(--muted);font-family:var(--mono);font-size:13px;grid-column:1/-1}
+    .demand-legend{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;padding:.875rem 1rem;background:#fff;border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh-xs)}
+    .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2)}
+    .legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
     @media(max-width:768px){
       .wrapper{grid-template-columns:1fr;padding-bottom:68px}
       aside{display:none}
@@ -718,6 +764,7 @@
     <button class="nav-tab" onclick="showPage('tracker',this)">📈 My Progress</button>
     <button class="nav-tab" onclick="showPage('provinces',this)">🏔 Provinces</button>
     <button class="nav-tab" onclick="showPage('checklist',this)">📋 Checklist</button>
+    <button class="nav-tab" onclick="showPage('jobs',this)">💼 Job Demand</button>
   </div>
   <div class="header-right">
     <span class="last-updated" id="last-updated">Checking feeds…</span>
@@ -1542,6 +1589,52 @@
       </div>
     </div>
 
+    <!-- ── JOB DEMAND ── -->
+    <div class="page" id="page-jobs">
+      <div class="panel-title">💼 In-Demand Jobs in Canada</div>
+
+      <div class="demand-legend">
+        <span style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);font-weight:600;margin-right:.25rem">Demand:</span>
+        <div class="legend-item"><div class="legend-dot" style="background:#e11d48"></div>🔴 Critical Shortage</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#2563eb"></div>🔵 High Demand</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#d97706"></div>🟡 Moderate Demand</div>
+        <span style="margin-left:auto;font-size:11px;color:var(--faint);font-family:var(--mono)">Based on ESDC LMIA data · IRCC priority draws · 2025–2026</span>
+      </div>
+
+      <div class="jobs-filters">
+        <span class="jobs-filter-label">Sector:</span>
+        <div class="filter-chips" style="margin:0">
+          <button class="fchip active" onclick="filterJobs(this,'sector','all')">All</button>
+          <button class="fchip" onclick="filterJobs(this,'sector','tech')">💻 Tech</button>
+          <button class="fchip" onclick="filterJobs(this,'sector','healthcare')">🏥 Healthcare</button>
+          <button class="fchip" onclick="filterJobs(this,'sector','trades')">🔧 Trades</button>
+          <button class="fchip" onclick="filterJobs(this,'sector','engineering')">⚙️ Engineering</button>
+          <button class="fchip" onclick="filterJobs(this,'sector','business')">📊 Business</button>
+          <button class="fchip" onclick="filterJobs(this,'sector','transport')">🚛 Transport</button>
+        </div>
+      </div>
+
+      <div class="jobs-filters" style="margin-top:-.5rem">
+        <span class="jobs-filter-label">Province:</span>
+        <div class="filter-chips" style="margin:0">
+          <button class="fchip active" onclick="filterJobs(this,'province','all')">All Canada</button>
+          <button class="fchip" onclick="filterJobs(this,'province','ON')">🍁 Ontario</button>
+          <button class="fchip" onclick="filterJobs(this,'province','BC')">🌊 BC</button>
+          <button class="fchip" onclick="filterJobs(this,'province','AB')">⛰ Alberta</button>
+          <button class="fchip" onclick="filterJobs(this,'province','SK')">🌾 Saskatchewan</button>
+        </div>
+        <div class="filter-chips" style="margin:0">
+          <span class="jobs-filter-label">Demand:</span>
+          <button class="fchip active" onclick="filterJobs(this,'demand','all')">All</button>
+          <button class="fchip" onclick="filterJobs(this,'demand','critical')" style="border-color:#fca5a5;color:#e11d48">🔴 Critical</button>
+          <button class="fchip" onclick="filterJobs(this,'demand','high')">🔵 High</button>
+          <button class="fchip" onclick="filterJobs(this,'demand','moderate')" style="border-color:#fde68a;color:#d97706">🟡 Moderate</button>
+        </div>
+      </div>
+
+      <div class="jobs-grid" id="jobs-grid"></div>
+    </div>
+
   </main>
 </div>
 
@@ -1558,6 +1651,7 @@
     <button class="mobile-nav-btn" onclick="mobileNav('profile',this)"><span class="mnav-icon">👤</span>Profile</button>
     <button class="mobile-nav-btn" onclick="window.location.href='/noc'"><span class="mnav-icon">🔍</span>NOC</button>
     <button class="mobile-nav-btn" onclick="mobileNav('lang',this)"><span class="mnav-icon">🔤</span>Language</button>
+    <button class="mobile-nav-btn" onclick="mobileNav('jobs',this)"><span class="mnav-icon">💼</span>Jobs</button>
     <button class="mobile-nav-btn" onclick="openDrawer()"><span class="mnav-icon">☰</span>Filters</button>
   </div>
 </nav>
@@ -2082,6 +2176,7 @@ function showPage(name,btn){
   if(name==='goal')       calcGoal();
   if(name==='tracker')    renderTracker();
   if(name==='checklist')  renderChecklist();
+  if(name==='jobs')       renderJobs();
 }
 
 function mobileNav(name,btn){
@@ -2448,6 +2543,208 @@ function buildCLBTable() {
       <td style="padding:7px 10px;text-align:center;font-family:var(--mono);border-bottom:1px solid var(--border);color:${pts>0?'var(--primary)':'var(--faint)'}">+${pts}</td>
       <td style="padding:7px 10px;text-align:center;font-family:var(--mono);font-weight:700;border-bottom:1px solid var(--border);color:${pts>0?'var(--green)':'var(--faint)'}">+${pts*4}</td>
     </tr>`).join('');
+}
+
+// ── JOB DEMAND DATA ──────────────────────────────────────
+const JOB_DEMAND_DATA = [
+  // ── TECHNOLOGY ──
+  {code:'21231',title:'Software Engineers & Designers',teer:1,sector:'tech',demand:'high',
+   salary:'$85,000 – $140,000',growth:'+23%',ee:true,lmia:true,
+   why:'Canada\'s fastest-growing occupation. Toronto, Vancouver, and Calgary all have major tech hubs actively hiring. Critical for Digital Economy strategy.',
+   provinces:['ON','BC','AB','QC'],examples:['Software Engineer','Backend Dev','Cloud Architect']},
+
+  {code:'21232',title:'Software Developers & Programmers',teer:1,sector:'tech',demand:'high',
+   salary:'$75,000 – $125,000',growth:'+19%',ee:true,lmia:true,
+   why:'Massive demand from startups, banks, and government tech modernization. Remote-friendly — companies hire nationally.',
+   provinces:['ON','BC','AB'],examples:['Full Stack Dev','Python Developer','Mobile App Dev']},
+
+  {code:'21211',title:'Data Scientists & Machine Learning Engineers',teer:1,sector:'tech',demand:'high',
+   salary:'$90,000 – $145,000',growth:'+34%',ee:true,lmia:true,
+   why:'AI and ML adoption across banking, healthcare, and retail is creating massive talent shortages. One of Canada\'s hottest roles.',
+   provinces:['ON','BC','AB'],examples:['Data Scientist','ML Engineer','AI Researcher']},
+
+  {code:'21220',title:'Cybersecurity Specialists',teer:1,sector:'tech',demand:'high',
+   salary:'$85,000 – $140,000',growth:'+28%',ee:true,lmia:true,
+   why:'Rising cyberattacks on Canadian infrastructure, banks, and healthcare have made this a national priority hire.',
+   provinces:['ON','BC','AB','QC'],examples:['Security Analyst','Penetration Tester','CISO']},
+
+  {code:'21222',title:'Database Analysts & Data Administrators',teer:1,sector:'tech',demand:'moderate',
+   salary:'$70,000 – $110,000',growth:'+12%',ee:true,lmia:true,
+   why:'Every major company needs database management. Steady demand across banking, government, and healthcare.',
+   provinces:['ON','BC','AB'],examples:['DBA','Data Engineer','SQL Developer']},
+
+  {code:'22221',title:'Computer Network Technicians',teer:2,sector:'tech',demand:'moderate',
+   salary:'$55,000 – $90,000',growth:'+11%',ee:true,lmia:false,
+   why:'Strong demand from telecom companies and IT service firms nationwide.',
+   provinces:['ON','BC','AB','SK'],examples:['Network Technician','Sysadmin','IT Support']},
+
+  // ── HEALTHCARE ──
+  {code:'31301',title:'Registered Nurses (RN)',teer:1,sector:'healthcare',demand:'critical',
+   salary:'$75,000 – $105,000',growth:'+18%',ee:true,lmia:true,
+   why:'Canada faces a critical nursing shortage — 60,000+ unfilled RN positions. Healthcare systems in crisis. IRCC has run targeted healthcare draws.',
+   provinces:['ON','BC','AB','SK','MB'],examples:['Staff Nurse','ER Nurse','OR Nurse','ICU Nurse']},
+
+  {code:'32101',title:'Licensed Practical Nurses (LPN)',teer:2,sector:'healthcare',demand:'critical',
+   salary:'$55,000 – $78,000',growth:'+16%',ee:true,lmia:true,
+   why:'Shortage is even more acute than RNs. Every province is actively recruiting LPNs. IRCC targeted draws have included this NOC.',
+   provinces:['ON','BC','AB','SK','MB','NS'],examples:['LPN','Practical Nurse','Community Nurse']},
+
+  {code:'31102',title:'General Practitioners & Family Physicians',teer:1,sector:'healthcare',demand:'critical',
+   salary:'$200,000 – $350,000',growth:'+14%',ee:true,lmia:true,
+   why:'6+ million Canadians have no family doctor. Government actively recruiting internationally. Very high compensation.',
+   provinces:['ON','BC','AB','SK','NS','NB'],examples:['Family Doctor','GP','Primary Care Physician']},
+
+  {code:'31112',title:'Pharmacists',teer:1,sector:'healthcare',demand:'high',
+   salary:'$90,000 – $130,000',growth:'+9%',ee:true,lmia:true,
+   why:'Pharmacy chains expanding rapidly. Hospital pharmacy demand growing with aging population.',
+   provinces:['ON','BC','AB'],examples:['Clinical Pharmacist','Hospital Pharmacist','Retail Pharmacist']},
+
+  {code:'32120',title:'Medical Laboratory Technologists',teer:2,sector:'healthcare',demand:'critical',
+   salary:'$65,000 – $90,000',growth:'+15%',ee:true,lmia:true,
+   why:'Post-COVID lab expansion + aging population creating urgent need. IRCC has specifically targeted this NOC in recent draws.',
+   provinces:['ON','BC','AB','SK'],examples:['Lab Technologist','MLT','Blood Bank Tech']},
+
+  // ── TRADES ──
+  {code:'72010',title:'Electricians',teer:2,sector:'trades',demand:'critical',
+   salary:'$65,000 – $100,000',growth:'+21%',ee:true,lmia:true,
+   why:'Massive EV infrastructure, housing boom, and industrial expansion. Canada needs 55,000+ electricians by 2030. Among highest-paid trades.',
+   provinces:['ON','BC','AB','SK'],examples:['Journeyman Electrician','Industrial Electrician','Master Electrician']},
+
+  {code:'72020',title:'Plumbers',teer:2,sector:'trades',demand:'critical',
+   salary:'$60,000 – $95,000',growth:'+17%',ee:true,lmia:true,
+   why:'Housing construction boom across all provinces creating critical shortage. 40,000+ positions unfilled. Very high wages.',
+   provinces:['ON','BC','AB','SK'],examples:['Journeyman Plumber','Gas Fitter','Master Plumber']},
+
+  {code:'72200',title:'Welders & Related Machine Operators',teer:2,sector:'trades',demand:'high',
+   salary:'$55,000 – $90,000',growth:'+13%',ee:true,lmia:true,
+   why:'Manufacturing, pipeline, and shipbuilding industries all need qualified welders. Alberta oil sands especially demand this skill.',
+   provinces:['AB','BC','ON','SK'],examples:['CWB Certified Welder','TIG/MIG Welder','Pipe Welder']},
+
+  {code:'72410',title:'Automotive Service Technicians',teer:2,sector:'trades',demand:'moderate',
+   salary:'$50,000 – $80,000',growth:'+9%',ee:true,lmia:false,
+   why:'EV transition creating need for technicians with new certification. Steady demand at dealerships and independent shops.',
+   provinces:['ON','BC','AB'],examples:['Auto Mechanic','EV Technician','Service Advisor']},
+
+  {code:'72021',title:'Pipefitters & Steamfitters',teer:2,sector:'trades',demand:'high',
+   salary:'$65,000 – $105,000',growth:'+15%',ee:true,lmia:true,
+   why:'LNG Canada projects and Alberta industrial plants are driving enormous demand. One of the highest-paid trades in Canada.',
+   provinces:['AB','BC','SK'],examples:['Pipefitter','Steamfitter','Sprinkler Installer']},
+
+  // ── ENGINEERING ──
+  {code:'21300',title:'Civil Engineers',teer:1,sector:'engineering',demand:'high',
+   salary:'$80,000 – $125,000',growth:'+14%',ee:true,lmia:true,
+   why:'$180B+ federal infrastructure program (roads, bridges, transit) driving huge demand. Housing construction adds more.',
+   provinces:['ON','BC','AB','QC'],examples:['Structural Engineer','Site Engineer','Transportation Engineer']},
+
+  {code:'21310',title:'Mechanical Engineers',teer:1,sector:'engineering',demand:'high',
+   salary:'$80,000 – $125,000',growth:'+11%',ee:true,lmia:true,
+   why:'Manufacturing revival, aerospace, and clean energy sectors all hiring. Automotive industry transition creating new roles.',
+   provinces:['ON','BC','AB','QC'],examples:['Design Engineer','HVAC Engineer','Product Engineer']},
+
+  {code:'21320',title:'Electrical & Electronics Engineers',teer:1,sector:'engineering',demand:'high',
+   salary:'$85,000 – $130,000',growth:'+13%',ee:true,lmia:true,
+   why:'Power grid modernization, EV infrastructure, and semiconductor investment all require electrical engineers.',
+   provinces:['ON','BC','AB','QC'],examples:['Power Engineer','Embedded Systems Eng','Electronics Engineer']},
+
+  // ── BUSINESS ──
+  {code:'11100',title:'Financial Auditors & Accountants (CPA)',teer:1,sector:'business',demand:'moderate',
+   salary:'$65,000 – $115,000',growth:'+8%',ee:true,lmia:false,
+   why:'Consistent demand across all industries. CPA designation significantly boosts salary and job security.',
+   provinces:['ON','BC','AB'],examples:['CPA','External Auditor','Tax Accountant']},
+
+  {code:'11101',title:'Financial Analysts & Advisors',teer:1,sector:'business',demand:'moderate',
+   salary:'$70,000 – $120,000',growth:'+10%',ee:true,lmia:false,
+   why:'Bay Street financial sector, insurance companies, and wealth management firms steadily hiring.',
+   provinces:['ON','BC','AB'],examples:['Financial Analyst','Investment Advisor','Risk Analyst']},
+
+  {code:'13100',title:'Administrative Officers',teer:1,sector:'business',demand:'moderate',
+   salary:'$50,000 – $80,000',growth:'+7%',ee:true,lmia:false,
+   why:'Every organization needs administrative leadership. Government sector especially active in hiring.',
+   provinces:['ON','BC','AB','QC'],examples:['Office Manager','Executive Assistant','Admin Coordinator']},
+
+  // ── TRANSPORT ──
+  {code:'73300',title:'Transport Truck Drivers (AZ/Class 1)',teer:3,sector:'transport',demand:'critical',
+   salary:'$55,000 – $90,000',growth:'+19%',ee:true,lmia:true,
+   why:'Supply chain crisis + aging workforce retiring. Canada needs 55,000 truck drivers by 2030. Many provinces offering dedicated immigration streams.',
+   provinces:['ON','BC','AB','SK','MB'],examples:['Long-Haul Driver','AZ Driver','Owner-Operator']},
+
+  {code:'75110',title:'Construction Trades Helpers',teer:4,sector:'trades',demand:'moderate',
+   salary:'$40,000 – $58,000',growth:'+12%',ee:false,lmia:true,
+   why:'Housing construction boom creating entry-level demand. Note: TEER 4 — does NOT qualify for Express Entry CEC stream.',
+   provinces:['ON','BC','AB'],examples:['Construction Labourer','Trade Helper','Site Worker']},
+];
+
+let jobFilters = {sector:'all', province:'all', demand:'all'};
+
+function filterJobs(btn, type, val) {
+  // update filter state
+  jobFilters[type] = val;
+  // update chip active state within same group
+  const allChips = btn.closest('.filter-chips').querySelectorAll('.fchip');
+  allChips.forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  renderJobs();
+}
+
+function renderJobs() {
+  const grid = document.getElementById('jobs-grid');
+  if (!grid) return;
+
+  let data = [...JOB_DEMAND_DATA];
+  if (jobFilters.sector   !== 'all') data = data.filter(j=>j.sector   === jobFilters.sector);
+  if (jobFilters.demand   !== 'all') data = data.filter(j=>j.demand   === jobFilters.demand);
+  if (jobFilters.province !== 'all') data = data.filter(j=>j.provinces.includes(jobFilters.province));
+
+  // Sort: critical first, then high, then moderate
+  const order = {critical:0, high:1, moderate:2};
+  data.sort((a,b)=>(order[a.demand]||9)-(order[b.demand]||9));
+
+  if (!data.length) {
+    grid.innerHTML = '<div class="jobs-empty">No jobs found for this filter combination.<br><span style="font-size:11px;margin-top:4px;display:block">Try a broader filter.</span></div>';
+    return;
+  }
+
+  grid.innerHTML = data.map(j => {
+    const demandLabel = j.demand==='critical'?'🔴 Critical Shortage':j.demand==='high'?'🔵 High Demand':'🟡 Moderate';
+    const demandBadge = `badge-${j.demand}`;
+    const teerClass   = `jt-teer${j.teer}`;
+    const provs = j.provinces.map(p=>`<span class="job-prov">${p}</span>`).join('');
+    const exStr = j.examples.slice(0,3).map(e=>`<span style="font-size:11px;background:var(--bg);border:1px solid var(--border);padding:2px 8px;border-radius:20px;color:var(--muted)">${e}</span>`).join('');
+
+    return `
+    <div class="job-card demand-${j.demand}">
+      <div class="job-card-header">
+        <div>
+          <div class="job-code">NOC ${j.code}</div>
+          <div class="job-title">${j.title}</div>
+        </div>
+        <span class="job-demand-badge ${demandBadge}">${demandLabel}</span>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
+        <div class="job-salary">${j.salary}<span style="font-family:var(--sans);font-size:11px;color:var(--muted);font-weight:400"> /yr</span></div>
+        <div class="job-growth" style="font-size:12px">↑ ${j.growth} growth</div>
+      </div>
+
+      <div class="job-tags">
+        <span class="job-tag ${teerClass}">TEER ${j.teer}</span>
+        ${j.ee  ? '<span class="job-tag jt-ee">✓ EE Eligible</span>' : '<span class="job-tag" style="background:#fee2e2;color:#e11d48">✗ Not EE</span>'}
+        ${j.lmia? '<span class="job-tag jt-lmia">LMIA Common</span>' : ''}
+      </div>
+
+      <div class="job-why">${j.why}</div>
+
+      ${exStr ? `<div style="display:flex;gap:5px;flex-wrap:wrap">${exStr}</div>` : ''}
+
+      <div class="job-card-footer">
+        <div class="job-provinces">
+          <span class="job-prov-label">Top provinces:</span>
+          ${provs}
+        </div>
+        <a class="job-noc-link" href="/noc" target="_blank">View in NOC Finder →</a>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ── NEXT DRAW COUNTDOWN ───────────────────────────────────
@@ -2821,6 +3118,7 @@ rebuildLangInputs();
 buildCLBTable();
 renderChecklist();
 renderTracker();
+renderJobs();
 // Set today's date as default in tracker form
 const trDate = document.getElementById('tr-date');
 if (trDate) trDate.value = new Date().toISOString().slice(0,10);
