@@ -503,6 +503,61 @@
     .score-ok{color:var(--amber)!important}
     .score-low{color:var(--red)!important}
 
+    /* ── FILTER CHIPS ── */
+    .filter-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+    .fchip{
+      background:#fff;border:1.5px solid var(--border);color:var(--muted);
+      padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;
+      cursor:pointer;transition:all .15s;box-shadow:var(--sh-xs);
+    }
+    .fchip:hover{border-color:var(--primary);color:var(--primary)}
+    .fchip.active{background:var(--grad);border-color:transparent;color:#fff;box-shadow:var(--sh-blue)}
+
+    /* ── COST TABLE ── */
+    .cost-table{width:100%;border-collapse:collapse}
+    .cost-table th{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);text-align:left;padding:8px 12px;border-bottom:2px solid var(--border)}
+    .cost-table td{padding:10px 12px;font-size:13px;border-bottom:1px solid var(--border)}
+    .cost-table tr:last-child td{border-bottom:none;font-weight:700;background:var(--primary-light)}
+    .cost-table tbody tr:hover td{background:var(--bg)}
+    .cost-required{color:var(--red);font-weight:600;font-size:11px}
+    .cost-optional{color:var(--muted);font-size:11px}
+
+    /* ── LANGUAGE CONVERTER ── */
+    .lang-test-toggle{display:flex;gap:0;border:1.5px solid var(--border);border-radius:var(--r-sm);overflow:hidden;margin-bottom:1.25rem}
+    .lang-test-btn{flex:1;padding:9px;background:#fff;border:none;font-family:var(--sans);font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .15s}
+    .lang-test-btn.active{background:var(--grad);color:#fff}
+    .lang-result-card{
+      text-align:center;padding:1.25rem .75rem;border-radius:var(--r-sm);
+      background:var(--bg);border:1.5px solid var(--border);
+    }
+    .lang-clb{font-family:var(--mono);font-size:32px;font-weight:800;color:var(--primary)}
+    .lang-pts{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--green);margin-top:2px}
+    .lang-skill-label{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+
+    /* ── PROFILE MODAL ── */
+    .modal-overlay{
+      display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);
+      z-index:500;backdrop-filter:blur(4px);align-items:center;justify-content:center;
+    }
+    .modal-overlay.open{display:flex}
+    .modal-box{
+      background:#fff;border-radius:var(--r-lg);padding:2rem;
+      width:min(580px,95vw);max-height:90vh;overflow-y:auto;
+      box-shadow:var(--sh-lg);border:1px solid var(--border);
+    }
+    .modal-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:1.5rem;letter-spacing:-.02em}
+    .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+    .modal-footer{display:flex;gap:.75rem;margin-top:1.5rem;justify-content:flex-end}
+    .btn-primary{background:var(--grad);border:none;color:#fff;padding:10px 24px;border-radius:var(--r-sm);font-size:13px;font-weight:600;cursor:pointer;transition:opacity .15s}
+    .btn-primary:hover{opacity:.85}
+    .btn-ghost{background:var(--bg);border:1.5px solid var(--border);color:var(--text2);padding:10px 20px;border-radius:var(--r-sm);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
+    .btn-ghost:hover{border-color:var(--border2)}
+    .edit-profile-btn{
+      background:var(--grad);border:none;color:#fff;
+      padding:8px 18px;border-radius:20px;font-size:12px;font-weight:600;
+      cursor:pointer;transition:all .2s;box-shadow:var(--sh-blue);
+    }
+
     @media(max-width:768px){
       .wrapper{grid-template-columns:1fr;padding-bottom:68px}
       aside{display:none}
@@ -547,6 +602,7 @@
     <button class="nav-tab" onclick="showPage('profile',this)">👤 My Profile</button>
     <button class="nav-tab" onclick="showPage('crscalc',this)">🧮 CRS Calc</button>
     <button class="nav-tab" onclick="showPage('pgwp',this)">📅 PGWP</button>
+    <button class="nav-tab" onclick="showPage('lang',this)">🔤 Language</button>
   </div>
   <div class="header-right">
     <span class="last-updated" id="last-updated">Checking feeds…</span>
@@ -615,6 +671,12 @@
           <option value="oldest">Oldest First</option>
         </select>
       </div>
+      <div class="filter-chips" id="date-chips">
+        <button class="fchip active" onclick="filterDate(this,0)">All Time</button>
+        <button class="fchip" onclick="filterDate(this,1)">Today</button>
+        <button class="fchip" onclick="filterDate(this,7)">Last 7 Days</button>
+        <button class="fchip" onclick="filterDate(this,30)">Last 30 Days</button>
+      </div>
       <div class="draw-banner" id="draw-banner">
         <span class="draw-tag">🔥 Draw Detected</span>
         <span class="draw-text" id="draw-text"></span>
@@ -637,6 +699,13 @@
     <!-- ── CRS CHART ── -->
     <div class="page" id="page-crs">
       <div class="panel-title">📊 CRS Score History — Express Entry Draws</div>
+      <div class="filter-chips">
+        <button class="fchip active" onclick="filterCRS(this,'all')">All Draws</button>
+        <button class="fchip" onclick="filterCRS(this,'cec')">CEC Only</button>
+        <button class="fchip" onclick="filterCRS(this,'pnp')">PNP Only</button>
+        <button class="fchip" onclick="filterCRS(this,'general')">General</button>
+        <button class="fchip" onclick="filterCRS(this,'french')">French</button>
+      </div>
       <div class="chart-wrap"><canvas id="crs-chart"></canvas></div>
       <div id="crs-table" class="panel-card">
         <div style="color:var(--muted);font-family:var(--mono);font-size:12px;text-align:center;padding:2rem">Loading CRS history…</div>
@@ -674,21 +743,14 @@
 
     <!-- ── MY PROFILE ── -->
     <div class="page" id="page-profile">
-      <div class="panel-title">👤 My Immigration Profile</div>
+      <div class="panel-title" style="justify-content:space-between">
+        <span>👤 My Immigration Profile</span>
+        <button class="edit-profile-btn" onclick="openProfileModal()">✏ Edit Profile</button>
+      </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem" class="profile-section-grid">
         <div class="panel-card">
           <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin-bottom:1rem;font-weight:600">Your Profile</div>
-          <div style="display:flex;flex-direction:column;gap:.4rem">
-            <div class="profile-row"><span class="profile-label">Name</span><span class="profile-val">Priyanka</span></div>
-            <div class="profile-row"><span class="profile-label">Age</span><span class="profile-val">25</span></div>
-            <div class="profile-row"><span class="profile-label">Education</span><span class="profile-val">Masters — Software Engineering</span></div>
-            <div class="profile-row"><span class="profile-label">Status</span><span class="profile-val">In Progress → Graduating Apr 2027</span></div>
-            <div class="profile-row"><span class="profile-label">Language</span><span class="profile-val">CELPIP 7/7/7/7 (CLB 9)</span></div>
-            <div class="profile-row"><span class="profile-label">Work (CA)</span><span class="profile-val">Gas Station (accumulating)</span></div>
-            <div class="profile-row"><span class="profile-label">Work (India)</span><span class="profile-val">Tech experience (+13 CRS pts)</span></div>
-            <div class="profile-row"><span class="profile-label">Target</span><span class="profile-val">Ontario → PR</span></div>
-            <div class="profile-row"><span class="profile-label">Pathway</span><span class="profile-val">PGWP → CEC / Ontario Masters</span></div>
-          </div>
+          <div id="profile-rows" style="display:flex;flex-direction:column;gap:.4rem"></div>
         </div>
         <div class="panel-card">
           <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin-bottom:1rem;font-weight:600">Estimated CRS Score</div>
@@ -1048,6 +1110,108 @@
         <div class="calc-section-title">PNP Streams You May Qualify For</div>
         <div id="pnp-streams" style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem"></div>
       </div>
+      <div class="panel-card">
+        <div class="calc-section-title">💰 Immigration Cost Estimator</div>
+        <table class="cost-table">
+          <thead><tr><th>Fee / Service</th><th>Cost (CAD)</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>PGWP Application Fee</td><td style="font-family:var(--mono);font-weight:600">$255</td><td><span class="cost-required">Required</span></td></tr>
+            <tr><td>Biometrics</td><td style="font-family:var(--mono);font-weight:600">$85</td><td><span class="cost-required">Required</span></td></tr>
+            <tr><td>WES Educational Credential Assessment</td><td style="font-family:var(--mono);font-weight:600">$239</td><td><span class="cost-required">Required for EE</span></td></tr>
+            <tr><td>CELPIP / IELTS Exam Fee</td><td style="font-family:var(--mono);font-weight:600">$280–$330</td><td><span class="cost-required">Required</span></td></tr>
+            <tr><td>PR Application — Principal Applicant</td><td style="font-family:var(--mono);font-weight:600">$1,325</td><td><span class="cost-required">Required</span></td></tr>
+            <tr><td>Right of Permanent Residence Fee</td><td style="font-family:var(--mono);font-weight:600">$500</td><td><span class="cost-required">Required</span></td></tr>
+            <tr><td>Medical Exam (immigration physician)</td><td style="font-family:var(--mono);font-weight:600">$200–$450</td><td><span class="cost-required">Required</span></td></tr>
+            <tr><td>Police Certificate (India)</td><td style="font-family:var(--mono);font-weight:600">~$50</td><td><span class="cost-required">Required</span></td></tr>
+            <tr><td>Translation of Documents</td><td style="font-family:var(--mono);font-weight:600">$100–$300</td><td><span class="cost-optional">If applicable</span></td></tr>
+            <tr><td>Immigration Consultant / Lawyer</td><td style="font-family:var(--mono);font-weight:600">$1,500–$4,000</td><td><span class="cost-optional">Optional</span></td></tr>
+            <tr><td><strong>Estimated Total (without lawyer)</strong></td><td style="font-family:var(--mono);font-weight:700;color:var(--primary)">~$3,000–$3,500</td><td><span style="color:var(--green);font-weight:600;font-size:11px">Budget for this</span></td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:.875rem;padding:.75rem;background:var(--amber-light);border:1.5px solid #fde68a;border-radius:var(--r-sm);font-size:12px;color:var(--amber)">
+          ⚠ Fees change — always verify at <strong>ircc.canada.ca</strong> before applying. These are 2025–2026 estimates.
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LANGUAGE CONVERTER ── -->
+    <div class="page" id="page-lang">
+      <div class="panel-title">🔤 Language Score Converter</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
+        <div>
+          <div class="panel-card">
+            <div class="calc-section-title">Select Your Test</div>
+            <div class="lang-test-toggle">
+              <button class="lang-test-btn active" onclick="setLangTest(this,'celpip')">CELPIP</button>
+              <button class="lang-test-btn" onclick="setLangTest(this,'ielts')">IELTS</button>
+              <button class="lang-test-btn" onclick="setLangTest(this,'tef')">TEF/TCF (French)</button>
+            </div>
+            <div id="lang-input-area">
+              <div style="font-family:var(--mono);font-size:11px;color:var(--muted);padding:8px 10px;background:var(--bg);border-radius:var(--r-sm);border:1px solid var(--border);margin-bottom:1rem" id="lang-hint">
+                CELPIP scale: 1–12 per skill (most common: 7–10 for immigration)
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+                <div class="calc-group">
+                  <label class="calc-label">Speaking</label>
+                  <select class="calc-input" id="ls-speak" onchange="convertLang()">
+                    <option value="">Select score</option>
+                  </select>
+                </div>
+                <div class="calc-group">
+                  <label class="calc-label">Listening</label>
+                  <select class="calc-input" id="ls-listen" onchange="convertLang()">
+                    <option value="">Select score</option>
+                  </select>
+                </div>
+                <div class="calc-group">
+                  <label class="calc-label">Reading</label>
+                  <select class="calc-input" id="ls-read" onchange="convertLang()">
+                    <option value="">Select score</option>
+                  </select>
+                </div>
+                <div class="calc-group">
+                  <label class="calc-label">Writing</label>
+                  <select class="calc-input" id="ls-write" onchange="convertLang()">
+                    <option value="">Select score</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="panel-card">
+            <div class="calc-section-title">Quick Reference</div>
+            <div id="lang-reference" style="font-size:12px;color:var(--muted);line-height:1.8;font-family:var(--mono)"></div>
+          </div>
+        </div>
+        <div>
+          <div class="panel-card" style="background:linear-gradient(135deg,#f0f7ff 0%,#faf5ff 100%);border-color:var(--primary-mid)">
+            <div class="calc-section-title">Your CLB Levels & CRS Points</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem">
+              <div class="lang-result-card"><div class="lang-skill-label">Speaking</div><div class="lang-clb" id="clb-speak">—</div><div class="lang-pts" id="pts-speak">0 pts</div></div>
+              <div class="lang-result-card"><div class="lang-skill-label">Listening</div><div class="lang-clb" id="clb-listen">—</div><div class="lang-pts" id="pts-listen">0 pts</div></div>
+              <div class="lang-result-card"><div class="lang-skill-label">Reading</div><div class="lang-clb" id="clb-read">—</div><div class="lang-pts" id="pts-read">0 pts</div></div>
+              <div class="lang-result-card"><div class="lang-skill-label">Writing</div><div class="lang-clb" id="clb-write">—</div><div class="lang-pts" id="pts-write">0 pts</div></div>
+            </div>
+            <div style="background:#fff;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:1.25rem;text-align:center">
+              <div style="font-size:11px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem">Total Language CRS Points</div>
+              <div id="lang-total-pts" style="font-family:var(--mono);font-size:52px;font-weight:800;color:var(--primary);line-height:1">—</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:4px">out of 136 (first language, single)</div>
+            </div>
+            <div id="lang-verdict" style="margin-top:1rem;padding:.875rem;border-radius:var(--r-sm);font-size:12px;font-weight:500;display:none"></div>
+          </div>
+          <div class="panel-card">
+            <div class="calc-section-title">CLB → CRS Points Table (Single, First Language)</div>
+            <table style="width:100%;border-collapse:collapse;font-size:12px">
+              <thead><tr style="background:var(--bg)">
+                <th style="padding:7px 10px;text-align:left;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);border-bottom:2px solid var(--border)">CLB</th>
+                <th style="padding:7px 10px;text-align:center;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);border-bottom:2px solid var(--border)">Per Skill</th>
+                <th style="padding:7px 10px;text-align:center;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);border-bottom:2px solid var(--border)">4 Skills</th>
+              </tr></thead>
+              <tbody id="clb-pts-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
 
   </main>
@@ -1065,6 +1229,7 @@
     <button class="mobile-nav-btn" onclick="mobileNav('bookmarks',this)"><span class="mnav-icon">🔖</span>Saved</button>
     <button class="mobile-nav-btn" onclick="mobileNav('profile',this)"><span class="mnav-icon">👤</span>Profile</button>
     <button class="mobile-nav-btn" onclick="window.location.href='/noc'"><span class="mnav-icon">🔍</span>NOC</button>
+    <button class="mobile-nav-btn" onclick="mobileNav('lang',this)"><span class="mnav-icon">🔤</span>Language</button>
     <button class="mobile-nav-btn" onclick="openDrawer()"><span class="mnav-icon">☰</span>Filters</button>
   </div>
 </nav>
@@ -1102,6 +1267,85 @@
       <input type="email" id="alert-email-m" placeholder="your@email.com"/>
       <input type="text" id="alert-keyword-m" placeholder="Keyword (e.g. CRS draw)"/>
       <button onclick="subscribeMobile()">Subscribe</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE EDIT MODAL -->
+<div class="modal-overlay" id="profile-modal" onclick="if(event.target===this)closeProfileModal()">
+  <div class="modal-box">
+    <div class="modal-title">✏ Edit Your Profile</div>
+    <div class="modal-grid">
+      <div class="calc-group">
+        <label class="calc-label">Your Name</label>
+        <input class="calc-input" id="p-name" type="text" placeholder="e.g. Priyanka"/>
+      </div>
+      <div class="calc-group">
+        <label class="calc-label">Age</label>
+        <input class="calc-input" id="p-age" type="number" min="18" max="60" placeholder="25"/>
+      </div>
+      <div class="calc-group" style="grid-column:1/-1">
+        <label class="calc-label">Education</label>
+        <select class="calc-input" id="p-edu">
+          <option>Masters degree</option>
+          <option>Bachelor's degree</option>
+          <option>PhD / Doctoral degree</option>
+          <option>2-year diploma</option>
+          <option>1-year diploma</option>
+          <option>Secondary / High school</option>
+        </select>
+      </div>
+      <div class="calc-group">
+        <label class="calc-label">Language Test</label>
+        <select class="calc-input" id="p-test">
+          <option>CELPIP</option>
+          <option>IELTS</option>
+          <option>TEF (French)</option>
+        </select>
+      </div>
+      <div class="calc-group">
+        <label class="calc-label">Scores (S/L/R/W)</label>
+        <input class="calc-input" id="p-scores" type="text" placeholder="e.g. 7/7/7/7"/>
+      </div>
+      <div class="calc-group">
+        <label class="calc-label">Canadian Work Exp</label>
+        <select class="calc-input" id="p-cawork">
+          <option>None / Less than 1 year</option>
+          <option>1 year (TEER 0/1/2/3)</option>
+          <option>2 years</option>
+          <option>3+ years</option>
+        </select>
+      </div>
+      <div class="calc-group">
+        <label class="calc-label">Foreign Work Exp</label>
+        <select class="calc-input" id="p-forwork">
+          <option>None</option>
+          <option>1–2 years</option>
+          <option>3+ years</option>
+        </select>
+      </div>
+      <div class="calc-group">
+        <label class="calc-label">Immigration Status</label>
+        <input class="calc-input" id="p-status" type="text" placeholder="e.g. Student Visa, PGWP"/>
+      </div>
+      <div class="calc-group">
+        <label class="calc-label">Target Province</label>
+        <select class="calc-input" id="p-province">
+          <option>Ontario</option>
+          <option>British Columbia</option>
+          <option>Alberta</option>
+          <option>Quebec</option>
+          <option>Not decided</option>
+        </select>
+      </div>
+      <div class="calc-group" style="grid-column:1/-1">
+        <label class="calc-label">PR Pathway</label>
+        <input class="calc-input" id="p-pathway" type="text" placeholder="e.g. PGWP → CEC / Ontario Masters"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeProfileModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveProfile()">Save Profile</button>
     </div>
   </div>
 </div>
@@ -1618,11 +1862,262 @@ function showToast(msg){
   setTimeout(()=>t.classList.remove('show'),2800);
 }
 
+// ── DATE FILTER ───────────────────────────────────────────
+let activeDateDays = 0;
+function filterDate(btn, days) {
+  document.querySelectorAll('#date-chips .fchip').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activeDateDays = days;
+  currentPage = 1;
+  renderPage(filterArticles(), 1);
+}
+const _origFilter = filterArticles;
+filterArticles = function() {
+  let f = _origFilter();
+  if (activeDateDays > 0) {
+    const cutoff = new Date(Date.now() - activeDateDays * 86400000);
+    f = f.filter(a => a.published && new Date(a.published) >= cutoff);
+  }
+  return f;
+};
+
+// ── CRS CHART DRAW TYPE FILTER ────────────────────────────
+let crsTypeFilter = 'all';
+let crsRawData    = [];
+
+function filterCRS(btn, type) {
+  document.querySelectorAll('#page-crs .fchip').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  crsTypeFilter = type;
+  renderCRSChart(crsRawData);
+}
+
+async function loadCRSChart() {
+  try {
+    const res  = await fetch('/api/crs-history');
+    crsRawData = await res.json();
+    renderCRSChart(crsRawData);
+  } catch(e) { console.error('[chart]',e); }
+}
+
+function renderCRSChart(data) {
+  let filtered = data;
+  if (crsTypeFilter !== 'all') {
+    const kw = {cec:'experience',pnp:'provincial',general:'general',french:'french'}[crsTypeFilter]||'';
+    filtered = data.filter(d=>(d.draw_type||'').toLowerCase().includes(kw));
+  }
+  const tbl = document.getElementById('crs-table');
+  if (!filtered.length) {
+    if (tbl) tbl.innerHTML='<div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:2rem;text-align:center">No draws found for this filter.</div>';
+    return;
+  }
+  const canvas = document.getElementById('crs-chart');
+  if (canvas && window.Chart) {
+    if (crsChartInstance) crsChartInstance.destroy();
+    crsChartInstance = new Chart(canvas.getContext('2d'), {
+      type:'line',
+      data:{
+        labels: filtered.map(d=>d.draw_date?d.draw_date.slice(0,10):'#'+(d.draw_number||'?')),
+        datasets:[{label:'CRS Cutoff',data:filtered.map(d=>d.score),
+          borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.07)',
+          borderWidth:2,pointRadius:4,pointBackgroundColor:'#2563eb',tension:0.35,fill:true}]
+      },
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false}},
+        scales:{x:{ticks:{color:'#6b7280',font:{size:10}},grid:{color:'#e4e9f0'}},
+                y:{ticks:{color:'#6b7280'},grid:{color:'#e4e9f0'},min:400,max:800}}}
+    });
+  }
+  if (tbl) tbl.innerHTML = filtered.slice().reverse().slice(0,10).map(d=>`
+    <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;flex-wrap:wrap;gap:4px;align-items:center">
+      <span style="color:var(--muted);font-family:var(--mono);font-size:11px">#${d.draw_number||'?'} · ${d.draw_date||''}</span>
+      <span style="color:var(--text2);font-weight:500">${d.draw_type||'General'}</span>
+      <span style="font-family:var(--mono);color:var(--primary);font-weight:800;font-size:17px">${d.score}</span>
+      <span style="color:var(--muted);font-size:11px;font-family:var(--mono)">${d.invitations?d.invitations.toLocaleString()+' invited':''}</span>
+    </div>`).join('');
+}
+
+// ── PROFILE (localStorage) ────────────────────────────────
+const DEFAULT_PROFILE = {
+  name:'Your Name', age:'25', edu:'Masters degree',
+  test:'CELPIP', scores:'7/7/7/7', cawork:'None / Less than 1 year',
+  forwork:'1–2 years', status:'Student Visa', province:'Ontario',
+  pathway:'PGWP → CEC / Ontario Masters'
+};
+
+function loadProfile() {
+  return JSON.parse(localStorage.getItem('ircc_profile')||'null') || DEFAULT_PROFILE;
+}
+
+function renderProfile() {
+  const p = loadProfile();
+  const rows = [
+    ['Name', p.name], ['Age', p.age], ['Education', p.edu],
+    ['Language Test', `${p.test} — ${p.scores}`],
+    ['Canadian Work', p.cawork], ['Foreign Work', p.forwork],
+    ['Status', p.status], ['Target Province', p.province], ['PR Pathway', p.pathway]
+  ];
+  const el = document.getElementById('profile-rows');
+  if (el) el.innerHTML = rows.map(r=>`
+    <div class="profile-row">
+      <span class="profile-label">${r[0]}</span>
+      <span class="profile-val">${r[1]}</span>
+    </div>`).join('');
+}
+
+function openProfileModal() {
+  const p = loadProfile();
+  document.getElementById('p-name').value    = p.name;
+  document.getElementById('p-age').value     = p.age;
+  document.getElementById('p-edu').value     = p.edu;
+  document.getElementById('p-test').value    = p.test;
+  document.getElementById('p-scores').value  = p.scores;
+  document.getElementById('p-cawork').value  = p.cawork;
+  document.getElementById('p-forwork').value = p.forwork;
+  document.getElementById('p-status').value  = p.status;
+  document.getElementById('p-province').value= p.province;
+  document.getElementById('p-pathway').value = p.pathway;
+  document.getElementById('profile-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProfileModal() {
+  document.getElementById('profile-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function saveProfile() {
+  const p = {
+    name:    document.getElementById('p-name').value.trim()    || DEFAULT_PROFILE.name,
+    age:     document.getElementById('p-age').value.trim()     || DEFAULT_PROFILE.age,
+    edu:     document.getElementById('p-edu').value,
+    test:    document.getElementById('p-test').value,
+    scores:  document.getElementById('p-scores').value.trim()  || DEFAULT_PROFILE.scores,
+    cawork:  document.getElementById('p-cawork').value,
+    forwork: document.getElementById('p-forwork').value,
+    status:  document.getElementById('p-status').value.trim()  || DEFAULT_PROFILE.status,
+    province:document.getElementById('p-province').value,
+    pathway: document.getElementById('p-pathway').value.trim() || DEFAULT_PROFILE.pathway,
+  };
+  localStorage.setItem('ircc_profile', JSON.stringify(p));
+  closeProfileModal();
+  renderProfile();
+  showToast('✓ Profile saved!');
+}
+
+// ── LANGUAGE CONVERTER ────────────────────────────────────
+const CLB_PTS_SINGLE = {4:0,5:6,6:8,7:16,8:22,9:23,10:24};
+
+const LANG_SCALES = {
+  celpip: {
+    hint: 'CELPIP scale: 1–12 per skill. For immigration, aim for 7+ (CLB 8).',
+    ref:  'CELPIP 4=CLB 4 | 5=CLB 6 | 6=CLB 7 | 7=CLB 8 | 8=CLB 9 | 9=CLB 10 | 10+=CLB 10',
+    options: ['4','5','6','7','8','9','10','11','12'],
+    toClb: (skill, v) => {
+      const n = parseFloat(v);
+      if(n>=10) return 10; if(n>=9) return 10; if(n>=8) return 9;
+      if(n>=7) return 8; if(n>=6) return 7; if(n>=5) return 6;
+      if(n>=4) return 4; return 0;
+    }
+  },
+  ielts: {
+    hint: 'IELTS General Training. Aim for 6.0+ in each skill (CLB 7).',
+    ref:  'Speaking: 5.5=CLB 6, 6.0=CLB 7, 6.5=CLB 8, 7.0=CLB 9, 7.5=CLB 10\nListening: 5.5=CLB 6, 6.0=CLB 7, 7.5=CLB 8, 8.0=CLB 9, 8.5=CLB 10\nReading: 5.0=CLB 6, 6.0=CLB 7, 7.0=CLB 8, 8.0=CLB 9, 9.0=CLB 10\nWriting: 5.5=CLB 6, 6.0=CLB 7, 6.5=CLB 8, 7.0=CLB 9, 7.5=CLB 10',
+    options: ['4.0','4.5','5.0','5.5','6.0','6.5','7.0','7.5','8.0','8.5','9.0'],
+    toClb: (skill, v) => {
+      const n = parseFloat(v);
+      const maps = {
+        speak:   [[7.5,10],[7.0,9],[6.5,8],[6.0,7],[5.5,6],[5.0,5],[4.0,4]],
+        listen:  [[8.5,10],[8.0,9],[7.5,8],[6.0,7],[5.5,6],[5.0,5],[4.5,4]],
+        read:    [[9.0,10],[8.0,9],[7.0,8],[6.0,7],[5.0,6],[4.0,5],[3.5,4]],
+        write:   [[7.5,10],[7.0,9],[6.5,8],[6.0,7],[5.5,6],[5.0,5],[4.0,4]]
+      };
+      for(const [thresh,clb] of (maps[skill]||maps.speak)) { if(n>=thresh) return clb; }
+      return 0;
+    }
+  },
+  tef: {
+    hint: 'TEF Canada / TCF Canada (French). For Express Entry French bonus.',
+    ref:  'TEF Canada — Points:\nListening: 145–180=CLB 9, 181+=CLB 10\nSpeaking: 226–270=CLB 9, 271+=CLB 10\nReading: 121–150=CLB 9, 151+=CLB 10\nWriting: 226–270=CLB 9, 271+=CLB 10',
+    options: ['<B1 (below CLB 5)','B1 (CLB 5–6)','B2 (CLB 7–8)','C1 (CLB 9–10)','C2 (CLB 10+)'],
+    toClb: (skill, v) => {
+      if(v.includes('C2')) return 10; if(v.includes('C1')) return 9;
+      if(v.includes('B2')) return 7;  if(v.includes('B1')) return 5;
+      return 0;
+    }
+  }
+};
+
+let currentLangTest = 'celpip';
+
+function setLangTest(btn, test) {
+  document.querySelectorAll('.lang-test-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  currentLangTest = test;
+  rebuildLangInputs();
+  convertLang();
+}
+
+function rebuildLangInputs() {
+  const scale = LANG_SCALES[currentLangTest];
+  document.getElementById('lang-hint').textContent = scale.hint;
+  document.getElementById('lang-reference').innerHTML = scale.ref.replace(/\n/g,'<br>');
+  ['ls-speak','ls-listen','ls-read','ls-write'].forEach(id => {
+    const sel = document.getElementById(id);
+    sel.innerHTML = '<option value="">Select score</option>' +
+      scale.options.map(o=>`<option value="${o}">${o}</option>`).join('');
+  });
+}
+
+function convertLang() {
+  const scale = LANG_SCALES[currentLangTest];
+  const skills = ['speak','listen','read','write'];
+  const ids    = ['ls-speak','ls-listen','ls-read','ls-write'];
+  let total = 0, allFilled = true;
+
+  skills.forEach((sk,i) => {
+    const v = document.getElementById(ids[i])?.value;
+    if (!v) { allFilled = false; return; }
+    const clb = scale.toClb(sk, v);
+    const pts = CLB_PTS_SINGLE[Math.min(clb,10)] || 0;
+    total += pts;
+    document.getElementById('clb-'+sk).textContent  = clb ? 'CLB '+clb : '—';
+    document.getElementById('pts-'+sk).textContent  = '+'+pts+' pts';
+    document.getElementById('pts-'+sk).style.color  = pts>=22?'var(--green)':pts>=16?'var(--primary)':'var(--amber)';
+  });
+
+  const totalEl = document.getElementById('lang-total-pts');
+  if (totalEl) totalEl.textContent = allFilled ? total : '—';
+
+  const vEl = document.getElementById('lang-verdict');
+  if (vEl && allFilled) {
+    vEl.style.display='block';
+    if(total>=88){vEl.style.cssText='background:var(--green-light);border:1.5px solid #a7f3d0;color:var(--green)';vEl.textContent='🏆 Excellent! CLB 9–10 in all skills. Maximum language CRS points.';}
+    else if(total>=64){vEl.style.cssText='background:var(--primary-light);border:1.5px solid var(--primary-mid);color:var(--primary)';vEl.textContent='✅ Good score. Aim for CLB 9+ in all skills to maximize points.';}
+    else{vEl.style.cssText='background:var(--amber-light);border:1.5px solid #fde68a;color:var(--amber)';vEl.textContent='📈 Improving your language scores is the fastest way to boost CRS.';}
+  }
+}
+
+function buildCLBTable() {
+  const el = document.getElementById('clb-pts-table');
+  if (!el) return;
+  const rows = [[4,0],[5,6],[6,8],[7,16],[8,22],[9,23],[10,24]];
+  el.innerHTML = rows.map(([clb,pts])=>`
+    <tr style="${pts>=22?'background:var(--green-light)':''}">
+      <td style="padding:7px 10px;font-family:var(--mono);font-weight:600;border-bottom:1px solid var(--border)">CLB ${clb}</td>
+      <td style="padding:7px 10px;text-align:center;font-family:var(--mono);border-bottom:1px solid var(--border);color:${pts>0?'var(--primary)':'var(--faint)'}">+${pts}</td>
+      <td style="padding:7px 10px;text-align:center;font-family:var(--mono);font-weight:700;border-bottom:1px solid var(--border);color:${pts>0?'var(--green)':'var(--faint)'}">+${pts*4}</td>
+    </tr>`).join('');
+}
+
 setInterval(loadNews, 10*60*1000);
 loadNews();
 loadDrawStats();
 calcCRS();
 calcPGWP();
+renderProfile();
+rebuildLangInputs();
+buildCLBTable();
 </script>
 </body>
 </html>
