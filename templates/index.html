@@ -8,39 +8,54 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <style>
     :root {
-      --bg:        #07090f;
-      --surface:   #0c0f1a;
-      --card:      #101420;
-      --card-h:    #141929;
-      --border:    #1a2032;
-      --border2:   #232d45;
-      --primary:   #6366f1;
-      --primary2:  #22d3ee;
-      --green:     #34d399;
-      --amber:     #fbbf24;
-      --red:       #fb7185;
-      --grad:      linear-gradient(135deg,#6366f1 0%,#22d3ee 100%);
-      --grad-sub:  linear-gradient(135deg,rgba(99,102,241,.12) 0%,rgba(34,211,238,.12) 100%);
-      --glow:      0 0 20px rgba(99,102,241,.22);
-      --glow2:     0 0 20px rgba(34,211,238,.18);
-      --text:      #e2e8f0;
-      --text2:     #94a3b8;
-      --muted:     #546070;
-      --mono:      'JetBrains Mono',monospace;
-      --sans:      'Inter',system-ui,sans-serif;
-      --r:         12px;
-      --r-sm:      8px;
-      --shadow:    0 4px 24px rgba(0,0,0,.5);
-      --shadow-lg: 0 8px 48px rgba(0,0,0,.65);
+      --bg:       #f0f4f8;
+      --surface:  #ffffff;
+      --card:     #ffffff;
+      --card-h:   #f8faff;
+      --border:   #e4e9f0;
+      --border2:  #c9d4e0;
+
+      --primary:       #2563eb;
+      --primary-h:     #1d4ed8;
+      --primary-light: #eff6ff;
+      --primary-mid:   #dbeafe;
+      --violet:        #7c3aed;
+      --red:           #e11d48;
+      --red-light:     #fff1f2;
+      --green:         #059669;
+      --green-light:   #ecfdf5;
+      --amber:         #d97706;
+      --amber-light:   #fffbeb;
+
+      --grad:      linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+      --grad-warm: linear-gradient(135deg, #e11d48 0%, #f97316 100%);
+      --grad-green:linear-gradient(135deg, #059669 0%, #0ea5e9 100%);
+
+      --text:  #0f172a;
+      --text2: #374151;
+      --muted: #6b7280;
+      --faint: #9ca3af;
+
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Inter', system-ui, sans-serif;
+
+      --r:    12px;
+      --r-sm: 8px;
+      --r-lg: 16px;
+
+      --sh-xs: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --sh:    0 4px 16px rgba(0,0,0,.07), 0 2px 6px rgba(0,0,0,.04);
+      --sh-md: 0 8px 30px rgba(0,0,0,.1),  0 4px 12px rgba(0,0,0,.05);
+      --sh-lg: 0 16px 48px rgba(0,0,0,.12),0 6px 20px rgba(0,0,0,.06);
+      --sh-blue: 0 4px 20px rgba(37,99,235,.2);
     }
+
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
     body{
-      background:var(--bg);color:var(--text);font-family:var(--sans);
-      min-height:100vh;font-size:14px;line-height:1.6;
-      background-image:
-        radial-gradient(ellipse 80% 60% at 20% 0%,rgba(99,102,241,.06) 0%,transparent 60%),
-        radial-gradient(ellipse 60% 50% at 80% 100%,rgba(34,211,238,.04) 0%,transparent 60%);
+      background:var(--bg);color:var(--text);
+      font-family:var(--sans);min-height:100vh;
+      font-size:14px;line-height:1.6;
     }
     ::-webkit-scrollbar{width:5px;height:5px}
     ::-webkit-scrollbar-track{background:var(--bg)}
@@ -49,50 +64,46 @@
 
     /* ── HEADER ── */
     header{
-      border-bottom:1px solid var(--border);
-      padding:0 1.75rem;
+      border-bottom:1px solid var(--border);padding:0 1.75rem;
       display:flex;align-items:center;justify-content:space-between;
       height:60px;position:sticky;top:0;
-      background:rgba(7,9,15,.92);
-      backdrop-filter:blur(24px) saturate(180%);
-      -webkit-backdrop-filter:blur(24px) saturate(180%);
-      z-index:100;
+      background:rgba(255,255,255,.96);
+      backdrop-filter:blur(20px) saturate(180%);
+      -webkit-backdrop-filter:blur(20px) saturate(180%);
+      z-index:100;box-shadow:var(--sh-xs);
     }
-    .logo{display:flex;align-items:center;gap:10px;text-decoration:none;cursor:pointer}
+    .logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
     .logo-icon{
-      width:34px;height:34px;background:var(--grad);border-radius:9px;
-      display:flex;align-items:center;justify-content:center;font-size:16px;
-      box-shadow:var(--glow);position:relative;flex-shrink:0;
+      width:36px;height:36px;background:var(--grad);border-radius:10px;
+      display:flex;align-items:center;justify-content:center;font-size:18px;
+      box-shadow:var(--sh-blue);position:relative;flex-shrink:0;
     }
     .logo-icon::after{
-      content:'';position:absolute;top:-3px;right:-3px;
-      width:9px;height:9px;background:var(--green);border-radius:50%;
-      border:2px solid var(--bg);
+      content:'';position:absolute;top:-2px;right:-2px;
+      width:9px;height:9px;background:#22c55e;border-radius:50%;
+      border:2px solid #fff;
       animation:live-pulse 2.2s ease-in-out infinite;
     }
     @keyframes live-pulse{
-      0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.5)}
-      50%{box-shadow:0 0 0 5px rgba(52,211,153,0)}
+      0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}
+      50%{box-shadow:0 0 0 5px rgba(34,197,94,0)}
     }
-    .logo-text{
-      font-weight:700;font-size:15px;letter-spacing:-.02em;
-      background:var(--grad);-webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;background-clip:text;
-    }
+    .logo-text{font-weight:800;font-size:15px;letter-spacing:-.03em;color:var(--text)}
+    .logo-sub{font-size:11px;font-weight:400;color:var(--muted);letter-spacing:.01em}
+
     .header-right{display:flex;align-items:center;gap:10px}
     .last-updated{
       font-family:var(--mono);font-size:11px;color:var(--muted);
-      padding:4px 12px;background:var(--surface);border-radius:20px;
+      padding:5px 12px;background:var(--bg);border-radius:20px;
       border:1px solid var(--border);
     }
     .refresh-btn{
       background:var(--grad);border:none;color:#fff;
-      padding:7px 18px;border-radius:20px;
+      padding:8px 18px;border-radius:20px;
       font-family:var(--sans);font-size:12px;font-weight:600;
-      cursor:pointer;transition:all .2s;
-      box-shadow:var(--glow);letter-spacing:.01em;
+      cursor:pointer;transition:all .2s;box-shadow:var(--sh-blue);
     }
-    .refresh-btn:hover{opacity:.82;transform:translateY(-1px);box-shadow:var(--glow),0 4px 16px rgba(99,102,241,.3)}
+    .refresh-btn:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(37,99,235,.3)}
 
     /* NAV TABS */
     .nav-tabs{display:flex;gap:2px;flex-wrap:wrap}
@@ -102,11 +113,11 @@
       font-family:var(--sans);font-size:12px;font-weight:500;
       cursor:pointer;transition:all .15s;white-space:nowrap;
     }
-    .nav-tab:hover{color:var(--text);background:rgba(255,255,255,.05)}
-    .nav-tab.active{background:var(--grad);color:#fff;box-shadow:var(--glow)}
+    .nav-tab:hover{color:var(--text);background:var(--bg)}
+    .nav-tab.active{background:var(--grad);color:#fff;box-shadow:var(--sh-blue)}
 
     /* LAYOUT */
-    .wrapper{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 60px)}
+    .wrapper{display:grid;grid-template-columns:248px 1fr;min-height:calc(100vh - 60px)}
 
     /* SIDEBAR */
     aside{
@@ -117,7 +128,7 @@
     .sidebar-section{margin-bottom:1.75rem}
     .sidebar-label{
       font-family:var(--mono);font-size:10px;text-transform:uppercase;
-      letter-spacing:.14em;color:var(--muted);
+      letter-spacing:.14em;color:var(--faint);
       padding:0 1.25rem;margin-bottom:.5rem;
     }
     .cat-btn{
@@ -126,136 +137,147 @@
       color:var(--text2);font-family:var(--sans);font-size:13px;
       cursor:pointer;transition:all .13s;text-align:left;
     }
-    .cat-btn:hover{color:var(--text);background:rgba(255,255,255,.04)}
+    .cat-btn:hover{color:var(--text);background:#f8faff}
     .cat-btn.active{
-      color:var(--primary);background:rgba(99,102,241,.1);
-      border-left:2px solid var(--primary);padding-left:calc(1.25rem - 2px);
+      color:var(--primary);background:var(--primary-light);
+      border-left:3px solid var(--primary);padding-left:calc(1.25rem - 3px);
+      font-weight:600;
     }
     .cat-count{
       font-family:var(--mono);font-size:10px;color:var(--muted);
-      background:var(--card);padding:2px 8px;border-radius:10px;
-      border:1px solid var(--border);
+      background:var(--bg);padding:2px 8px;border-radius:10px;
+      border:1px solid var(--border);min-width:28px;text-align:center;
     }
     .cat-btn.active .cat-count{
-      background:rgba(99,102,241,.15);color:var(--primary);
-      border-color:rgba(99,102,241,.3);
+      background:var(--primary-mid);color:var(--primary);border-color:var(--primary-mid);
     }
     .alert-box{
-      margin:0 1rem;background:var(--card);border:1px solid var(--border);
-      border-radius:var(--r);padding:1rem;
+      margin:0 1rem;background:linear-gradient(135deg,#f0f4ff 0%,#faf5ff 100%);
+      border:1px solid var(--primary-mid);border-radius:var(--r);padding:1rem;
     }
-    .alert-box h4{font-size:12px;font-weight:600;color:var(--green);margin-bottom:.75rem}
+    .alert-box h4{font-size:12px;font-weight:700;color:var(--primary);margin-bottom:.75rem}
     .alert-box input{
-      width:100%;background:var(--surface);border:1px solid var(--border2);
-      color:var(--text);padding:8px 10px;border-radius:var(--r-sm);
+      width:100%;background:#fff;border:1px solid var(--border2);
+      color:var(--text);padding:9px 11px;border-radius:var(--r-sm);
       font-family:var(--sans);font-size:12px;margin-bottom:.5rem;
-      transition:border-color .15s;
+      transition:all .15s;box-shadow:var(--sh-xs);
     }
-    .alert-box input::placeholder{color:var(--muted)}
-    .alert-box input:focus{outline:none;border-color:var(--primary)}
+    .alert-box input::placeholder{color:var(--faint)}
+    .alert-box input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
     .alert-box button{
       width:100%;background:var(--grad);border:none;color:#fff;
-      padding:8px;border-radius:var(--r-sm);
+      padding:9px;border-radius:var(--r-sm);
       font-family:var(--sans);font-size:12px;font-weight:600;
       cursor:pointer;transition:opacity .15s;
     }
-    .alert-box button:hover{opacity:.82}
-    .alert-status{font-size:11px;color:var(--green);margin-top:.4rem;display:none}
+    .alert-box button:hover{opacity:.88}
+    .alert-status{font-size:11px;color:var(--green);margin-top:.4rem;display:none;font-weight:500}
+    .sidebar-tool-btn{
+      display:flex;align-items:center;gap:8px;
+      width:100%;padding:9px 1.25rem;background:none;border:none;
+      color:var(--text2);font-family:var(--sans);font-size:13px;
+      cursor:pointer;transition:all .13s;text-align:left;
+    }
+    .sidebar-tool-btn:hover{color:var(--primary);background:var(--primary-light)}
 
     /* MAIN */
     main{padding:1.5rem 2rem;background:var(--bg)}
     .page{display:none}
     .page.active{display:block}
 
-    /* SEARCH BAR */
+    /* SEARCH */
     .top-bar{display:flex;gap:10px;margin-bottom:1.25rem;align-items:center}
     .search-wrap{flex:1;position:relative}
     .search-wrap>svg{
-      position:absolute;left:13px;top:50%;transform:translateY(-50%);
-      opacity:.35;z-index:1;pointer-events:none;
+      position:absolute;left:14px;top:50%;transform:translateY(-50%);
+      opacity:.4;z-index:1;pointer-events:none;
     }
     #search{
-      width:100%;background:var(--surface);border:1px solid var(--border2);
-      color:var(--text);padding:10px 38px 10px 38px;border-radius:22px;
+      width:100%;background:#fff;border:1px solid var(--border);
+      color:var(--text);padding:11px 38px 11px 40px;border-radius:24px;
       font-family:var(--sans);font-size:13px;transition:all .2s;
+      box-shadow:var(--sh-xs);
     }
-    #search:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,.14)}
-    #search::placeholder{color:var(--muted)}
+    #search:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.12),var(--sh-xs)}
+    #search::placeholder{color:var(--faint)}
     .clear-btn{
-      position:absolute;right:12px;top:50%;transform:translateY(-50%);
-      background:none;border:none;color:var(--muted);cursor:pointer;
-      font-size:14px;line-height:1;padding:2px 4px;display:none;transition:color .15s;
+      position:absolute;right:14px;top:50%;transform:translateY(-50%);
+      background:var(--bg);border:1px solid var(--border);color:var(--muted);
+      cursor:pointer;font-size:12px;line-height:1;padding:3px 6px;
+      display:none;border-radius:50%;transition:all .15s;
     }
-    .clear-btn:hover{color:var(--text)}
+    .clear-btn:hover{color:var(--text);background:var(--border)}
     .sort-select{
-      background:var(--surface);border:1px solid var(--border2);color:var(--text);
-      padding:10px 14px;border-radius:22px;font-family:var(--sans);font-size:12px;
-      cursor:pointer;transition:border-color .15s;appearance:none;
-      background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-      background-repeat:no-repeat;background-position:right 10px center;background-size:14px;
-      padding-right:32px;
+      background:#fff;border:1px solid var(--border);color:var(--text);
+      padding:11px 36px 11px 14px;border-radius:24px;
+      font-family:var(--sans);font-size:12px;font-weight:500;
+      cursor:pointer;box-shadow:var(--sh-xs);appearance:none;
+      background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-repeat:no-repeat;background-position:right 12px center;background-size:14px;
     }
     .sort-select:focus{outline:none;border-color:var(--primary)}
 
     /* STATS ROW */
     .stats-row{display:flex;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap}
     .stat-chip{
-      font-family:var(--mono);font-size:11px;color:var(--muted);
+      font-size:12px;font-weight:500;color:var(--text2);
       display:flex;align-items:center;gap:6px;
-      background:var(--surface);border:1px solid var(--border);
-      padding:5px 12px;border-radius:20px;
+      background:#fff;border:1px solid var(--border);
+      padding:6px 14px;border-radius:20px;box-shadow:var(--sh-xs);
     }
-    .stat-chip span{color:var(--text);font-weight:600}
+    .stat-chip span{color:var(--primary);font-weight:700}
 
     /* DRAW BANNER */
     .draw-banner{
-      background:var(--grad-sub);border:1px solid rgba(99,102,241,.3);
+      background:linear-gradient(90deg,#fff7f0 0%,#fff0f3 100%);
+      border:1px solid #fecdd3;border-left:4px solid var(--red);
       border-radius:var(--r);padding:12px 16px;margin-bottom:1.25rem;
-      display:none;align-items:center;gap:12px;
+      display:none;align-items:center;gap:12px;box-shadow:var(--sh-xs);
     }
     .draw-banner.visible{display:flex}
     .draw-tag{
       font-family:var(--mono);font-size:10px;text-transform:uppercase;
-      letter-spacing:.07em;background:var(--grad);color:#fff;
-      padding:3px 10px;border-radius:20px;white-space:nowrap;
+      letter-spacing:.07em;background:var(--grad-warm);color:#fff;
+      padding:3px 10px;border-radius:20px;white-space:nowrap;font-weight:600;
     }
-    .draw-text{font-size:13px;color:var(--primary2);font-weight:500}
+    .draw-text{font-size:13px;color:var(--red);font-weight:600}
 
     /* NEWS GRID */
     #news-grid{
       display:flex;flex-direction:column;
-      background:var(--card);border:1px solid var(--border);
-      border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);
+      background:#fff;border:1px solid var(--border);
+      border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);
     }
     .news-card{
-      background:var(--card);padding:1rem 1.25rem;
+      background:#fff;padding:1rem 1.25rem;
       display:grid;grid-template-columns:1fr auto;
-      gap:.75rem;transition:background .15s;text-decoration:none;color:inherit;
+      gap:.75rem;transition:all .18s;text-decoration:none;color:inherit;
       border-bottom:1px solid var(--border);
+      border-left:3px solid transparent;
     }
     .news-card:last-child{border-bottom:none}
-    .news-card:hover{background:var(--card-h)}
-    .news-card.read{opacity:.5}
+    .news-card:hover{background:var(--card-h);border-left-color:var(--primary);padding-left:calc(1.25rem - 3px + 3px)}
+    .news-card.read{opacity:.55}
     .card-left{min-width:0}
     .card-meta{display:flex;align-items:center;gap:7px;margin-bottom:5px;flex-wrap:wrap}
     .source-tag{
       font-family:var(--mono);font-size:10px;text-transform:uppercase;
-      letter-spacing:.06em;padding:2px 9px;border-radius:20px;
+      letter-spacing:.06em;padding:2px 9px;border-radius:20px;font-weight:600;
     }
-    .tag-ircc{background:rgba(99,102,241,.15);color:var(--primary);border:1px solid rgba(99,102,241,.3)}
-    .tag-cic{background:rgba(34,211,238,.1);color:var(--primary2);border:1px solid rgba(34,211,238,.3)}
-    .tag-cbc{background:rgba(251,191,36,.1);color:var(--amber);border:1px solid rgba(251,191,36,.3)}
-    .tag-default{background:rgba(84,96,112,.15);color:var(--muted);border:1px solid var(--border)}
+    .tag-ircc{background:#fee2e2;color:#b91c1c}
+    .tag-cic{background:#dbeafe;color:#1d4ed8}
+    .tag-cbc{background:#fef3c7;color:#92400e}
+    .tag-default{background:#f3f4f6;color:#6b7280}
     .keyword-badge{
       font-family:var(--mono);font-size:10px;text-transform:uppercase;
-      letter-spacing:.04em;padding:2px 7px;border-radius:20px;
-      background:rgba(251,191,36,.1);color:var(--amber);border:1px solid rgba(251,191,36,.25);
+      letter-spacing:.04em;padding:2px 8px;border-radius:20px;
+      background:#fef3c7;color:#92400e;border:1px solid #fde68a;font-weight:600;
     }
-    .card-date{font-family:var(--mono);font-size:11px;color:var(--muted)}
-    .card-title{font-size:14px;font-weight:500;color:var(--text);line-height:1.45;margin-bottom:4px}
-    .news-card:hover .card-title{color:#fff}
+    .card-date{font-family:var(--mono);font-size:11px;color:var(--faint)}
+    .card-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.45;margin-bottom:4px}
+    .news-card:hover .card-title{color:var(--primary)}
     .card-summary{
-      font-size:12px;color:var(--muted);line-height:1.5;overflow:hidden;
+      font-size:12px;color:var(--muted);line-height:1.55;overflow:hidden;
       display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;
     }
     .card-right{
@@ -264,16 +286,14 @@
     }
     .cat-pill{
       font-family:var(--mono);font-size:10px;color:var(--muted);
-      border:1px solid var(--border2);padding:3px 9px;border-radius:20px;
+      border:1px solid var(--border);padding:3px 9px;border-radius:20px;
       white-space:nowrap;text-transform:uppercase;letter-spacing:.04em;
+      background:var(--bg);
     }
-    .bookmark-btn{
-      background:none;border:none;cursor:pointer;font-size:14px;
-      opacity:.2;transition:opacity .15s;padding:0;line-height:1;
-    }
+    .bookmark-btn{background:none;border:none;cursor:pointer;font-size:14px;opacity:.3;transition:opacity .15s;padding:0}
     .bookmark-btn:hover,.bookmark-btn.bookmarked{opacity:1}
-    .arrow-icon{opacity:.22;transition:opacity .15s}
-    .news-card:hover .arrow-icon{opacity:.65}
+    .arrow-icon{opacity:.2;transition:opacity .15s;color:var(--primary)}
+    .news-card:hover .arrow-icon{opacity:.7}
 
     /* STATES */
     .empty-state{padding:4rem 2rem;text-align:center;color:var(--muted);font-family:var(--mono);font-size:13px}
@@ -286,75 +306,74 @@
     /* PAGINATION */
     .pagination{display:flex;gap:6px;justify-content:center;margin-top:1.5rem;flex-wrap:wrap}
     .pg-btn{
-      background:var(--surface);border:1px solid var(--border);
-      color:var(--muted);padding:6px 14px;border-radius:20px;
-      font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .15s;
+      background:#fff;border:1px solid var(--border);color:var(--muted);
+      padding:7px 15px;border-radius:20px;font-family:var(--mono);font-size:11px;
+      cursor:pointer;transition:all .15s;box-shadow:var(--sh-xs);font-weight:500;
     }
-    .pg-btn:hover{border-color:var(--primary);color:var(--primary)}
-    .pg-btn.active{background:var(--grad);border-color:transparent;color:#fff}
+    .pg-btn:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-light)}
+    .pg-btn.active{background:var(--grad);border-color:transparent;color:#fff;box-shadow:var(--sh-blue)}
 
     /* PANELS */
     .panel-title{
-      font-size:18px;font-weight:700;color:var(--text);
-      margin-bottom:1.5rem;letter-spacing:-.02em;
+      font-size:20px;font-weight:800;color:var(--text);
+      margin-bottom:1.5rem;letter-spacing:-.03em;
+      display:flex;align-items:center;gap:10px;
     }
     .panel-card{
-      background:var(--card);border:1px solid var(--border);
+      background:#fff;border:1px solid var(--border);
       border-radius:var(--r);padding:1.5rem;margin-bottom:1rem;
-      box-shadow:var(--shadow);
+      box-shadow:var(--sh);
     }
     .chart-wrap{
-      background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+      background:#fff;border:1px solid var(--border);border-radius:var(--r);
       padding:1.5rem;margin-bottom:1.5rem;position:relative;height:300px;
-      box-shadow:var(--shadow);
+      box-shadow:var(--sh);
     }
 
     /* HEALTH TABLE */
     .health-table{width:100%;border-collapse:collapse}
     .health-table th{
       font-family:var(--mono);font-size:10px;text-transform:uppercase;
-      letter-spacing:.12em;color:var(--muted);text-align:left;
-      padding:10px 14px;border-bottom:1px solid var(--border);
+      letter-spacing:.12em;color:var(--faint);text-align:left;
+      padding:10px 14px;border-bottom:2px solid var(--border);background:var(--bg);
     }
     .health-table td{padding:12px 14px;font-size:13px;border-bottom:1px solid var(--border)}
     .health-table tr:last-child td{border-bottom:none}
-    .health-table tbody tr:hover td{background:rgba(255,255,255,.02)}
-    .status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px}
-    .status-ok{background:var(--green);box-shadow:0 0 8px rgba(52,211,153,.55)}
+    .health-table tbody tr:hover td{background:var(--primary-light)}
+    .status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;flex-shrink:0}
+    .status-ok{background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.2)}
     .status-warn{background:var(--amber)}
     .status-dead{background:var(--red)}
 
     /* PROCESSING */
     .proc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
     .proc-card{
-      background:var(--card);border:1px solid var(--border);border-radius:var(--r);
-      padding:1.25rem;transition:all .2s;
+      background:#fff;border:1px solid var(--border);border-radius:var(--r);
+      padding:1.25rem;transition:all .2s;box-shadow:var(--sh-xs);
     }
-    .proc-card:hover{border-color:var(--primary);box-shadow:var(--glow)}
-    .proc-permit{font-size:13px;font-weight:500;color:var(--text);margin-bottom:6px}
-    .proc-time{font-family:var(--mono);font-size:22px;color:var(--primary2);font-weight:700;margin-bottom:3px}
+    .proc-card:hover{border-color:var(--primary);box-shadow:var(--sh-md);transform:translateY(-2px)}
+    .proc-permit{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
+    .proc-time{font-family:var(--mono);font-size:24px;color:var(--primary);font-weight:700;margin-bottom:3px}
     .proc-label{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
 
     /* TOAST */
     #toast{
-      position:fixed;bottom:24px;right:24px;
-      background:var(--card);border:1px solid rgba(99,102,241,.5);color:var(--text);
-      padding:12px 20px;border-radius:var(--r);
-      font-family:var(--sans);font-size:13px;font-weight:500;
-      opacity:0;transform:translateY(10px);transition:all .25s;
-      pointer-events:none;z-index:999;
-      box-shadow:var(--shadow-lg),var(--glow);
+      position:fixed;bottom:24px;right:24px;background:#fff;
+      border:1px solid var(--border);color:var(--text);padding:12px 20px;
+      border-radius:var(--r);font-family:var(--sans);font-size:13px;font-weight:500;
+      opacity:0;transform:translateY(10px);transition:all .25s;pointer-events:none;
+      z-index:999;box-shadow:var(--sh-lg);border-left:4px solid var(--primary);
     }
     #toast.show{opacity:1;transform:translateY(0)}
 
     /* PROFILE */
     .profile-row{
       display:flex;justify-content:space-between;align-items:center;
-      padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;
+      padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;
     }
     .profile-row:last-child{border-bottom:none}
     .profile-label{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-    .profile-val{color:var(--text);font-weight:500}
+    .profile-val{color:var(--text);font-weight:600}
 
     /* TIMELINE */
     .timeline{display:flex;flex-direction:column}
@@ -366,135 +385,123 @@
     .tl-dot{
       position:absolute;left:-8px;top:1rem;
       width:14px;height:14px;border-radius:50%;
-      border:2px solid var(--border);background:var(--bg);
+      border:2px solid var(--border);background:#fff;
     }
-    .tl-item.done .tl-dot{background:var(--green);border-color:var(--green);box-shadow:0 0 8px rgba(52,211,153,.45)}
-    .tl-item.upcoming .tl-dot{background:var(--primary);border-color:var(--primary);box-shadow:0 0 8px rgba(99,102,241,.45)}
+    .tl-item.done .tl-dot{background:var(--green);border-color:var(--green);box-shadow:0 0 0 3px rgba(5,150,105,.15)}
+    .tl-item.upcoming .tl-dot{background:var(--primary);border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.15)}
     .tl-item.future .tl-dot{background:var(--amber);border-color:var(--amber)}
     .tl-item.done{border-left-color:var(--green)}
     .tl-item.upcoming{border-left-color:var(--primary)}
-    .tl-item.future{border-left-color:var(--amber)}
+    .tl-item.future{border-left-color:#fde68a}
     .tl-title{font-size:13px;font-weight:600;color:var(--text)}
     .tl-desc{font-size:12px;color:var(--muted);margin-top:2px}
-    .tl-date{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap;padding-top:2px}
+    .tl-date{font-family:var(--mono);font-size:11px;color:var(--faint);white-space:nowrap;padding-top:2px}
 
     /* REC CARDS */
     .rec-card{
       display:flex;gap:.75rem;padding:.875rem;border-radius:var(--r-sm);
       border:1px solid var(--border);align-items:flex-start;transition:all .2s;
+      background:#fff;
     }
-    .rec-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
-    .rec-card.green{border-color:rgba(52,211,153,.25);background:rgba(52,211,153,.05)}
-    .rec-card.amber{border-color:rgba(251,191,36,.25);background:rgba(251,191,36,.05)}
-    .rec-card.blue{border-color:rgba(99,102,241,.25);background:rgba(99,102,241,.05)}
+    .rec-card:hover{transform:translateY(-2px);box-shadow:var(--sh-md)}
+    .rec-card.green{border-color:#a7f3d0;background:var(--green-light)}
+    .rec-card.amber{border-color:#fde68a;background:var(--amber-light)}
+    .rec-card.blue{border-color:var(--primary-mid);background:var(--primary-light)}
     .rec-icon{font-size:16px;flex-shrink:0}
-    .rec-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
-    .rec-desc{font-size:12px;color:var(--muted);line-height:1.4}
+    .rec-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px}
+    .rec-desc{font-size:12px;color:var(--muted);line-height:1.45}
 
     /* CALCULATOR */
     .calc-section-title{
       font-family:var(--mono);font-size:10px;text-transform:uppercase;
-      letter-spacing:.12em;color:var(--muted);margin-bottom:1rem;
-      padding-bottom:.625rem;border-bottom:1px solid var(--border);
+      letter-spacing:.12em;color:var(--faint);margin-bottom:1rem;
+      padding-bottom:.625rem;border-bottom:2px solid var(--border);
     }
     .calc-group{margin-bottom:.875rem}
     .calc-label{
       display:block;font-family:var(--mono);font-size:11px;color:var(--muted);
-      text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;
+      text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;font-weight:500;
     }
     .calc-input{
-      width:100%;background:var(--surface);border:1px solid var(--border2);
+      width:100%;background:#fff;border:1.5px solid var(--border);
       color:var(--text);padding:9px 12px;border-radius:var(--r-sm);
       font-family:var(--sans);font-size:13px;transition:all .15s;
+      box-shadow:var(--sh-xs);
     }
     select.calc-input{
       appearance:none;cursor:pointer;
-      background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
       background-repeat:no-repeat;background-position:right 10px center;
-      background-size:14px;padding-right:32px;
+      background-size:14px;padding-right:32px;background-color:#fff;
     }
-    .calc-input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+    .calc-input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
     .breakdown-row{
       display:flex;justify-content:space-between;align-items:center;
-      padding:6px 10px;border-radius:var(--r-sm);font-size:12px;
-      background:var(--surface);margin-bottom:3px;
+      padding:7px 10px;border-radius:var(--r-sm);font-size:12px;
+      background:var(--bg);margin-bottom:3px;border:1px solid var(--border);
     }
-    .breakdown-pts{font-family:var(--mono);font-weight:600}
+    .breakdown-pts{font-family:var(--mono);font-weight:700}
     .tip-row{
       display:flex;gap:10px;padding:10px;border-radius:var(--r-sm);
-      background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.15);
+      background:var(--primary-light);border:1px solid var(--primary-mid);
       font-size:12px;align-items:flex-start;
     }
     .deadline-row{
       display:flex;justify-content:space-between;padding:10px 12px;
-      border-radius:var(--r-sm);background:var(--surface);font-size:12px;
-      align-items:center;border:1px solid var(--border);
+      border-radius:var(--r-sm);background:#fff;font-size:12px;
+      align-items:center;border:1.5px solid var(--border);
     }
-    .deadline-label{color:var(--muted);font-family:var(--mono);font-size:11px}
-    .deadline-val{font-weight:600;color:var(--text);font-family:var(--mono)}
-    .deadline-urgent{border-color:rgba(251,74,90,.3);background:rgba(251,74,90,.07)}
-    .deadline-ok{border-color:rgba(52,211,153,.25);background:rgba(52,211,153,.05)}
+    .deadline-label{color:var(--muted);font-family:var(--mono);font-size:11px;font-weight:500}
+    .deadline-val{font-weight:700;color:var(--text);font-family:var(--mono)}
+    .deadline-urgent{border-color:#fca5a5;background:#fff1f2}
+    .deadline-ok{border-color:#a7f3d0;background:var(--green-light)}
 
     /* SCORE BAR */
     .score-bar-bg{background:var(--border);border-radius:6px;height:12px;position:relative;overflow:visible}
     .score-bar-fill{height:100%;border-radius:6px;transition:width .5s ease,background .3s}
-    .score-bar-marker{
-      position:absolute;top:-7px;width:2px;height:26px;
-      background:var(--red);border-radius:2px;
-      box-shadow:0 0 8px rgba(251,74,90,.65);
-    }
+    .score-bar-marker{position:absolute;top:-7px;width:2px;height:26px;background:var(--red);border-radius:2px;box-shadow:0 0 6px rgba(225,29,72,.5)}
 
     /* MOBILE NAV */
     .mobile-nav{
       display:none;position:fixed;bottom:0;left:0;right:0;
-      background:rgba(7,9,15,.97);border-top:1px solid var(--border);
-      backdrop-filter:blur(20px);z-index:200;
+      background:rgba(255,255,255,.97);border-top:1px solid var(--border);
+      backdrop-filter:blur(20px);z-index:200;box-shadow:0 -4px 20px rgba(0,0,0,.08);
     }
-    .mobile-nav-inner{
-      display:flex;overflow-x:auto;scrollbar-width:none;
-      -webkit-overflow-scrolling:touch;
-    }
+    .mobile-nav-inner{display:flex;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
     .mobile-nav-inner::-webkit-scrollbar{display:none}
     .mobile-nav-btn{
       display:flex;flex-direction:column;align-items:center;justify-content:center;
       gap:4px;flex:0 0 auto;min-width:58px;padding:8px 4px 12px;
       background:none;border:none;color:var(--muted);
-      font-family:var(--sans);font-size:9px;font-weight:500;text-transform:uppercase;
+      font-family:var(--sans);font-size:9px;font-weight:600;text-transform:uppercase;
       letter-spacing:.03em;cursor:pointer;transition:color .15s;white-space:nowrap;
     }
     .mobile-nav-btn .mnav-icon{font-size:18px;line-height:1}
     .mobile-nav-btn.active{color:var(--primary)}
 
     /* MOBILE DRAWER */
-    .mobile-drawer-overlay{
-      display:none;position:fixed;inset:0;
-      background:rgba(0,0,0,.7);z-index:300;backdrop-filter:blur(4px);
-    }
+    .mobile-drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;backdrop-filter:blur(3px)}
     .mobile-drawer-overlay.open{display:block}
     .mobile-drawer{
       position:fixed;top:0;left:0;bottom:0;width:290px;
-      background:var(--surface);border-right:1px solid var(--border);
+      background:#fff;border-right:1px solid var(--border);
       z-index:301;overflow-y:auto;
       transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);
-      padding-top:60px;
+      padding-top:60px;box-shadow:var(--sh-lg);
     }
     .mobile-drawer.open{transform:translateX(0)}
     .drawer-close{
       position:absolute;top:14px;right:14px;
-      background:var(--card);border:1px solid var(--border);color:var(--muted);
+      background:var(--bg);border:1px solid var(--border);color:var(--muted);
       width:32px;height:32px;border-radius:50%;font-size:14px;cursor:pointer;
       display:flex;align-items:center;justify-content:center;transition:all .15s;
     }
     .drawer-close:hover{color:var(--text);border-color:var(--border2)}
 
-    /* BADGE on sidebar button */
-    .sidebar-tool-btn{
-      display:flex;align-items:center;gap:8px;
-      width:100%;padding:8px 1.25rem;background:none;border:none;
-      color:var(--text2);font-family:var(--sans);font-size:13px;
-      cursor:pointer;transition:all .13s;text-align:left;
-    }
-    .sidebar-tool-btn:hover{color:var(--primary2);background:rgba(34,211,238,.05)}
+    /* SCORE DISPLAY COLORS */
+    .score-great{color:var(--green)!important}
+    .score-ok{color:var(--amber)!important}
+    .score-low{color:var(--red)!important}
 
     @media(max-width:768px){
       .wrapper{grid-template-columns:1fr;padding-bottom:68px}
@@ -503,19 +510,17 @@
       .nav-tabs{display:none}
       .mobile-nav{display:block}
       header{padding:0 .875rem;height:56px}
-      .logo-text{font-size:13px}
+      .logo-sub{display:none}
       .last-updated{display:none}
       .news-card{grid-template-columns:1fr;gap:.5rem;padding:.875rem 1rem}
       .card-right{flex-direction:row;align-items:center;justify-content:space-between;min-width:unset}
       .stats-row{gap:.5rem}
-      .stat-chip{font-size:10px;padding:4px 10px}
+      .stat-chip{font-size:11px;padding:5px 10px}
       .top-bar{gap:8px}
-      .sort-select{font-size:11px;padding:9px 10px}
       .panel-title{font-size:16px}
       .panel-card{padding:1rem}
       .chart-wrap{height:220px}
-      #page-crscalc>div,
-      #page-pgwp>div{grid-template-columns:1fr!important}
+      #page-crscalc>div,#page-pgwp>div{grid-template-columns:1fr!important}
       .profile-section-grid{grid-template-columns:1fr!important}
     }
     @media(max-width:1100px) and (min-width:769px){
@@ -528,7 +533,10 @@
 <header>
   <div class="logo" onclick="showPage('news',null);document.querySelectorAll('.nav-tab').forEach((b,i)=>{b.classList.toggle('active',i===0)})">
     <div class="logo-icon">🍁</div>
-    <span class="logo-text">IRCC News Hub</span>
+    <div>
+      <div class="logo-text">IRCC News Hub</div>
+      <div class="logo-sub">Canada Immigration Tracker</div>
+    </div>
   </div>
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="showPage('news',this)">📰 News</button>
@@ -595,9 +603,9 @@
     <div class="page active" id="page-news">
       <div class="top-bar">
         <div class="search-wrap">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-            <circle cx="6.5" cy="6.5" r="5.5" stroke="white" stroke-width="1.5"/>
-            <path d="M11 11L15 15" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+            <circle cx="6.5" cy="6.5" r="5.5" stroke="#374151" stroke-width="1.5"/>
+            <path d="M11 11L15 15" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
           <input id="search" type="text" placeholder="Search news, keywords, sources…" oninput="debounceSearch()"/>
           <button class="clear-btn" id="clear-btn" onclick="clearSearch()">✕</button>
@@ -620,7 +628,7 @@
       <div id="news-grid">
         <div class="loading-state">
           <div class="loading-dots"><span>.</span><span>.</span><span>.</span></div>
-          <div style="margin-top:8px">Fetching latest immigration news</div>
+          <div style="margin-top:8px;color:var(--muted)">Fetching latest immigration news…</div>
         </div>
       </div>
       <div class="pagination" id="pagination"></div>
@@ -646,7 +654,7 @@
     <!-- ── SOURCES ── -->
     <div class="page" id="page-health">
       <div class="panel-title">🟢 Source Health Dashboard</div>
-      <div class="panel-card">
+      <div class="panel-card" style="padding:0;overflow:hidden">
         <table class="health-table">
           <thead><tr><th>Source</th><th>Status</th><th>Articles</th><th>Last Seen</th></tr></thead>
           <tbody id="health-body"><tr><td colspan="4" style="color:var(--muted);text-align:center;padding:2rem">Loading…</td></tr></tbody>
@@ -669,8 +677,8 @@
       <div class="panel-title">👤 My Immigration Profile</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem" class="profile-section-grid">
         <div class="panel-card">
-          <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:1rem">Your Profile</div>
-          <div style="display:flex;flex-direction:column;gap:.5rem">
+          <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin-bottom:1rem;font-weight:600">Your Profile</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem">
             <div class="profile-row"><span class="profile-label">Name</span><span class="profile-val">Priyanka</span></div>
             <div class="profile-row"><span class="profile-label">Age</span><span class="profile-val">25</span></div>
             <div class="profile-row"><span class="profile-label">Education</span><span class="profile-val">Masters — Software Engineering</span></div>
@@ -683,43 +691,43 @@
           </div>
         </div>
         <div class="panel-card">
-          <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:1rem">Estimated CRS Score</div>
+          <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin-bottom:1rem;font-weight:600">Estimated CRS Score</div>
           <div style="text-align:center;padding:.5rem 0">
-            <div style="font-family:var(--mono);font-size:56px;font-weight:800;color:var(--primary2);line-height:1">465</div>
-            <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:.5rem">estimated current score (incl. India exp)</div>
-            <div style="margin-top:1rem;padding:.75rem;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.25);border-radius:var(--r-sm)">
-              <div style="font-family:var(--mono);font-size:11px;color:var(--amber)">⚠ Latest draw cutoff: ~490–510</div>
-              <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px">Gap: ~40–45 points</div>
+            <div style="font-family:var(--mono);font-size:64px;font-weight:800;color:var(--primary);line-height:1">465</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:.5rem">estimated current score (incl. India exp)</div>
+            <div style="margin-top:1rem;padding:.875rem;background:var(--amber-light);border:1.5px solid #fde68a;border-radius:var(--r-sm)">
+              <div style="font-size:12px;font-weight:600;color:var(--amber)">⚠ Latest draw cutoff: ~490–510</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:3px">Gap: ~40–45 points</div>
             </div>
-            <div style="margin-top:.75rem;padding:.75rem;background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.22);border-radius:var(--r-sm)">
-              <div style="font-family:var(--mono);font-size:11px;color:var(--green)">✓ After PGWP + 1yr CEC: ~+60–80 pts</div>
-              <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px">Projected score 2028: ~520–540 ✅</div>
+            <div style="margin-top:.75rem;padding:.875rem;background:var(--green-light);border:1.5px solid #a7f3d0;border-radius:var(--r-sm)">
+              <div style="font-size:12px;font-weight:600;color:var(--green)">✓ After PGWP + 1yr CEC: ~+60–80 pts</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:3px">Projected score 2028: ~520–540 ✅</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div style="background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.3);border-radius:var(--r);padding:1rem;margin-bottom:1rem">
-        <div style="font-family:var(--mono);font-size:11px;color:var(--primary);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem">🚨 New Opportunity — TR to PR Pathway 2026</div>
+      <div style="background:var(--primary-light);border:1.5px solid var(--primary-mid);border-left:4px solid var(--primary);border-radius:var(--r);padding:1rem;margin-bottom:1rem">
+        <div style="font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">🚨 New Opportunity — TR to PR Pathway 2026</div>
         <div style="font-size:13px;color:var(--text);margin-bottom:.5rem">Canada has launched a <strong>one-time TR to PR pathway</strong> for 33,000 workers. You may qualify if you have a valid study/work permit and Canadian work experience.</div>
-        <div style="font-family:var(--mono);font-size:11px;color:var(--muted)">Action: Prepare your WES (ECA), keep CELPIP valid, document all work hours. Full criteria expected April 2026.</div>
+        <div style="font-size:11px;color:var(--muted)">Action: Prepare your WES (ECA), keep CELPIP valid, document all work hours. Full criteria expected April 2026.</div>
       </div>
 
       <div class="panel-card" style="margin-bottom:1rem">
-        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:1.25rem">Your PR Pathway Timeline</div>
+        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin-bottom:1.25rem;font-weight:600">Your PR Pathway Timeline</div>
         <div class="timeline">
-          <div class="tl-item done"><div class="tl-dot"></div><div class="tl-content"><div class="tl-title">Study Permit Active</div><div class="tl-desc">Currently studying Masters in Software Engineering</div></div><div class="tl-date">Now</div></div>
-          <div class="tl-item done"><div class="tl-dot"></div><div class="tl-content"><div class="tl-title">Canadian Work Experience</div><div class="tl-desc">Gas station work accumulating — track every hour</div></div><div class="tl-date">Now</div></div>
-          <div class="tl-item upcoming"><div class="tl-dot"></div><div class="tl-content"><div class="tl-title">Graduation 🎓</div><div class="tl-desc">Masters degree — apply for PGWP within 180 days</div></div><div class="tl-date">Apr 2027</div></div>
-          <div class="tl-item upcoming"><div class="tl-dot"></div><div class="tl-content"><div class="tl-title">PGWP Received</div><div class="tl-desc">3-year open work permit — work any NOC TEER 0/1/2/3</div></div><div class="tl-date">~Jul 2027</div></div>
-          <div class="tl-item upcoming"><div class="tl-dot"></div><div class="tl-content"><div class="tl-title">1 Year Skilled Work ✅</div><div class="tl-desc">Complete 1yr in NOC TEER 0/1/2/3 → qualify for CEC</div></div><div class="tl-date">~Jul 2028</div></div>
-          <div class="tl-item upcoming"><div class="tl-dot"></div><div class="tl-content"><div class="tl-title">Enter Express Entry Pool</div><div class="tl-desc">CEC profile — estimated CRS ~520–540</div></div><div class="tl-date">~Aug 2028</div></div>
-          <div class="tl-item future"><div class="tl-dot"></div><div class="tl-content"><div class="tl-title">🎯 Permanent Residence</div><div class="tl-desc">ITA received → PR application → landing in Canada</div></div><div class="tl-date">~2028–2029</div></div>
+          <div class="tl-item done"><div class="tl-dot"></div><div><div class="tl-title">Study Permit Active</div><div class="tl-desc">Currently studying Masters in Software Engineering</div></div><div class="tl-date">Now</div></div>
+          <div class="tl-item done"><div class="tl-dot"></div><div><div class="tl-title">Canadian Work Experience</div><div class="tl-desc">Gas station work accumulating — track every hour</div></div><div class="tl-date">Now</div></div>
+          <div class="tl-item upcoming"><div class="tl-dot"></div><div><div class="tl-title">Graduation 🎓</div><div class="tl-desc">Masters degree — apply for PGWP within 180 days</div></div><div class="tl-date">Apr 2027</div></div>
+          <div class="tl-item upcoming"><div class="tl-dot"></div><div><div class="tl-title">PGWP Received</div><div class="tl-desc">3-year open work permit — work any NOC TEER 0/1/2/3</div></div><div class="tl-date">~Jul 2027</div></div>
+          <div class="tl-item upcoming"><div class="tl-dot"></div><div><div class="tl-title">1 Year Skilled Work ✅</div><div class="tl-desc">Complete 1yr in NOC TEER 0/1/2/3 → qualify for CEC</div></div><div class="tl-date">~Jul 2028</div></div>
+          <div class="tl-item upcoming"><div class="tl-dot"></div><div><div class="tl-title">Enter Express Entry Pool</div><div class="tl-desc">CEC profile — estimated CRS ~520–540</div></div><div class="tl-date">~Aug 2028</div></div>
+          <div class="tl-item future"><div class="tl-dot"></div><div><div class="tl-title">🎯 Permanent Residence</div><div class="tl-desc">ITA received → PR application → landing in Canada</div></div><div class="tl-date">~2028–2029</div></div>
         </div>
       </div>
 
       <div class="panel-card">
-        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:1rem">What To Focus On Right Now</div>
+        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin-bottom:1rem;font-weight:600">What To Focus On Right Now</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
           <div class="rec-card green"><div class="rec-icon">✅</div><div><div class="rec-title">Improve CELPIP to 9+</div><div class="rec-desc">Each skill at CLB 10 = +6 pts × 4 = +24 pts total</div></div></div>
           <div class="rec-card green"><div class="rec-icon">✅</div><div><div class="rec-title">Get WES (ECA) Done Now</div><div class="rec-desc">Required for TR to PR + Express Entry. Takes 4–8 weeks</div></div></div>
@@ -736,7 +744,6 @@
       <div class="panel-title">🧮 CRS Score Calculator — Express Entry</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
 
-        <!-- LEFT: Inputs -->
         <div style="display:flex;flex-direction:column;gap:1rem">
 
           <div class="panel-card">
@@ -788,7 +795,7 @@
 
           <div class="panel-card">
             <div class="calc-section-title">First Official Language — Enter Each Skill Separately</div>
-            <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:.75rem;padding:6px 10px;background:var(--surface);border-radius:var(--r-sm)">
+            <div style="font-size:11px;color:var(--muted);margin-bottom:.875rem;padding:8px 10px;background:var(--bg);border-radius:var(--r-sm);border:1px solid var(--border);font-family:var(--mono)">
               CELPIP → CLB: 4=4, 5=6, 6=7, 7=8, 8=9, 9=10 &nbsp;|&nbsp; IELTS → CLB: 6=7, 7=8, 7.5=9, 8+=10
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
@@ -844,7 +851,7 @@
           </div>
 
           <div class="panel-card">
-            <div class="calc-section-title">Second Official Language (Optional — French or English)</div>
+            <div class="calc-section-title">Second Official Language (Optional)</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
               <div class="calc-group">
                 <label class="calc-label">Speaking</label>
@@ -952,31 +959,31 @@
 
         </div>
 
-        <!-- RIGHT: Results (sticky) -->
+        <!-- RIGHT: Results sticky -->
         <div style="display:flex;flex-direction:column;gap:1rem;position:sticky;top:70px;align-self:start">
 
-          <div class="panel-card" style="text-align:center;padding:2rem">
-            <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:.75rem">Your CRS Score</div>
-            <div id="crs-result" style="font-family:var(--mono);font-size:88px;font-weight:800;line-height:1;transition:color .3s;color:var(--primary2)">452</div>
-            <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:6px">out of 1200</div>
-            <div id="crs-verdict" style="margin-top:1rem;padding:.875rem;border-radius:var(--r-sm);font-family:var(--sans);font-size:12px;text-align:left;line-height:1.5"></div>
+          <div class="panel-card" style="text-align:center;padding:2rem;background:linear-gradient(135deg,#f0f7ff 0%,#faf5ff 100%);border-color:var(--primary-mid)">
+            <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin-bottom:.75rem;font-weight:600">Your CRS Score</div>
+            <div id="crs-result" style="font-family:var(--mono);font-size:88px;font-weight:800;line-height:1;transition:color .3s;color:var(--primary)">452</div>
+            <div style="font-size:11px;color:var(--faint);margin-top:6px;font-family:var(--mono)">out of 1200</div>
+            <div id="crs-verdict" style="margin-top:1rem;padding:.875rem;border-radius:var(--r-sm);font-size:12px;text-align:left;line-height:1.5;font-weight:500"></div>
           </div>
 
           <div class="panel-card">
-            <div class="calc-section-title">Your Score vs Recent Cutoffs</div>
+            <div class="calc-section-title">Live Draw Data</div>
             <div id="draw-stats-bar" class="stats-row" style="margin-bottom:1rem;flex-wrap:wrap">
               <div class="stat-chip" style="font-size:11px">Loading live draw data…</div>
             </div>
-            <div style="margin-bottom:.5rem">
-              <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:5px">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--faint);margin-bottom:5px;font-weight:500">
                 <span>0</span><span>300</span><span>600</span><span>900</span><span>1200</span>
               </div>
               <div class="score-bar-bg">
-                <div id="score-bar-fill" class="score-bar-fill" style="background:var(--primary2);width:0%"></div>
+                <div id="score-bar-fill" class="score-bar-fill" style="background:var(--primary);width:0%"></div>
                 <div id="score-bar-marker" class="score-bar-marker" style="left:42%"></div>
               </div>
-              <div style="display:flex;justify-content:space-between;margin-top:8px;font-family:var(--mono);font-size:11px">
-                <span style="color:var(--primary2)">Your score: <strong id="bar-score">0</strong></span>
+              <div style="display:flex;justify-content:space-between;margin-top:8px;font-family:var(--mono);font-size:11px;font-weight:600">
+                <span style="color:var(--primary)">Your score: <strong id="bar-score">0</strong></span>
                 <span style="color:var(--red)">↑ Cutoff: <span id="bar-cutoff-label">~505</span></span>
               </div>
             </div>
@@ -1046,7 +1053,7 @@
   </main>
 </div>
 
-<!-- ── MOBILE BOTTOM NAV ── -->
+<!-- MOBILE NAV -->
 <nav class="mobile-nav">
   <div class="mobile-nav-inner">
     <button class="mobile-nav-btn active" onclick="mobileNav('news',this)"><span class="mnav-icon">📰</span>News</button>
@@ -1062,7 +1069,7 @@
   </div>
 </nav>
 
-<!-- ── MOBILE DRAWER ── -->
+<!-- MOBILE DRAWER -->
 <div class="mobile-drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
 <div class="mobile-drawer" id="mobile-drawer">
   <button class="drawer-close" onclick="closeDrawer()">✕</button>
@@ -1102,7 +1109,6 @@
 <div id="toast"></div>
 
 <script>
-
 // ── GLOBAL DRAW STATS ─────────────────────────────────────
 let DRAW_STATS = {
   latest_cutoff:       510,
@@ -1124,9 +1130,7 @@ async function loadDrawStats() {
     if (data && data.latest_cutoff) DRAW_STATS = data;
     renderDrawStatsBar();
     calcCRS();
-  } catch(e) {
-    console.warn('[draw-stats]', e);
-  }
+  } catch(e) { console.warn('[draw-stats]', e); }
 }
 
 function renderDrawStatsBar() {
@@ -1139,44 +1143,40 @@ function renderDrawStatsBar() {
   const trendColor = s.trend==='rising' ? 'var(--red)' : s.trend==='falling' ? 'var(--green)' : 'var(--amber)';
   drawBar.innerHTML = `
     <div class="stat-chip">Draw: <span>#${s.latest_draw_number||'?'}</span></div>
-    <div class="stat-chip">Cutoff: <span class="live-cutoff" style="color:var(--primary2)">${s.latest_cutoff}</span></div>
+    <div class="stat-chip">Cutoff: <span class="live-cutoff">${s.latest_cutoff}</span></div>
     <div class="stat-chip">Type: <span>${s.latest_draw_type||'General'}</span></div>
-    <div class="stat-chip">Invited: <span>${s.latest_invitations ? s.latest_invitations.toLocaleString():'?'}</span></div>
+    <div class="stat-chip">Invited: <span>${s.latest_invitations?s.latest_invitations.toLocaleString():'?'}</span></div>
     <div class="stat-chip">Days ago: <span>${s.days_since_draw??'?'}</span></div>
     <div class="stat-chip">Trend: <span style="color:${trendColor}">${trendIcon}</span></div>
-    ${s.estimated_next_draw ? `<div class="stat-chip">Est. next: <span>${s.estimated_next_draw}</span></div>` : ''}
+    ${s.estimated_next_draw?`<div class="stat-chip">Est. next: <span>${s.estimated_next_draw}</span></div>`:''}
   `;
 }
-
 
 // ── CRS CALCULATOR ────────────────────────────────────────
 function calcCRS() {
   const CUTOFF = DRAW_STATS.latest_cutoff || 510;
-
-  const marital  = document.getElementById('c-marital')?.value || 'single';
-  const age      = parseInt(document.getElementById('c-age')?.value)     || 0;
-  const edu      = parseInt(document.getElementById('c-edu')?.value)     || 0;
-  const speak    = parseInt(document.getElementById('c-speak')?.value)   || 0;
-  const listen   = parseInt(document.getElementById('c-listen')?.value)  || 0;
-  const readV    = parseInt(document.getElementById('c-read')?.value)    || 0;
-  const writeV   = parseInt(document.getElementById('c-write')?.value)   || 0;
-  const speak2   = parseInt(document.getElementById('c-speak2')?.value)  || 0;
-  const listen2  = parseInt(document.getElementById('c-listen2')?.value) || 0;
-  const read2    = parseInt(document.getElementById('c-read2')?.value)   || 0;
-  const write2   = parseInt(document.getElementById('c-write2')?.value)  || 0;
-  const caWork   = parseInt(document.getElementById('c-cawork')?.value)  || 0;
-  const forWork  = parseInt(document.getElementById('c-forwork')?.value) || 0;
-  const caEdu    = parseInt(document.getElementById('c-caedu')?.value)   || 0;
-  const job      = parseInt(document.getElementById('c-job')?.value)     || 0;
-  const pnp      = parseInt(document.getElementById('c-pnp')?.value)     || 0;
-  const sibling  = parseInt(document.getElementById('c-sibling')?.value) || 0;
-  const french   = parseInt(document.getElementById('c-french')?.value)  || 0;
+  const age    = parseInt(document.getElementById('c-age')?.value)     || 0;
+  const edu    = parseInt(document.getElementById('c-edu')?.value)     || 0;
+  const speak  = parseInt(document.getElementById('c-speak')?.value)   || 0;
+  const listen = parseInt(document.getElementById('c-listen')?.value)  || 0;
+  const readV  = parseInt(document.getElementById('c-read')?.value)    || 0;
+  const writeV = parseInt(document.getElementById('c-write')?.value)   || 0;
+  const speak2 = parseInt(document.getElementById('c-speak2')?.value)  || 0;
+  const listen2= parseInt(document.getElementById('c-listen2')?.value) || 0;
+  const read2  = parseInt(document.getElementById('c-read2')?.value)   || 0;
+  const write2 = parseInt(document.getElementById('c-write2')?.value)  || 0;
+  const caWork = parseInt(document.getElementById('c-cawork')?.value)  || 0;
+  const forWork= parseInt(document.getElementById('c-forwork')?.value) || 0;
+  const caEdu  = parseInt(document.getElementById('c-caedu')?.value)   || 0;
+  const job    = parseInt(document.getElementById('c-job')?.value)     || 0;
+  const pnp    = parseInt(document.getElementById('c-pnp')?.value)     || 0;
+  const sibling= parseInt(document.getElementById('c-sibling')?.value) || 0;
+  const french = parseInt(document.getElementById('c-french')?.value)  || 0;
 
   const lang1   = speak + listen + readV + writeV;
   const lang2   = speak2 + listen2 + read2 + write2;
   const avgLang = lang1 / 4;
 
-  // Skill transferability (simplified)
   let transfer = 0;
   if (lang1 >= 72) {
     if (edu >= 120)   transfer += 25;
@@ -1190,47 +1190,43 @@ function calcCRS() {
   const total = age + edu + lang1 + lang2 + caWork + forWork + caEdu + transfer + job + pnp + sibling + french;
   const gap   = CUTOFF - total;
 
-  // Score display
   const resultEl = document.getElementById('crs-result');
   if (resultEl) {
     resultEl.textContent = total;
     resultEl.style.color = total >= CUTOFF ? 'var(--green)' : total >= 460 ? 'var(--amber)' : 'var(--red)';
   }
 
-  // Score bar
   const fill     = document.getElementById('score-bar-fill');
   const marker   = document.getElementById('score-bar-marker');
   const barScore = document.getElementById('bar-score');
-  if (fill)   { fill.style.width = Math.min(total/1200*100,100)+'%'; fill.style.background = total>=CUTOFF ? 'var(--green)' : total>=460 ? 'var(--amber)' : 'var(--red)'; }
-  if (marker) marker.style.left = (CUTOFF/1200*100)+'%';
+  if (fill)    { fill.style.width = Math.min(total/1200*100,100)+'%'; fill.style.background = total>=CUTOFF ? 'var(--green)' : total>=460 ? 'var(--amber)' : 'var(--red)'; }
+  if (marker)  marker.style.left = (CUTOFF/1200*100)+'%';
   if (barScore) barScore.textContent = total;
 
   const cutoffLabel = document.getElementById('bar-cutoff-label');
   if (cutoffLabel) cutoffLabel.textContent = CUTOFF;
 
-  // Verdict
   const vEl = document.getElementById('crs-verdict');
   if (vEl) {
     const drawType = DRAW_STATS.latest_draw_type || 'General';
     if (total >= 600) {
-      vEl.style.cssText = 'background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);color:var(--green)';
+      vEl.style.cssText = 'background:var(--green-light);border:1.5px solid #a7f3d0;color:var(--green)';
       vEl.innerHTML = '🏆 Excellent score — very likely to receive ITA in upcoming draws.';
     } else if (total >= CUTOFF) {
-      vEl.style.cssText = 'background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);color:var(--green)';
+      vEl.style.cssText = 'background:var(--green-light);border:1.5px solid #a7f3d0;color:var(--green)';
       vEl.innerHTML = `✅ Above latest ${drawType} cutoff (${CUTOFF}) — you may qualify in the next draw!`;
     } else if (gap <= 15) {
-      vEl.style.cssText = 'background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);color:var(--amber)';
-      vEl.innerHTML = `⚡ Only ${gap} pts below cutoff (${CUTOFF}) — one small improvement gets you there!`;
+      vEl.style.cssText = 'background:var(--amber-light);border:1.5px solid #fde68a;color:var(--amber)';
+      vEl.innerHTML = `⚡ Only ${gap} pts below cutoff (${CUTOFF}) — one improvement gets you there!`;
     } else if (gap <= 50) {
-      vEl.style.cssText = 'background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);color:var(--amber)';
+      vEl.style.cssText = 'background:var(--amber-light);border:1.5px solid #fde68a;color:var(--amber)';
       vEl.innerHTML = `📈 ${gap} pts below cutoff (${CUTOFF}) — achievable with focused improvements.`;
     } else {
-      vEl.style.cssText = 'background:rgba(251,74,90,.1);border:1px solid rgba(251,74,90,.3);color:var(--red)';
+      vEl.style.cssText = 'background:var(--red-light);border:1.5px solid #fca5a5;color:var(--red)';
       vEl.innerHTML = `🎯 ${gap} pts below cutoff (${CUTOFF}) — see improvement tips below.`;
     }
   }
 
-  // Breakdown
   const bk = [
     ['🎂 Age',                        age],
     ['🎓 Education',                   edu],
@@ -1248,20 +1244,17 @@ function calcCRS() {
   const bkEl = document.getElementById('crs-breakdown');
   if (bkEl) {
     bkEl.innerHTML = bk.map(b => `
-      <div class="breakdown-row" style="${b[1]===0?'opacity:.35':''}">
-        <span>${b[0]}</span>
-        <span class="breakdown-pts" style="color:${b[1]>0?'var(--primary2)':'var(--muted)'}">${b[1]>0?'+'+b[1]:'0'}</span>
+      <div class="breakdown-row" style="${b[1]===0?'opacity:.4':''}">
+        <span style="color:var(--text2)">${b[0]}</span>
+        <span class="breakdown-pts" style="color:${b[1]>0?'var(--primary)':'var(--faint)'}">${b[1]>0?'+'+b[1]:'0'}</span>
       </div>`).join('');
   }
 
-  // Tips
   const tips = [];
-  const trendNote = DRAW_STATS.trend==='rising'  ? ' Note: CRS cutoff is trending up recently.'
-                  : DRAW_STATS.trend==='falling' ? ' CRS cutoff trending down — good news!'
-                  : '';
+  const trendNote = DRAW_STATS.trend==='rising' ? ' Note: CRS cutoff is trending up.' : DRAW_STATS.trend==='falling' ? ' CRS cutoff trending down — good news!' : '';
   if (avgLang < 23)   tips.push(['🎯','Improve language to CLB 9+',`Each skill at CLB 9 = 23 pts. Avg CLB ~${Math.round(avgLang)}.${trendNote}`]);
   if (caWork === 0)   tips.push(['💼','Get 1 year Canadian work experience','+40 pts + unlocks CEC stream. Most impactful single change.']);
-  else if (caWork<80) tips.push(['💼','More Canadian work adds more points',`Each year adds 11–27 more pts. Currently at ${caWork} pts.`]);
+  else if (caWork<80) tips.push(['💼','More Canadian work = more points',`Each year adds ~13 more pts. Currently at ${caWork} pts.`]);
   if (job === 0)      tips.push(['📋','Get a valid Canadian job offer','NOC TEER 1/2/3 = +50 pts. Senior role = +200 pts.']);
   if (pnp === 0)      tips.push(['🏔','Apply for Provincial Nomination','+600 pts — virtually guarantees ITA.']);
   if (forWork === 0)  tips.push(['🌍','Foreign work counts','1–2 yrs = +13 pts. 3+ yrs = +25 pts.']);
@@ -1274,15 +1267,13 @@ function calcCRS() {
       <div class="tip-row">
         <span style="font-size:18px;flex-shrink:0">${t[0]}</span>
         <div>
-          <div style="font-weight:600;color:var(--text);margin-bottom:2px">${t[1]}</div>
+          <div style="font-weight:700;color:var(--text);margin-bottom:2px">${t[1]}</div>
           <div style="color:var(--muted);font-size:11px;line-height:1.45">${t[2]}</div>
         </div>
       </div>`).join('');
   }
-
   renderDrawStatsBar();
 }
-
 
 // ── PGWP CALCULATOR ───────────────────────────────────────
 function calcPGWP() {
@@ -1290,10 +1281,10 @@ function calcPGWP() {
   if (isNaN(gradDate)) return;
   const pgwpMonths = parseInt(document.getElementById('pgwp-length')?.value) || 36;
   const province   = document.getElementById('target-province')?.value || 'any';
-  const addD = (d, days) => new Date(d.getTime() + days * 86400000);
-  const addM = (d, m)    => { const r = new Date(d); r.setMonth(r.getMonth() + m); return r; };
-  const fmt  = d => d.toLocaleDateString('en-CA', {year:'numeric',month:'short',day:'numeric'});
-  const daysFrom = d => Math.ceil((d - new Date()) / 86400000);
+  const addD = (d,days) => new Date(d.getTime() + days*86400000);
+  const addM = (d,m)    => { const r=new Date(d); r.setMonth(r.getMonth()+m); return r; };
+  const fmt  = d => d.toLocaleDateString('en-CA',{year:'numeric',month:'short',day:'numeric'});
+  const daysFrom = d => Math.ceil((d - new Date())/86400000);
 
   const pgwpDeadline  = addD(gradDate, 180);
   const pgwpExpiry    = addM(gradDate, pgwpMonths + 3);
@@ -1303,7 +1294,7 @@ function calcPGWP() {
   const prLanding     = addM(prApplication, 8);
 
   const deadlines = [
-    {label:'PGWP Application Deadline', date:pgwpDeadline,  urgent:daysFrom(pgwpDeadline) < 60},
+    {label:'PGWP Application Deadline', date:pgwpDeadline,  urgent:daysFrom(pgwpDeadline)<60},
     {label:'PGWP Expiry (est.)',         date:pgwpExpiry,    urgent:false},
     {label:'CEC Eligible (1yr work)',    date:cecEligible,   urgent:false},
     {label:'Enter EE Pool',              date:eeProfile,     urgent:false},
@@ -1312,15 +1303,15 @@ function calcPGWP() {
 
   const dlEl = document.getElementById('pgwp-deadlines');
   if (dlEl) {
-    dlEl.innerHTML = deadlines.map(d => `
-      <div class="deadline-row ${d.urgent ? 'deadline-urgent':'deadline-ok'}">
+    dlEl.innerHTML = deadlines.map(d=>`
+      <div class="deadline-row ${d.urgent?'deadline-urgent':'deadline-ok'}">
         <span class="deadline-label">${d.label}</span>
         <span class="deadline-val">${fmt(d.date)}</span>
       </div>`).join('');
   }
 
   const tl = [
-    {date:fmt(gradDate),         title:'Graduation 🎓',              desc:'Masters degree completed — apply PGWP within 180 days', status:'upcoming'},
+    {date:fmt(gradDate),         title:'Graduation 🎓',              desc:'Masters degree — apply PGWP within 180 days', status:'upcoming'},
     {date:fmt(pgwpDeadline),     title:'PGWP Application Deadline ⚠', desc:'Last day to apply after graduation', status:'upcoming'},
     {date:fmt(addM(gradDate,3)), title:'PGWP Received (est.)',        desc:`${pgwpMonths}-month open work permit`, status:'upcoming'},
     {date:fmt(cecEligible),      title:'1 Year Skilled Work ✅',      desc:'Eligible for Canadian Experience Class', status:'upcoming'},
@@ -1331,37 +1322,35 @@ function calcPGWP() {
 
   const tlEl = document.getElementById('pgwp-timeline');
   if (tlEl) {
-    tlEl.innerHTML = tl.map(t => `
+    tlEl.innerHTML = tl.map(t=>`
       <div class="tl-item ${t.status}">
         <div class="tl-dot"></div>
-        <div class="tl-content"><div class="tl-title">${t.title}</div><div class="tl-desc">${t.desc}</div></div>
+        <div><div class="tl-title">${t.title}</div><div class="tl-desc">${t.desc}</div></div>
         <div class="tl-date">${t.date}</div>
       </div>`).join('');
   }
 
-  // PNP streams based on province
   const streamsEl = document.getElementById('pnp-streams');
   if (streamsEl) {
-    const streams = province === 'ontario' ? [
-      {color:'green', icon:'🎓', name:'Ontario Masters Graduate (OINP)', desc:'No job offer needed. Apply within 2 yrs of graduation. Very competitive — apply immediately when stream opens.'},
-      {color:'blue',  icon:'💻', name:'Ontario Human Capital Priorities', desc:'EE candidates with 440+ CRS. Tech roles in NOC TEER 0/1/2. Linked to federal pool.'},
-      {color:'amber', icon:'🍁', name:'Canadian Experience Class (CEC)', desc:'After 1yr skilled work (NOC TEER 0/1/2/3). Most common path for graduates. Federal EE stream.'},
-      {color:'blue',  icon:'🏢', name:'Ontario Employer Job Offer', desc:'Valid job offer in Ontario (NOC TEER 0/1/2/3). Faster pathway if you have an employer sponsor.'},
-    ] : province === 'bc' ? [
-      {color:'green', icon:'💻', name:'BC Tech Pilot', desc:'For tech NOC workers. No minimum EE score for some roles. Targeted draws for software, data, engineering.'},
-      {color:'blue',  icon:'🎓', name:'BC International Graduate', desc:'Recent BC post-secondary graduates. Direct application stream — no job offer required.'},
-      {color:'amber', icon:'🍁', name:'Canadian Experience Class (CEC)', desc:'1yr skilled Canadian work experience. Federal EE draw — most reliable long-term path.'},
-    ] : province === 'alberta' ? [
-      {color:'green', icon:'⚡', name:'Alberta Advantage Immigration Program', desc:'Demand-driven stream. Targeted draws for healthcare, tech, trades, hospitality workers.'},
-      {color:'blue',  icon:'🎓', name:'Alberta International Graduate', desc:'Recent graduates from Alberta institutions. Employer job offer may be required.'},
-      {color:'amber', icon:'🍁', name:'Canadian Experience Class (CEC)', desc:'Federal EE pathway — 1yr skilled Canadian work experience. Works from any province.'},
+    const streams = province==='ontario' ? [
+      {color:'green',icon:'🎓',name:'Ontario Masters Graduate (OINP)',desc:'No job offer needed. Apply within 2 yrs of graduation. Very competitive — apply immediately when stream opens.'},
+      {color:'blue', icon:'💻',name:'Ontario Human Capital Priorities',desc:'EE candidates with 440+ CRS. Tech roles in NOC TEER 0/1/2. Linked to federal pool.'},
+      {color:'amber',icon:'🍁',name:'Canadian Experience Class (CEC)',desc:'After 1yr skilled work (NOC TEER 0/1/2/3). Most common path for graduates. Federal EE stream.'},
+      {color:'blue', icon:'🏢',name:'Ontario Employer Job Offer',desc:'Valid job offer in Ontario (NOC TEER 0/1/2/3). Faster pathway if you have an employer sponsor.'},
+    ] : province==='bc' ? [
+      {color:'green',icon:'💻',name:'BC Tech Pilot',desc:'For tech NOC workers. No minimum EE score for some roles. Targeted draws for software, data, engineering.'},
+      {color:'blue', icon:'🎓',name:'BC International Graduate',desc:'Recent BC post-secondary graduates. Direct application — no job offer required.'},
+      {color:'amber',icon:'🍁',name:'Canadian Experience Class (CEC)',desc:'1yr skilled Canadian work. Federal EE draw — most reliable long-term path.'},
+    ] : province==='alberta' ? [
+      {color:'green',icon:'⚡',name:'Alberta Advantage Immigration Program',desc:'Demand-driven stream. Targeted draws for healthcare, tech, trades, hospitality.'},
+      {color:'blue', icon:'🎓',name:'Alberta International Graduate',desc:'Recent Alberta post-secondary graduates. Employer job offer may be required.'},
+      {color:'amber',icon:'🍁',name:'Canadian Experience Class (CEC)',desc:'Federal EE pathway — 1yr skilled Canadian work. Works from any province.'},
     ] : [
-      {color:'blue',  icon:'🍁', name:'Canadian Experience Class (CEC)', desc:'Core federal EE pathway. 1yr Canadian skilled work experience. Most common for graduates.'},
-      {color:'green', icon:'🌐', name:'Federal Skilled Worker (FSW)', desc:'For candidates with strong foreign work experience. Requires language + education + work.'},
-      {color:'amber', icon:'🏔', name:'Provincial Nominee Program (PNP)', desc:'+600 CRS pts — virtually guarantees ITA. Research your target province streams early.'},
+      {color:'blue', icon:'🍁',name:'Canadian Experience Class (CEC)',desc:'Core federal EE pathway. 1yr Canadian skilled work experience. Most common for graduates.'},
+      {color:'green',icon:'🌐',name:'Federal Skilled Worker (FSW)',desc:'For candidates with strong foreign work experience. Requires language + education + work.'},
+      {color:'amber',icon:'🏔',name:'Provincial Nominee Program (PNP)',desc:'+600 CRS pts — virtually guarantees ITA. Research your target province streams early.'},
     ];
-
-    streamsEl.innerHTML = streams.map(s => `
+    streamsEl.innerHTML = streams.map(s=>`
       <div class="rec-card ${s.color}">
         <div class="rec-icon">${s.icon}</div>
         <div><div class="rec-title">${s.name}</div><div class="rec-desc">${s.desc}</div></div>
@@ -1369,19 +1358,14 @@ function calcPGWP() {
   }
 }
 
-
 // ── STATE ─────────────────────────────────────────────────
-let allArticles     = [];
-let currentCategory = '';
-let currentKeyword  = '';
-let currentPage     = 1;
-const PER_PAGE      = 20;
-let searchTimer     = null;
-let bookmarks       = JSON.parse(localStorage.getItem('ircc_bookmarks') || '[]');
+let allArticles=[], currentCategory='', currentKeyword='', currentPage=1;
+const PER_PAGE=20;
+let searchTimer=null;
+let bookmarks=JSON.parse(localStorage.getItem('ircc_bookmarks')||'[]');
 
-const SOURCE_CLASS = {'IRCC Official':'tag-ircc','CIC News':'tag-cic','CBC':'tag-cbc'};
-const CRS_KW = ['crs','express entry','draw','ita','pgwp','lmia','trp',
-  'permanent resident','work permit','oinp','international student'];
+const SOURCE_CLASS={'IRCC Official':'tag-ircc','CIC News':'tag-cic','CBC':'tag-cbc'};
+const CRS_KW=['crs','express entry','draw','ita','pgwp','lmia','trp','permanent resident','work permit','oinp','international student'];
 
 function getSourceClass(src) {
   for (const [k,v] of Object.entries(SOURCE_CLASS))
@@ -1389,24 +1373,23 @@ function getSourceClass(src) {
   return 'tag-default';
 }
 function detectKeywords(title) {
-  const l = (title||'').toLowerCase();
-  return CRS_KW.filter(k => l.includes(k)).slice(0,2);
+  const l=(title||'').toLowerCase();
+  return CRS_KW.filter(k=>l.includes(k)).slice(0,2);
 }
 function timeAgo(dateStr) {
   if (!dateStr) return '';
-  const d = new Date(dateStr); if (isNaN(d)) return dateStr;
-  const m = Math.floor((Date.now()-d)/60000);
-  if (m < 60)   return m+'m ago';
-  if (m < 1440) return Math.floor(m/60)+'h ago';
+  const d=new Date(dateStr); if(isNaN(d)) return dateStr;
+  const m=Math.floor((Date.now()-d)/60000);
+  if(m<60)   return m+'m ago';
+  if(m<1440) return Math.floor(m/60)+'h ago';
   return Math.floor(m/1440)+'d ago';
 }
 
-// ── RENDER CARD ──────────────────────────────────────────
 function renderCard(a) {
-  const kws   = detectKeywords(a.title);
-  const bdg   = kws.map(k=>`<span class="keyword-badge">${k.toUpperCase()}</span>`).join('');
-  const isRead = localStorage.getItem('read_'+a.url) ? 'opacity:0.6' : '';
-  const urlEsc = (a.url||'').replace(/'/g,"\\'");
+  const kws=detectKeywords(a.title);
+  const bdg=kws.map(k=>`<span class="keyword-badge">${k.toUpperCase()}</span>`).join('');
+  const isRead=localStorage.getItem('read_'+a.url)?'opacity:0.55':'';
+  const urlEsc=(a.url||'').replace(/'/g,"\\'");
   return `
     <a class="news-card" href="${a.url}" target="_blank" rel="noopener"
        style="${isRead}" onclick="localStorage.setItem('read_${urlEsc}','1')">
@@ -1422,300 +1405,224 @@ function renderCard(a) {
       <div class="card-right">
         <span class="cat-pill">${a.category||''}</span>
         <svg class="arrow-icon" width="14" height="14" viewBox="0 0 16 16" fill="none">
-          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5"
-            stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
     </a>`;
 }
 
-// ── FILTER + SORT ────────────────────────────────────────
 function filterArticles() {
-  let f = [...allArticles];
-  if (currentCategory) f = f.filter(a => a.category === currentCategory);
-  const q = (currentKeyword || document.getElementById('search')?.value || '').toLowerCase().trim();
-  if (q) f = f.filter(a =>
-    (a.title||'').toLowerCase().includes(q) ||
-    (a.summary||'').toLowerCase().includes(q)
-  );
-  const sort = document.getElementById('sort')?.value || 'newest';
-  f.sort((a,b) => {
-    const da = new Date(a.published||0), db = new Date(b.published||0);
-    return sort==='newest' ? db-da : da-db;
-  });
+  let f=[...allArticles];
+  if(currentCategory) f=f.filter(a=>a.category===currentCategory);
+  const q=(currentKeyword||document.getElementById('search')?.value||'').toLowerCase().trim();
+  if(q) f=f.filter(a=>(a.title||'').toLowerCase().includes(q)||(a.summary||'').toLowerCase().includes(q));
+  const sort=document.getElementById('sort')?.value||'newest';
+  f.sort((a,b)=>{ const da=new Date(a.published||0),db=new Date(b.published||0); return sort==='newest'?db-da:da-db; });
   return f;
 }
 
-// ── RENDER PAGE ──────────────────────────────────────────
-function renderPage(articles, page) {
-  const grid = document.getElementById('news-grid');
-  if (!grid) return;
-  const slice = articles.slice((page-1)*PER_PAGE, page*PER_PAGE);
-  if (!slice.length) {
-    grid.innerHTML = '<div class="empty-state">No articles found matching your filters</div>';
-    document.getElementById('pagination').innerHTML = '';
-    return;
+function renderPage(articles,page) {
+  const grid=document.getElementById('news-grid'); if(!grid) return;
+  const slice=articles.slice((page-1)*PER_PAGE, page*PER_PAGE);
+  if(!slice.length) {
+    grid.innerHTML='<div class="empty-state">No articles found matching your filters</div>';
+    document.getElementById('pagination').innerHTML=''; return;
   }
-  grid.innerHTML = slice.map(renderCard).join('');
-  const total = Math.ceil(articles.length/PER_PAGE);
-  document.getElementById('pagination').innerHTML =
-    Array.from({length:total},(_,i) =>
-      `<button class="pg-btn ${i+1===page?'active':''}" onclick="goPage(${i+1})">${i+1}</button>`
-    ).join('');
+  grid.innerHTML=slice.map(renderCard).join('');
+  const total=Math.ceil(articles.length/PER_PAGE);
+  document.getElementById('pagination').innerHTML=
+    Array.from({length:total},(_,i)=>`<button class="pg-btn ${i+1===page?'active':''}" onclick="goPage(${i+1})">${i+1}</button>`).join('');
 }
 
-function goPage(n) {
-  currentPage = n;
-  renderPage(filterArticles(), n);
-  window.scrollTo({top:0, behavior:'smooth'});
-}
+function goPage(n){currentPage=n;renderPage(filterArticles(),n);window.scrollTo({top:0,behavior:'smooth'})}
 
-// ── UPDATE COUNTS ────────────────────────────────────────
 function updateCounts(articles) {
-  const c = {};
-  articles.forEach(a => c[a.category] = (c[a.category]||0)+1);
-  const set = (id, val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
-  set('cnt-all',  articles.length);
-  set('cnt-ircc', c['IRCC Updates']||0);
-  set('cnt-ee',   c['Express Entry']||0);
-  set('cnt-pnp',  c['PNP Programs']||0);
-  set('cnt-intl', c['Intl Students']||0);
-  set('cnt-trp',  c['TRP / PR']||0);
-  set('cnt-work', c['Work Permits']||0);
-  set('cnt-gen',  c['General']||0);
-  set('stat-sources', [...new Set(articles.map(a=>a.source))].length);
-  set('stat-total',   articles.length);
-  set('stat-bookmarks', bookmarks.length);
+  const c={};
+  articles.forEach(a=>c[a.category]=(c[a.category]||0)+1);
+  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val};
+  set('cnt-all',articles.length);set('cnt-ircc',c['IRCC Updates']||0);
+  set('cnt-ee',c['Express Entry']||0);set('cnt-pnp',c['PNP Programs']||0);
+  set('cnt-intl',c['Intl Students']||0);set('cnt-trp',c['TRP / PR']||0);
+  set('cnt-work',c['Work Permits']||0);set('cnt-gen',c['General']||0);
+  set('stat-sources',[...new Set(articles.map(a=>a.source))].length);
+  set('stat-total',articles.length);set('stat-bookmarks',bookmarks.length);
 }
 
-// ── DRAW BANNER ──────────────────────────────────────────
 function checkDrawBanner(articles) {
-  const KW = ['express entry draw','invitation to apply','crs cut-off','draw #','rounds of invitations'];
-  const hit = articles.find(a => KW.some(k=>(a.title||'').toLowerCase().includes(k)));
-  const banner = document.getElementById('draw-banner');
-  if (!banner) return;
-  if (hit) {
-    const el = document.getElementById('draw-text'); if(el) el.textContent = hit.title;
-    banner.classList.add('visible');
-    const sd = document.getElementById('stat-draw'); if(sd) sd.textContent = timeAgo(hit.published);
-  } else { banner.classList.remove('visible'); }
+  const KW=['express entry draw','invitation to apply','crs cut-off','draw #','rounds of invitations'];
+  const hit=articles.find(a=>KW.some(k=>(a.title||'').toLowerCase().includes(k)));
+  const banner=document.getElementById('draw-banner'); if(!banner) return;
+  if(hit){const el=document.getElementById('draw-text');if(el)el.textContent=hit.title;banner.classList.add('visible');const sd=document.getElementById('stat-draw');if(sd)sd.textContent=timeAgo(hit.published);}
+  else banner.classList.remove('visible');
 }
 
-// ── LOAD NEWS ────────────────────────────────────────────
 async function loadNews() {
   try {
-    const sort = document.getElementById('sort')?.value || 'newest';
-    const res  = await fetch('/api/news?sort='+sort);
-    if (!res.ok) throw new Error('HTTP '+res.status);
-    allArticles = await res.json();
-    const lu = document.getElementById('last-updated');
-    if (lu) lu.textContent = 'Updated '+new Date().toLocaleTimeString();
-    updateCounts(allArticles);
-    checkDrawBanner(allArticles);
-    currentPage = 1;
-    renderPage(filterArticles(), 1);
-  } catch(e) {
-    const g = document.getElementById('news-grid');
-    if (g) g.innerHTML = `<div class="empty-state">Could not load news — ${e.message}</div>`;
-    console.error('[loadNews]', e);
+    const sort=document.getElementById('sort')?.value||'newest';
+    const res=await fetch('/api/news?sort='+sort);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    allArticles=await res.json();
+    const lu=document.getElementById('last-updated');if(lu)lu.textContent='Updated '+new Date().toLocaleTimeString();
+    updateCounts(allArticles);checkDrawBanner(allArticles);currentPage=1;renderPage(filterArticles(),1);
+  } catch(e){
+    const g=document.getElementById('news-grid');if(g)g.innerHTML=`<div class="empty-state">Could not load news — ${e.message}</div>`;
+    console.error('[loadNews]',e);
   }
 }
 
-// ── CATEGORY / KEYWORD FILTER ────────────────────────────
-function setCategory(btn, cat) {
+function setCategory(btn,cat){
   document.querySelectorAll('.cat-btn[data-cat]').forEach(b=>b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  currentCategory = cat; currentPage = 1;
-  renderPage(filterArticles(), 1);
+  if(btn)btn.classList.add('active');currentCategory=cat;currentPage=1;renderPage(filterArticles(),1);
 }
-function setKeyword(kw) {
-  currentKeyword = kw;
-  const s = document.getElementById('search'); if(s) s.value = kw;
-  currentPage = 1; renderPage(filterArticles(), 1);
+function setKeyword(kw){
+  currentKeyword=kw;const s=document.getElementById('search');if(s)s.value=kw;
+  currentPage=1;renderPage(filterArticles(),1);
 }
-function debounceSearch() {
-  const v = document.getElementById('search')?.value||'';
-  const cb = document.getElementById('clear-btn'); if(cb) cb.style.display = v?'block':'none';
-  clearTimeout(searchTimer);
-  searchTimer = setTimeout(()=>{ currentPage=1; renderPage(filterArticles(),1); }, 280);
+function debounceSearch(){
+  const v=document.getElementById('search')?.value||'';
+  const cb=document.getElementById('clear-btn');if(cb)cb.style.display=v?'block':'none';
+  clearTimeout(searchTimer);searchTimer=setTimeout(()=>{currentPage=1;renderPage(filterArticles(),1);},280);
 }
-function clearSearch() {
-  const s=document.getElementById('search'); if(s) s.value='';
-  const cb=document.getElementById('clear-btn'); if(cb) cb.style.display='none';
-  currentKeyword=''; currentPage=1; renderPage(filterArticles(),1);
+function clearSearch(){
+  const s=document.getElementById('search');if(s)s.value='';
+  const cb=document.getElementById('clear-btn');if(cb)cb.style.display='none';
+  currentKeyword='';currentPage=1;renderPage(filterArticles(),1);
 }
 
-// ── PAGE NAVIGATION ──────────────────────────────────────
-function showPage(name, btn) {
+function showPage(name,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
-  const pg = document.getElementById('page-'+name);
-  if (pg) pg.classList.add('active');
-  if (btn) btn.classList.add('active');
-  if (name==='crs')        loadCRSChart();
-  if (name==='processing') loadProcessingTimes();
-  if (name==='health')     loadSourceHealth();
-  if (name==='bookmarks')  renderBookmarks();
+  const pg=document.getElementById('page-'+name);if(pg)pg.classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(name==='crs')        loadCRSChart();
+  if(name==='processing') loadProcessingTimes();
+  if(name==='health')     loadSourceHealth();
+  if(name==='bookmarks')  renderBookmarks();
 }
 
-// ── MOBILE NAV ───────────────────────────────────────────
-function mobileNav(name, btn) {
-  showPage(name, null);
+function mobileNav(name,btn){
+  showPage(name,null);
   document.querySelectorAll('.mobile-nav-btn').forEach(b=>b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  window.scrollTo({top:0, behavior:'smooth'});
+  if(btn)btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
 }
-function openDrawer() {
+function openDrawer(){
   document.getElementById('mobile-drawer')?.classList.add('open');
   document.getElementById('drawer-overlay')?.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflow='hidden';
 }
-function closeDrawer() {
+function closeDrawer(){
   document.getElementById('mobile-drawer')?.classList.remove('open');
   document.getElementById('drawer-overlay')?.classList.remove('open');
-  document.body.style.overflow = '';
+  document.body.style.overflow='';
 }
-async function subscribeMobile() {
-  const email   = document.getElementById('alert-email-m')?.value.trim();
-  const keyword = document.getElementById('alert-keyword-m')?.value.trim();
-  if (!email||!keyword) { showToast('Enter email and keyword'); return; }
-  try {
+async function subscribeMobile(){
+  const email=document.getElementById('alert-email-m')?.value.trim();
+  const keyword=document.getElementById('alert-keyword-m')?.value.trim();
+  if(!email||!keyword){showToast('Enter email and keyword');return;}
+  try{
     await fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,keyword})});
     showToast('✓ Subscribed: '+keyword);
-    document.getElementById('alert-email-m').value='';
-    document.getElementById('alert-keyword-m').value='';
-    closeDrawer();
-  } catch(e) { showToast('Error. Check connection.'); }
+    document.getElementById('alert-email-m').value='';document.getElementById('alert-keyword-m').value='';closeDrawer();
+  }catch(e){showToast('Error. Check connection.');}
 }
 
-// ── CRS CHART ────────────────────────────────────────────
-let crsChartInstance = null;
+let crsChartInstance=null;
 async function loadCRSChart() {
   try {
-    const res  = await fetch('/api/crs-history');
-    const data = await res.json();
-    const tbl  = document.getElementById('crs-table');
-    if (!data.length) {
-      if (tbl) tbl.innerHTML = '<div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:2rem;text-align:center">No draw data yet.</div>';
-      return;
-    }
-    const canvas = document.getElementById('crs-chart');
-    if (canvas && window.Chart) {
-      if (crsChartInstance) crsChartInstance.destroy();
-      crsChartInstance = new Chart(canvas.getContext('2d'), {
+    const res=await fetch('/api/crs-history');
+    const data=await res.json();
+    const tbl=document.getElementById('crs-table');
+    if(!data.length){if(tbl)tbl.innerHTML='<div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:2rem;text-align:center">No draw data yet.</div>';return;}
+    const canvas=document.getElementById('crs-chart');
+    if(canvas && window.Chart){
+      if(crsChartInstance)crsChartInstance.destroy();
+      crsChartInstance=new Chart(canvas.getContext('2d'),{
         type:'line',
-        data:{
-          labels: data.map(d=>d.draw_date?d.draw_date.slice(0,10):'#'+(d.draw_number||'?')),
-          datasets:[{
-            label:'CRS Cutoff',
-            data: data.map(d=>d.score),
-            borderColor:'#6366f1',
-            backgroundColor:'rgba(99,102,241,0.08)',
-            borderWidth:2,pointRadius:4,pointBackgroundColor:'#6366f1',
-            tension:0.35,fill:true
-          }]
-        },
-        options:{
-          responsive:true, maintainAspectRatio:false,
+        data:{labels:data.map(d=>d.draw_date?d.draw_date.slice(0,10):'#'+(d.draw_number||'?')),
+              datasets:[{label:'CRS Cutoff',data:data.map(d=>d.score),
+              borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.07)',
+              borderWidth:2,pointRadius:4,pointBackgroundColor:'#2563eb',
+              tension:0.35,fill:true}]},
+        options:{responsive:true,maintainAspectRatio:false,
           plugins:{legend:{display:false}},
-          scales:{
-            x:{ticks:{color:'#546070',font:{size:10}},grid:{color:'#1a2032'}},
-            y:{ticks:{color:'#546070'},grid:{color:'#1a2032'},min:400,max:600}
-          }
-        }
+          scales:{x:{ticks:{color:'#6b7280',font:{size:10}},grid:{color:'#e4e9f0'}},
+                  y:{ticks:{color:'#6b7280'},grid:{color:'#e4e9f0'},min:400,max:600}}}
       });
     }
-    if (tbl) tbl.innerHTML = data.slice().reverse().slice(0,10).map(d=>`
+    if(tbl)tbl.innerHTML=data.slice().reverse().slice(0,10).map(d=>`
       <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;flex-wrap:wrap;gap:4px;align-items:center">
         <span style="color:var(--muted);font-family:var(--mono);font-size:11px">#${d.draw_number||'?'} · ${d.draw_date||''}</span>
-        <span style="color:var(--text2)">${d.draw_type||'General'}</span>
-        <span style="font-family:var(--mono);color:var(--primary2);font-weight:700;font-size:16px">${d.score}</span>
+        <span style="color:var(--text2);font-weight:500">${d.draw_type||'General'}</span>
+        <span style="font-family:var(--mono);color:var(--primary);font-weight:800;font-size:17px">${d.score}</span>
         <span style="color:var(--muted);font-size:11px;font-family:var(--mono)">${d.invitations?d.invitations.toLocaleString()+' invited':''}</span>
       </div>`).join('');
-  } catch(e) { console.error('[chart]',e); }
+  }catch(e){console.error('[chart]',e);}
 }
 
-// ── PROCESSING TIMES ─────────────────────────────────────
-async function loadProcessingTimes() {
-  try {
-    const res  = await fetch('/api/processing-times');
-    const data = await res.json();
-    const grid = document.getElementById('processing-grid');
-    if (!grid) return;
-    grid.innerHTML = data.length
-      ? data.map(d=>`
-          <div class="proc-card">
-            <div class="proc-permit">${d.permit_type}</div>
-            <div class="proc-time">${d.time_weeks}</div>
-            <div class="proc-label">Processing time</div>
-          </div>`).join('')
-      : '<div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:2rem">No data yet.</div>';
-  } catch(e) { console.error('[processing]',e); }
+async function loadProcessingTimes(){
+  try{
+    const res=await fetch('/api/processing-times');const data=await res.json();
+    const grid=document.getElementById('processing-grid');if(!grid)return;
+    grid.innerHTML=data.length?data.map(d=>`
+      <div class="proc-card">
+        <div class="proc-permit">${d.permit_type}</div>
+        <div class="proc-time">${d.time_weeks}</div>
+        <div class="proc-label">Processing time</div>
+      </div>`).join('')
+    :'<div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:2rem">No data yet.</div>';
+  }catch(e){console.error('[processing]',e);}
 }
 
-// ── SOURCE HEALTH ────────────────────────────────────────
-async function loadSourceHealth() {
-  try {
-    const res   = await fetch('/api/source-health');
-    const data  = await res.json();
-    const tbody = document.getElementById('health-body');
-    if (!tbody) return;
-    tbody.innerHTML = data.map(s=>{
-      const hrs = s.last_seen ? Math.floor((Date.now()-new Date(s.last_seen))/3600000) : 999;
-      const st  = hrs<2?'ok':hrs<24?'warn':'dead';
+async function loadSourceHealth(){
+  try{
+    const res=await fetch('/api/source-health');const data=await res.json();
+    const tbody=document.getElementById('health-body');if(!tbody)return;
+    tbody.innerHTML=data.map(s=>{
+      const hrs=s.last_seen?Math.floor((Date.now()-new Date(s.last_seen))/3600000):999;
+      const st=hrs<2?'ok':hrs<24?'warn':'dead';
       return `<tr>
         <td><span class="status-dot status-${st}"></span>${s.source}</td>
-        <td><span style="color:${st==='ok'?'var(--green)':st==='warn'?'var(--amber)':'var(--red)'}">${st==='ok'?'Live':st==='warn'?'Delayed':'No data'}</span></td>
-        <td style="font-family:var(--mono)">${s.total}</td>
+        <td><span style="color:${st==='ok'?'var(--green)':st==='warn'?'var(--amber)':'var(--red)'};font-weight:600">${st==='ok'?'Live':st==='warn'?'Delayed':'No data'}</span></td>
+        <td style="font-family:var(--mono);font-weight:500">${s.total}</td>
         <td style="font-family:var(--mono);font-size:11px;color:var(--muted)">${timeAgo(s.last_seen)}</td>
       </tr>`;
     }).join('');
-  } catch(e) { console.error('[health]',e); }
+  }catch(e){console.error('[health]',e);}
 }
 
-// ── BOOKMARKS ────────────────────────────────────────────
-function renderBookmarks() {
-  const grid = document.getElementById('bookmarks-grid');
-  if (!grid) return;
-  if (!bookmarks.length) {
-    grid.innerHTML = '<div class="panel-card" style="color:var(--muted);font-family:var(--mono);padding:3rem;text-align:center">No bookmarks yet.<br><span style="font-size:11px;margin-top:6px;display:block">Click 🔖 on any article to save it.</span></div>';
-    return;
-  }
-  const saved = allArticles.filter(a=>bookmarks.includes(a.url));
-  grid.innerHTML = saved.length
-    ? `<div id="bookmarks-list" style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden">${saved.map(renderCard).join('')}</div>`
-    : '<div class="panel-card" style="color:var(--muted);padding:2rem;text-align:center;font-family:var(--mono)">Refresh the news page first, then bookmarks will appear here.</div>';
+function renderBookmarks(){
+  const grid=document.getElementById('bookmarks-grid');if(!grid)return;
+  if(!bookmarks.length){grid.innerHTML='<div class="panel-card" style="color:var(--muted);font-family:var(--mono);padding:3rem;text-align:center">No bookmarks yet.<br><span style="font-size:11px;margin-top:6px;display:block">Click 🔖 on any article to save it.</span></div>';return;}
+  const saved=allArticles.filter(a=>bookmarks.includes(a.url));
+  grid.innerHTML=saved.length
+    ?`<div style="background:#fff;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)">${saved.map(renderCard).join('')}</div>`
+    :'<div class="panel-card" style="color:var(--muted);padding:2rem;text-align:center;font-family:var(--mono)">Refresh the news page first, then bookmarks will appear here.</div>';
 }
 
-// ── SUBSCRIBE ─────────────────────────────────────────────
-async function subscribeAlert() {
-  const email   = document.getElementById('alert-email')?.value.trim();
-  const keyword = document.getElementById('alert-keyword')?.value.trim();
-  if (!email||!keyword) { showToast('Enter email and keyword'); return; }
-  try {
+async function subscribeAlert(){
+  const email=document.getElementById('alert-email')?.value.trim();
+  const keyword=document.getElementById('alert-keyword')?.value.trim();
+  if(!email||!keyword){showToast('Enter email and keyword');return;}
+  try{
     await fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,keyword})});
-    const s = document.getElementById('alert-status'); if(s) s.style.display='block';
+    const s=document.getElementById('alert-status');if(s)s.style.display='block';
     showToast('✓ Alert subscribed: '+keyword);
-    document.getElementById('alert-email').value='';
-    document.getElementById('alert-keyword').value='';
-  } catch(e) { showToast('Error subscribing.'); }
+    document.getElementById('alert-email').value='';document.getElementById('alert-keyword').value='';
+  }catch(e){showToast('Error subscribing.');}
 }
 
-// ── TOAST ─────────────────────────────────────────────────
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  if (!t) return;
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2800);
+function showToast(msg){
+  const t=document.getElementById('toast');if(!t)return;
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
 }
 
-// ── INIT ──────────────────────────────────────────────────
-setInterval(loadNews, 10 * 60 * 1000);
+setInterval(loadNews, 10*60*1000);
 loadNews();
 loadDrawStats();
 calcCRS();
 calcPGWP();
-
 </script>
 </body>
 </html>
