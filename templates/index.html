@@ -912,56 +912,61 @@
         <span>👤 My Immigration Profile</span>
         <button class="edit-profile-btn" onclick="openProfileModal()">✏ Edit Profile</button>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem" class="profile-section-grid">
-        <div class="panel-card">
-          <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin-bottom:1rem;font-weight:600">Your Profile</div>
-          <div id="profile-rows" style="display:flex;flex-direction:column;gap:.4rem"></div>
+
+      <!-- Empty state — shown when no profile set -->
+      <div id="profile-setup-prompt" style="display:none">
+        <div class="panel-card" style="text-align:center;padding:3rem;border:2px dashed var(--border)">
+          <div style="font-size:48px;margin-bottom:1rem">👤</div>
+          <div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:.5rem">Set up your personal profile</div>
+          <div style="font-size:13px;color:var(--muted);max-width:400px;margin:0 auto 1.5rem">Enter your immigration details once and this page will track your progress, show your CRS score, and give you personalized tips.</div>
+          <button class="edit-profile-btn" onclick="openProfileModal()" style="font-size:14px;padding:10px 28px;border-radius:var(--r-sm)">Get Started →</button>
         </div>
-        <div class="panel-card">
-          <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin-bottom:1rem;font-weight:600">Estimated CRS Score</div>
-          <div style="text-align:center;padding:.5rem 0">
-            <div style="font-family:var(--mono);font-size:64px;font-weight:800;color:var(--primary);line-height:1">465</div>
-            <div style="font-size:12px;color:var(--muted);margin-top:.5rem">estimated current score (incl. India exp)</div>
-            <div style="margin-top:1rem;padding:.875rem;background:var(--amber-light);border:1.5px solid #fde68a;border-radius:var(--r-sm)">
-              <div style="font-size:12px;font-weight:600;color:var(--amber)">⚠ Latest draw cutoff: ~490–510</div>
-              <div style="font-size:11px;color:var(--muted);margin-top:3px">Gap: ~40–45 points</div>
-            </div>
-            <div style="margin-top:.75rem;padding:.875rem;background:var(--green-light);border:1.5px solid #a7f3d0;border-radius:var(--r-sm)">
-              <div style="font-size:12px;font-weight:600;color:var(--green)">✓ After PGWP + 1yr CEC: ~+60–80 pts</div>
-              <div style="font-size:11px;color:var(--muted);margin-top:3px">Projected score 2028: ~520–540 ✅</div>
+      </div>
+
+      <!-- Profile content — shown when profile exists -->
+      <div id="profile-content" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem" class="profile-section-grid">
+          <div class="panel-card">
+            <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin-bottom:1rem;font-weight:600">Your Profile</div>
+            <div id="profile-rows" style="display:flex;flex-direction:column;gap:.4rem"></div>
+          </div>
+          <div class="panel-card" style="background:linear-gradient(135deg,#f0f7ff 0%,#faf5ff 100%);border-color:var(--primary-mid)">
+            <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin-bottom:1rem;font-weight:600">Your CRS Score</div>
+            <div id="profile-crs-display" style="text-align:center;padding:.5rem 0">
+              <div id="profile-crs-number" style="font-family:var(--mono);font-size:72px;font-weight:800;color:var(--primary);line-height:1">0</div>
+              <div style="font-size:12px;color:var(--muted);margin-top:.5rem">calculated from CRS Calculator</div>
+              <div id="profile-cutoff-gap" style="margin-top:1rem"></div>
+              <button onclick="showPage('crscalc',null);document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'))" style="margin-top:1rem;background:var(--grad);border:none;color:#fff;padding:9px 22px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:var(--sh-blue)">
+                Open CRS Calculator →
+              </button>
             </div>
           </div>
         </div>
-      </div>
 
-      <div style="background:var(--primary-light);border:1.5px solid var(--primary-mid);border-left:4px solid var(--primary);border-radius:var(--r);padding:1rem;margin-bottom:1rem">
-        <div style="font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">🚨 New Opportunity — TR to PR Pathway 2026</div>
-        <div style="font-size:13px;color:var(--text);margin-bottom:.5rem">Canada has launched a <strong>one-time TR to PR pathway</strong> for 33,000 workers. You may qualify if you have a valid study/work permit and Canadian work experience.</div>
-        <div style="font-size:11px;color:var(--muted)">Action: Prepare your WES (ECA), keep CELPIP valid, document all work hours. Full criteria expected April 2026.</div>
-      </div>
-
-      <div class="panel-card" style="margin-bottom:1rem">
-        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin-bottom:1.25rem;font-weight:600">Your PR Pathway Timeline</div>
-        <div class="timeline">
-          <div class="tl-item done"><div class="tl-dot"></div><div><div class="tl-title">Study Permit Active</div><div class="tl-desc">Currently studying Masters in Software Engineering</div></div><div class="tl-date">Now</div></div>
-          <div class="tl-item done"><div class="tl-dot"></div><div><div class="tl-title">Canadian Work Experience</div><div class="tl-desc">Gas station work accumulating — track every hour</div></div><div class="tl-date">Now</div></div>
-          <div class="tl-item upcoming"><div class="tl-dot"></div><div><div class="tl-title">Graduation 🎓</div><div class="tl-desc">Masters degree — apply for PGWP within 180 days</div></div><div class="tl-date">Apr 2027</div></div>
-          <div class="tl-item upcoming"><div class="tl-dot"></div><div><div class="tl-title">PGWP Received</div><div class="tl-desc">3-year open work permit — work any NOC TEER 0/1/2/3</div></div><div class="tl-date">~Jul 2027</div></div>
-          <div class="tl-item upcoming"><div class="tl-dot"></div><div><div class="tl-title">1 Year Skilled Work ✅</div><div class="tl-desc">Complete 1yr in NOC TEER 0/1/2/3 → qualify for CEC</div></div><div class="tl-date">~Jul 2028</div></div>
-          <div class="tl-item upcoming"><div class="tl-dot"></div><div><div class="tl-title">Enter Express Entry Pool</div><div class="tl-desc">CEC profile — estimated CRS ~520–540</div></div><div class="tl-date">~Aug 2028</div></div>
-          <div class="tl-item future"><div class="tl-dot"></div><div><div class="tl-title">🎯 Permanent Residence</div><div class="tl-desc">ITA received → PR application → landing in Canada</div></div><div class="tl-date">~2028–2029</div></div>
+        <!-- TR to PR general alert -->
+        <div style="background:var(--primary-light);border:1.5px solid var(--primary-mid);border-left:4px solid var(--primary);border-radius:var(--r);padding:1rem;margin-bottom:1rem">
+          <div style="font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">🚨 TR to PR Pathway 2026 — Open Now</div>
+          <div style="font-size:13px;color:var(--text);margin-bottom:.5rem">Canada has opened a <strong>TR to PR pathway</strong> for temporary residents. You may qualify if you hold a valid study or work permit with Canadian work experience.</div>
+          <div style="font-size:11px;color:var(--muted)">Prepare: WES (ECA), valid language test, employment records. Check <strong>ircc.canada.ca</strong> for full eligibility criteria.</div>
         </div>
-      </div>
 
-      <div class="panel-card">
-        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin-bottom:1rem;font-weight:600">What To Focus On Right Now</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
-          <div class="rec-card green"><div class="rec-icon">✅</div><div><div class="rec-title">Improve CELPIP to 9+</div><div class="rec-desc">Each skill at CLB 10 = +6 pts × 4 = +24 pts total</div></div></div>
-          <div class="rec-card green"><div class="rec-icon">✅</div><div><div class="rec-title">Get WES (ECA) Done Now</div><div class="rec-desc">Required for TR to PR + Express Entry. Takes 4–8 weeks</div></div></div>
-          <div class="rec-card amber"><div class="rec-icon">⚡</div><div><div class="rec-title">Ontario Masters Stream</div><div class="rec-desc">OINP Masters Graduate — no job offer needed after graduation</div></div></div>
-          <div class="rec-card amber"><div class="rec-icon">⚡</div><div><div class="rec-title">TR to PR Pathway 2026</div><div class="rec-desc">33,000 spots — prepare docs now, apply when criteria released</div></div></div>
-          <div class="rec-card blue"><div class="rec-icon">📌</div><div><div class="rec-title">Get SE Job Offer (NOC 21231)</div><div class="rec-desc">Valid job offer = +50–200 CRS pts instantly</div></div></div>
-          <div class="rec-card blue"><div class="rec-icon">📌</div><div><div class="rec-title">Ontario Tech Draw Alerts</div><div class="rec-desc">Subscribe to "Ontario PNP" keyword in sidebar for instant alerts</div></div></div>
+        <!-- Dynamic pathway timeline -->
+        <div class="panel-card" style="margin-bottom:1rem">
+          <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin-bottom:1.25rem;font-weight:600">Your PR Pathway — General Steps</div>
+          <div class="timeline" id="profile-timeline"></div>
+        </div>
+
+        <!-- Generic action items -->
+        <div class="panel-card">
+          <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--faint);margin-bottom:1rem;font-weight:600">Key Actions for Express Entry</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+            <div class="rec-card green"><div class="rec-icon">🗣</div><div><div class="rec-title">Maximize Language Score</div><div class="rec-desc">CLB 9+ in all 4 skills = 92/136 language pts. Highest ROI single improvement.</div></div></div>
+            <div class="rec-card green"><div class="rec-icon">📋</div><div><div class="rec-title">Get WES / ECA Done Early</div><div class="rec-desc">Takes 4–8 weeks. Required for Express Entry with foreign education.</div></div></div>
+            <div class="rec-card amber"><div class="rec-icon">💼</div><div><div class="rec-title">Gain Canadian Work Exp (TEER 0/1/2/3)</div><div class="rec-desc">1yr skilled work = +40 pts + unlocks CEC stream + skill transferability bonus.</div></div></div>
+            <div class="rec-card amber"><div class="rec-icon">🏔</div><div><div class="rec-title">Apply to Provincial Nominee Program</div><div class="rec-desc">+600 CRS pts — virtually guarantees ITA. Check 🏔 Provinces tab for streams.</div></div></div>
+            <div class="rec-card blue"><div class="rec-icon">💼</div><div><div class="rec-title">Secure a Valid Job Offer</div><div class="rec-desc">LMIA-backed or exempt job offer in TEER 1/2/3 = +50 pts instantly.</div></div></div>
+            <div class="rec-card blue"><div class="rec-icon">🇫🇷</div><div><div class="rec-title">French Language Bonus</div><div class="rec-desc">French CLB 7+ + English CLB 5+ = +50 CRS pts. French draws have lower cutoffs.</div></div></div>
+          </div>
         </div>
       </div>
     </div>
@@ -985,8 +990,9 @@
             <div class="calc-group">
               <label class="calc-label">Age</label>
               <select class="calc-input" id="c-age" onchange="calcCRS()">
+                <option value="0" selected>— Select your age —</option>
                 <option value="0">Under 18</option>
-                <option value="110" selected>18–29 years old (110 pts — max)</option>
+                <option value="110">18–29 years old (110 pts — max)</option>
                 <option value="105">30 years old (105 pts)</option>
                 <option value="99">31 years old (99 pts)</option>
                 <option value="94">32 years old (94 pts)</option>
@@ -1008,14 +1014,27 @@
             <div class="calc-group">
               <label class="calc-label">Highest Education Level</label>
               <select class="calc-input" id="c-edu" onchange="calcCRS()">
-                <option value="0">Less than secondary (high school)</option>
-                <option value="30">Secondary diploma (high school)</option>
-                <option value="90">1-year post-secondary diploma (90 pts)</option>
-                <option value="98">2-year post-secondary diploma (98 pts)</option>
-                <option value="120">Bachelor's degree / 3-year program (120 pts)</option>
-                <option value="128">Two or more credentials (one 3yr+)</option>
-                <option value="135" selected>Master's degree / Professional degree (135 pts)</option>
-                <option value="150">PhD / Doctoral degree (150 pts)</option>
+                <option value="0" selected>— Select your education —</option>
+                <optgroup label="── Secondary ──">
+                  <option value="0">No secondary / did not complete high school (0 pts)</option>
+                  <option value="30">Secondary school diploma / High school (30 pts)</option>
+                </optgroup>
+                <optgroup label="── College / CEGEP / Polytechnic ──">
+                  <option value="90">1-year certificate or diploma (90 pts)</option>
+                  <option value="98">2-year diploma — Ontario College Diploma / CEGEP (98 pts)</option>
+                  <option value="120">3-year Advanced Diploma — Ontario College Advanced Diploma (120 pts)</option>
+                  <option value="120">Applied degree — 4-year college applied degree (120 pts)</option>
+                </optgroup>
+                <optgroup label="── University — Undergraduate ──">
+                  <option value="120">Bachelor's degree — 3 or 4 years (BSc, BA, BEng, BComm…) (120 pts)</option>
+                  <option value="128">Two or more post-secondary credentials (one must be 3yr+) (128 pts)</option>
+                </optgroup>
+                <optgroup label="── University — Graduate ──">
+                  <option value="135">Graduate Certificate / Diploma (post-degree 1yr program) (135 pts)</option>
+                  <option value="135">Master's degree — MSc, MA, MEng, MBA, MPA, MEd… (135 pts)</option>
+                  <option value="135">Professional degree — MD, JD, LLB, DDS, PharmD, DVetM… (135 pts)</option>
+                  <option value="150">PhD / Doctoral degree (150 pts)</option>
+                </optgroup>
               </select>
             </div>
           </div>
@@ -1029,48 +1048,48 @@
               <div class="calc-group">
                 <label class="calc-label">Speaking</label>
                 <select class="calc-input" id="c-speak" onchange="calcCRS()">
-                  <option value="0">Below CLB 4 (0 pts)</option>
+                  <option value="0" selected>Below CLB 4 (0 pts)</option>
                   <option value="6">CLB 4–5 (6 pts)</option>
                   <option value="8">CLB 6 (8 pts)</option>
                   <option value="16">CLB 7 (16 pts)</option>
                   <option value="22">CLB 8 (22 pts)</option>
-                  <option value="23" selected>CLB 9 (23 pts)</option>
+                  <option value="23">CLB 9 (23 pts)</option>
                   <option value="24">CLB 10+ (24 pts)</option>
                 </select>
               </div>
               <div class="calc-group">
                 <label class="calc-label">Listening</label>
                 <select class="calc-input" id="c-listen" onchange="calcCRS()">
-                  <option value="0">Below CLB 4 (0 pts)</option>
+                  <option value="0" selected>Below CLB 4 (0 pts)</option>
                   <option value="6">CLB 4–5 (6 pts)</option>
                   <option value="8">CLB 6 (8 pts)</option>
                   <option value="16">CLB 7 (16 pts)</option>
                   <option value="22">CLB 8 (22 pts)</option>
-                  <option value="23" selected>CLB 9 (23 pts)</option>
+                  <option value="23">CLB 9 (23 pts)</option>
                   <option value="24">CLB 10+ (24 pts)</option>
                 </select>
               </div>
               <div class="calc-group">
                 <label class="calc-label">Reading</label>
                 <select class="calc-input" id="c-read" onchange="calcCRS()">
-                  <option value="0">Below CLB 4 (0 pts)</option>
+                  <option value="0" selected>Below CLB 4 (0 pts)</option>
                   <option value="6">CLB 4–5 (6 pts)</option>
                   <option value="8">CLB 6 (8 pts)</option>
                   <option value="16">CLB 7 (16 pts)</option>
                   <option value="22">CLB 8 (22 pts)</option>
-                  <option value="23" selected>CLB 9 (23 pts)</option>
+                  <option value="23">CLB 9 (23 pts)</option>
                   <option value="24">CLB 10+ (24 pts)</option>
                 </select>
               </div>
               <div class="calc-group">
                 <label class="calc-label">Writing</label>
                 <select class="calc-input" id="c-write" onchange="calcCRS()">
-                  <option value="0">Below CLB 4 (0 pts)</option>
+                  <option value="0" selected>Below CLB 4 (0 pts)</option>
                   <option value="6">CLB 4–5 (6 pts)</option>
                   <option value="8">CLB 6 (8 pts)</option>
                   <option value="16">CLB 7 (16 pts)</option>
                   <option value="22">CLB 8 (22 pts)</option>
-                  <option value="23" selected>CLB 9 (23 pts)</option>
+                  <option value="23">CLB 9 (23 pts)</option>
                   <option value="24">CLB 10+ (24 pts)</option>
                 </select>
               </div>
@@ -1135,8 +1154,8 @@
             <div class="calc-group">
               <label class="calc-label">Foreign Work Experience (India / abroad)</label>
               <select class="calc-input" id="c-forwork" onchange="calcCRS()">
-                <option value="0">None</option>
-                <option value="13" selected>1–2 years (13 pts)</option>
+                <option value="0" selected>None</option>
+                <option value="13">1–2 years (13 pts)</option>
                 <option value="25">3+ years (25 pts)</option>
               </select>
             </div>
@@ -1147,9 +1166,9 @@
             <div class="calc-group">
               <label class="calc-label">Canadian Education (studied in Canada)</label>
               <select class="calc-input" id="c-caedu" onchange="calcCRS()">
-                <option value="0">No Canadian education</option>
+                <option value="0" selected>No Canadian education</option>
                 <option value="15">1–2 year Canadian program (15 pts)</option>
-                <option value="30" selected>Masters / PhD / 3yr+ in Canada (30 pts)</option>
+                <option value="30">3-year+ / Bachelor's / Masters / PhD in Canada (30 pts)</option>
               </select>
             </div>
             <div class="calc-group">
@@ -1888,6 +1907,9 @@ function calcCRS() {
   const total = age + edu + lang1 + lang2 + caWork + forWork + caEdu + transfer + job + pnp + sibling + french;
   const gap   = CUTOFF - total;
 
+  // Save score so Profile page can display it
+  if (total > 0) localStorage.setItem('ircc_crs_score', total);
+
   const resultEl = document.getElementById('crs-result');
   if (resultEl) {
     resultEl.textContent = total;
@@ -2129,6 +2151,10 @@ function filterArticles() {
   if(currentCategory) f=f.filter(a=>a.category===currentCategory);
   const q=(currentKeyword||document.getElementById('search')?.value||'').toLowerCase().trim();
   if(q) f=f.filter(a=>(a.title||'').toLowerCase().includes(q)||(a.summary||'').toLowerCase().includes(q));
+  if(activeDateDays>0){
+    const cutoff=new Date(Date.now()-activeDateDays*86400000);
+    f=f.filter(a=>a.published&&new Date(a.published)>=cutoff);
+  }
   const sort=document.getElementById('sort')?.value||'newest';
   f.sort((a,b)=>{ const da=new Date(a.published||0),db=new Date(b.published||0); return sort==='newest'?db-da:da-db; });
   return f;
@@ -2352,15 +2378,6 @@ function filterDate(btn, days) {
   currentPage = 1;
   renderPage(filterArticles(), 1);
 }
-const _origFilter = filterArticles;
-filterArticles = function() {
-  let f = _origFilter();
-  if (activeDateDays > 0) {
-    const cutoff = new Date(Date.now() - activeDateDays * 86400000);
-    f = f.filter(a => a.published && new Date(a.published) >= cutoff);
-  }
-  return f;
-};
 
 // ── CRS CHART DRAW TYPE FILTER ────────────────────────────
 let crsTypeFilter = 'all';
@@ -2419,45 +2436,92 @@ function renderCRSChart(data) {
 }
 
 // ── PROFILE (localStorage) ────────────────────────────────
-const DEFAULT_PROFILE = {
-  name:'Your Name', age:'25', edu:'Masters degree',
-  test:'CELPIP', scores:'7/7/7/7', cawork:'None / Less than 1 year',
-  forwork:'1–2 years', status:'Student Visa', province:'Ontario',
-  pathway:'PGWP → CEC / Ontario Masters'
-};
+const DEFAULT_PROFILE = null; // no defaults — user must fill in their own data
 
 function loadProfile() {
-  return JSON.parse(localStorage.getItem('ircc_profile')||'null') || DEFAULT_PROFILE;
+  return JSON.parse(localStorage.getItem('ircc_profile') || 'null');
 }
 
 function renderProfile() {
   const p = loadProfile();
+  const prompt  = document.getElementById('profile-setup-prompt');
+  const content = document.getElementById('profile-content');
+
+  if (!p) {
+    if (prompt)  prompt.style.display  = 'block';
+    if (content) content.style.display = 'none';
+    return;
+  }
+  if (prompt)  prompt.style.display  = 'none';
+  if (content) content.style.display = 'block';
+
+  // Profile rows
   const rows = [
     ['Name', p.name], ['Age', p.age], ['Education', p.edu],
     ['Language Test', `${p.test} — ${p.scores}`],
     ['Canadian Work', p.cawork], ['Foreign Work', p.forwork],
     ['Status', p.status], ['Target Province', p.province], ['PR Pathway', p.pathway]
   ];
-  const el = document.getElementById('profile-rows');
-  if (el) el.innerHTML = rows.map(r=>`
+  const rowEl = document.getElementById('profile-rows');
+  if (rowEl) rowEl.innerHTML = rows.map(r=>`
     <div class="profile-row">
       <span class="profile-label">${r[0]}</span>
-      <span class="profile-val">${r[1]}</span>
+      <span class="profile-val">${r[1] || '—'}</span>
     </div>`).join('');
+
+  // CRS score from calculator
+  const savedScore = parseInt(localStorage.getItem('ircc_crs_score') || '0');
+  const numEl = document.getElementById('profile-crs-number');
+  if (numEl) {
+    numEl.textContent = savedScore || '0';
+    const cutoff = DRAW_STATS.latest_cutoff || 505;
+    numEl.style.color = savedScore >= cutoff ? 'var(--green)' : savedScore >= 460 ? 'var(--amber)' : 'var(--primary)';
+  }
+  const gapEl = document.getElementById('profile-cutoff-gap');
+  if (gapEl && savedScore > 0) {
+    const cutoff = DRAW_STATS.latest_cutoff || 505;
+    const gap = cutoff - savedScore;
+    if (gap <= 0) {
+      gapEl.innerHTML = `<div style="padding:.75rem;background:var(--green-light);border:1.5px solid #a7f3d0;border-radius:var(--r-sm);font-size:12px;font-weight:600;color:var(--green)">✅ Above current cutoff (${cutoff}) — you may qualify!</div>`;
+    } else {
+      gapEl.innerHTML = `<div style="padding:.75rem;background:var(--amber-light);border:1.5px solid #fde68a;border-radius:var(--r-sm);font-size:12px;color:var(--amber)"><strong>${gap} pts</strong> below current cutoff (${cutoff})</div>`;
+    }
+  } else if (gapEl) {
+    gapEl.innerHTML = `<div style="font-size:12px;color:var(--muted)">Use the CRS Calculator to calculate your score.</div>`;
+  }
+
+  // Dynamic generic timeline
+  const tlEl = document.getElementById('profile-timeline');
+  if (tlEl) {
+    const steps = [
+      {s:'done',    t:'Arrived in Canada',                  d:'Study permit / work permit / visitor status active'},
+      {s:'done',    t:'Start Building Language Score',      d:'CELPIP or IELTS — aim for CLB 9+ in all 4 skills'},
+      {s:'upcoming',t:'Get WES / Educational Credential Assessment', d:'Apply early — takes 4–8 weeks. Required for EE with foreign degrees'},
+      {s:'upcoming',t:'Gain Skilled Canadian Work Exp',     d:'NOC TEER 0/1/2/3 only — track every hour worked'},
+      {s:'upcoming',t:'Create Express Entry Profile',       d:'After 1yr skilled CWE — enter the pool with your CRS score'},
+      {s:'upcoming',t:'Receive Invitation to Apply (ITA)', d:'Score above cutoff → receive ITA → submit PR application'},
+      {s:'future',  t:'🎯 Permanent Residence',             d:'PR approved → land as a permanent resident of Canada'},
+    ];
+    tlEl.innerHTML = steps.map(s=>`
+      <div class="tl-item ${s.s}">
+        <div class="tl-dot"></div>
+        <div><div class="tl-title">${s.t}</div><div class="tl-desc">${s.d}</div></div>
+      </div>`).join('');
+  }
 }
 
 function openProfileModal() {
-  const p = loadProfile();
-  document.getElementById('p-name').value    = p.name;
-  document.getElementById('p-age').value     = p.age;
-  document.getElementById('p-edu').value     = p.edu;
-  document.getElementById('p-test').value    = p.test;
-  document.getElementById('p-scores').value  = p.scores;
-  document.getElementById('p-cawork').value  = p.cawork;
-  document.getElementById('p-forwork').value = p.forwork;
-  document.getElementById('p-status').value  = p.status;
-  document.getElementById('p-province').value= p.province;
-  document.getElementById('p-pathway').value = p.pathway;
+  const p = loadProfile() || {};
+  document.getElementById('p-name').value     = p.name     || '';
+  document.getElementById('p-age').value      = p.age      || '';
+  document.getElementById('p-edu').value      = p.edu      || 'Masters degree';
+  document.getElementById('p-test').value     = p.test     || 'CELPIP';
+  document.getElementById('p-scores').value   = p.scores   || '';
+  document.getElementById('p-cawork').value   = p.cawork   || 'None / Less than 1 year';
+  document.getElementById('p-forwork').value  = p.forwork  || 'None';
+  document.getElementById('p-status').value   = p.status   || '';
+  document.getElementById('p-province').value = p.province || 'Ontario';
+  document.getElementById('p-pathway').value  = p.pathway  || '';
   document.getElementById('profile-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -2468,17 +2532,19 @@ function closeProfileModal() {
 }
 
 function saveProfile() {
+  const name = document.getElementById('p-name').value.trim();
+  if (!name) { showToast('Please enter your name'); return; }
   const p = {
-    name:    document.getElementById('p-name').value.trim()    || DEFAULT_PROFILE.name,
-    age:     document.getElementById('p-age').value.trim()     || DEFAULT_PROFILE.age,
+    name,
+    age:     document.getElementById('p-age').value.trim(),
     edu:     document.getElementById('p-edu').value,
     test:    document.getElementById('p-test').value,
-    scores:  document.getElementById('p-scores').value.trim()  || DEFAULT_PROFILE.scores,
+    scores:  document.getElementById('p-scores').value.trim(),
     cawork:  document.getElementById('p-cawork').value,
     forwork: document.getElementById('p-forwork').value,
-    status:  document.getElementById('p-status').value.trim()  || DEFAULT_PROFILE.status,
+    status:  document.getElementById('p-status').value.trim(),
     province:document.getElementById('p-province').value,
-    pathway: document.getElementById('p-pathway').value.trim() || DEFAULT_PROFILE.pathway,
+    pathway: document.getElementById('p-pathway').value.trim(),
   };
   localStorage.setItem('ircc_profile', JSON.stringify(p));
   closeProfileModal();
